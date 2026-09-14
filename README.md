@@ -2,7 +2,7 @@
 
 Exercices pour apprendre la souris et le clavier, à destination de grands débutants.
 
-17 stations et 20 questions, dans le navigateur. Aucun compte, aucune installation,
+22 stations et 20 questions, dans le navigateur. Aucun compte, aucune installation,
 aucun son. Rien n'est enregistré : le poste peut être remis à zéro entre deux groupes.
 
 **La page : https://edouardparnel-dotcom.github.io/clavier-souris/**

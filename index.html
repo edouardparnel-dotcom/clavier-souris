@@ -198,6 +198,15 @@
   .alerte-lien { color: var(--ambre); font-family: var(--mono); font-size: 15px; margin-top: 10px;
     min-height: 22px; display: block; }
 
+  .liste { border: 1px solid var(--trait); border-radius: 5px; overflow: hidden; user-select: none; }
+  .ligne { padding: 12px 16px; border-bottom: 1px solid var(--trait); cursor: pointer;
+    display: flex; gap: 14px; align-items: baseline; }
+  .ligne:last-child { border-bottom: none; }
+  .ligne .rang { font-family: var(--mono); font-size: 14px; color: var(--encre-doux); flex: 0 0 22px; }
+  .ligne:hover { background: var(--fond); }
+  .ligne.prise { background: var(--bleu); color: #fff; }
+  .ligne.prise .rang { color: #fff; }
+
   .grille { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
     max-width: 480px; margin: 0 auto; }
   .grille:focus-visible { outline: 3px solid var(--bleu); outline-offset: 6px; }
@@ -430,6 +439,46 @@
       </div>
     </div>
     <div class="barre"><span class="score" id="s18">0 sur 2</span><button class="rejouer" data-rejouer="18">Recommencer</button></div>
+  </section>
+
+  <p class="titre-partie">Pour aller plus loin</p>
+
+  <section class="station">
+    <div class="entete"><span class="num">19</span><h2>Ctrl et clic</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">Pour choisir des dossiers éloignés : le premier au clic, les autres avec Ctrl maintenue.</p>
+    <div class="aire"><div class="bureau" id="c19"></div></div>
+    <div class="barre"><span class="score" id="s19">Prenez les 3 bleus</span><button class="rejouer" data-rejouer="19">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">20</span><h2>Maj et clic</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">Pour choisir une suite : cliquez la ligne 2, puis Maj maintenue, cliquez la ligne 6.</p>
+    <div class="aire"><div class="liste" id="c20"></div></div>
+    <div class="barre"><span class="score" id="s20">Les lignes 2 à 6</span><button class="rejouer" data-rejouer="20">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">21</span><h2>Annuler : Ctrl et Z</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">Effacez tout le texte. Puis récupérez-le avec Ctrl et Z.</p>
+    <div class="aire">
+      <input class="saisie" id="essai21" autocomplete="off">
+      <div class="etapes">
+        <div class="etape" id="et21-0"><span class="coche">✓</span><span>Tout effacer</span></div>
+        <div class="etape" id="et21-1"><span class="coche">✓</span><span>Le retrouver avec Ctrl et Z</span></div>
+      </div>
+    </div>
+    <div class="barre"><span class="score" id="s21">0 sur 2</span><button class="rejouer" data-rejouer="21">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">22</span><h2>Une adresse de courriel</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">Recopiez l'adresse. Aucune espace, aucune majuscule, un point et une arobase.</p>
+    <div class="aire">
+      <p class="modele" id="modele22">marie.durand@exemple.fr</p>
+      <input class="saisie" id="essai22" placeholder="Recopiez ici" autocomplete="off">
+      <span class="alerte-lien" id="aide22"></span>
+    </div>
+    <div class="barre"><span class="score" id="s22">Adresse 1 sur 3</span><button class="rejouer" data-rejouer="22">Recommencer</button></div>
   </section>
 
   <p class="titre-partie">Dix questions sur la souris</p>
@@ -944,6 +993,131 @@
     }
   });
 
+  /* 19. Ctrl et clic — cibles ELOIGNEES, donc hors de portee d'un rectangle */
+  var NOMS19 = ["Janvier","Février","Mars","Avril","Mai","Juin","Juillet","Août"];
+  var VISES19 = [0, 3, 7];
+  function monter19() {
+    var z = $("c19"); z.innerHTML = "";
+    NOMS19.forEach(function (nom, i) {
+      var d = document.createElement("div");
+      d.className = "icone" + (VISES19.indexOf(i) >= 0 ? " vise" : "");
+      d.style.pointerEvents = "auto"; d.style.cursor = "pointer";
+      d.dataset.i = i;
+      d.innerHTML = '<span class="glyphe"></span><span class="nom">' + nom + "</span>";
+      d.addEventListener("click", function (e) {
+        // Sans Ctrl, un clic remplace la selection : c'est ce qui surprend.
+        if (!e.ctrlKey && !e.metaKey) {
+          z.querySelectorAll(".icone").forEach(function (n) { n.classList.remove("prise"); });
+        }
+        this.classList.toggle("prise");
+        juger19();
+      });
+      z.appendChild(d);
+    });
+    $("s19").textContent = "Prenez les 3 bleus"; $("s19").classList.remove("fini");
+  }
+  function juger19() {
+    var z = $("c19"), bons = 0, faux = 0;
+    z.querySelectorAll(".icone").forEach(function (n) {
+      var p = n.classList.contains("prise"), v = VISES19.indexOf(+n.dataset.i) >= 0;
+      if (p && v) bons++; if (p && !v) faux++;
+    });
+    var s = $("s19");
+    if (bons === 3 && faux === 0) { s.textContent = "Les 3 bleus. C'était Ctrl."; s.classList.add("fini"); }
+    else if (faux > 0) { s.textContent = bons + " bleus, et " + faux + " en trop."; s.classList.remove("fini"); }
+    else { s.textContent = bons + " sur 3. Gardez Ctrl appuyée."; s.classList.remove("fini"); }
+  }
+
+  /* 20. Maj et clic — une suite continue, du premier au dernier */
+  var LIGNES20 = ["Relevé de janvier","Relevé de février","Relevé de mars","Relevé d'avril",
+                  "Relevé de mai","Relevé de juin","Relevé de juillet","Relevé d'août"];
+  var ancre20 = null;
+  function monter20() {
+    var z = $("c20"); z.innerHTML = ""; ancre20 = null;
+    LIGNES20.forEach(function (t, i) {
+      var d = document.createElement("div");
+      d.className = "ligne"; d.dataset.i = i;
+      d.innerHTML = '<span class="rang">' + (i + 1) + '</span><span>' + t + "</span>";
+      d.addEventListener("click", function (e) {
+        var i = +this.dataset.i;
+        if (e.shiftKey && ancre20 !== null) {
+          var a = Math.min(ancre20, i), b = Math.max(ancre20, i);
+          z.querySelectorAll(".ligne").forEach(function (n) {
+            n.classList.toggle("prise", +n.dataset.i >= a && +n.dataset.i <= b);
+          });
+        } else {
+          ancre20 = i;
+          z.querySelectorAll(".ligne").forEach(function (n) { n.classList.remove("prise"); });
+          this.classList.add("prise");
+        }
+        juger20();
+      });
+      z.appendChild(d);
+    });
+    $("s20").textContent = "Les lignes 2 à 6"; $("s20").classList.remove("fini");
+  }
+  function juger20() {
+    var pris = [];
+    $("c20").querySelectorAll(".ligne.prise").forEach(function (n) { pris.push(+n.dataset.i); });
+    var s = $("s20");
+    if (pris.length === 5 && Math.min.apply(null, pris) === 1 && Math.max.apply(null, pris) === 5) {
+      s.textContent = "Les lignes 2 à 6. C'était Maj."; s.classList.add("fini");
+    } else {
+      s.textContent = pris.length + " ligne" + (pris.length > 1 ? "s" : "") + " prise" +
+                      (pris.length > 1 ? "s" : "") + ". Il en faut 5, de la 2 à la 6.";
+      s.classList.remove("fini");
+    }
+  }
+
+  /* 21. Ctrl et Z */
+  var TXT21 = "Rendez-vous mardi à quinze heures";
+  var efface21 = false;
+  function monter21() {
+    $("essai21").value = TXT21; efface21 = false;
+    $("et21-0").classList.remove("ok"); $("et21-1").classList.remove("ok");
+    $("s21").textContent = "0 sur 2"; $("s21").classList.remove("fini");
+  }
+  function juger21() {
+    var n = 0;
+    if ($("et21-0").classList.contains("ok")) n++;
+    if ($("et21-1").classList.contains("ok")) n++;
+    $("s21").textContent = n + " sur 2"; $("s21").classList.toggle("fini", n === 2);
+  }
+  $("essai21").addEventListener("input", function () {
+    if (this.value.trim() === "") { efface21 = true; $("et21-0").classList.add("ok"); }
+    else if (efface21 && this.value === TXT21) { $("et21-1").classList.add("ok"); }
+    juger21();
+  });
+
+  /* 22. adresse de courriel — le cas reel qui concentre les pieges */
+  var ADRESSES = ["marie.durand@exemple.fr", "j.martin@courriel.com", "paul.petit@mairie.fr"];
+  var i22 = 0;
+  function poser22() {
+    $("modele22").textContent = ADRESSES[i22];
+    $("essai22").value = ""; $("essai22").classList.remove("juste");
+    $("aide22").textContent = "";
+    $("s22").textContent = "Adresse " + (i22 + 1) + " sur 3";
+  }
+  function monter22() { i22 = 0; poser22(); $("s22").classList.remove("fini"); }
+  $("essai22").addEventListener("input", function () {
+    var v = this.value, cible = ADRESSES[i22];
+    if (v === cible) {
+      this.classList.add("juste"); $("aide22").textContent = "";
+      if (i22 < ADRESSES.length - 1) {
+        i22++; var self = this;
+        $("s22").textContent = "Juste. Adresse suivante.";
+        setTimeout(function () { poser22(); self.focus(); }, 700);
+      } else { $("s22").textContent = "Les 3 adresses écrites."; $("s22").classList.add("fini"); }
+    } else {
+      this.classList.remove("juste");
+      // Les trois erreurs qui reviennent toujours, nommees au moment ou elles arrivent.
+      if (/\s/.test(v)) $("aide22").textContent = "Une adresse ne contient jamais d'espace.";
+      else if (/[A-Z]/.test(v)) $("aide22").textContent = "Tout en minuscules.";
+      else if (v.length > 3 && v.indexOf("@") < 0) $("aide22").textContent = "Il manque l'arobase : Alt Gr et à.";
+      else $("aide22").textContent = "";
+    }
+  });
+
   /* ---- les deux series de questions ---- */
   var Q_SOURIS = [
     ["Combien de boutons a une souris ?", ["Deux", "Un", "Cinq"], 0,
@@ -1044,7 +1218,8 @@
   var MONTEURS = { 1: monter1, 2: monter2, 3: monter3, 4: monter4, 5: monter5,
                    7: monter7, 8: monter8, 9: monter9, 10: monter10, 11: monter11,
                    12: monter12, 13: monter13, 14: monter14, 15: monter15,
-                   16: monter16, 17: monter17, 18: monter18 };
+                   16: monter16, 17: monter17, 18: monter18,
+                   19: monter19, 20: monter20, 21: monter21, 22: monter22 };
   document.querySelectorAll("[data-rejouer]").forEach(function (b) {
     b.addEventListener("click", function () { MONTEURS[this.dataset.rejouer](); });
   });
@@ -1052,6 +1227,7 @@
   monter1(); monter2(); monter3(); monter4(); monter5(); monter6();
   monter7(); monter8(); monter9(); monter10(); monter11(); monter12(); monter13();
   monter14(); monter15(); monter16(); monter17(); monter18();
+  monter19(); monter20(); monter21(); monter22();
   monterQuiz("qs", "ts", Q_SOURIS);
   monterQuiz("qc", "tc", Q_CLAVIER);
 })();

@@ -187,6 +187,9 @@
   .etape.ok .coche { border-color: var(--vert); background: var(--vert); color: #fff; }
 
   .texte-liens { font-size: 20px; line-height: 2; margin: 0; }
+  .texte-choix { font-size: 21px; line-height: 1.8; margin: 0; padding: 16px;
+    background: var(--fond); border-radius: 5px; cursor: text; }
+  .texte-choix::selection, .texte-choix *::selection { background: var(--bleu); color: #fff; }
   .lien { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px;
     cursor: pointer; user-select: none; padding: 2px 1px; }
   .lien:hover { background: var(--bleu-pale); }
@@ -414,6 +417,19 @@
       <p class="texte-liens" id="c17"></p>
     </div>
     <div class="barre"><span class="score" id="s17">0 sur 4</span><button class="rejouer" data-rejouer="17">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">18</span><h2>Choisir un mot, choisir une phrase</h2><span class="niv niv-2">Si ça va vite</span></div>
+    <p class="consigne">Dans un texte, deux clics choisissent un mot. Trois clics choisissent toute la phrase.</p>
+    <div class="aire">
+      <p class="texte-choix" id="c18">Le facteur passe tous les matins vers neuf heures. Il dépose le courrier dans la boîte aux lettres du bas.</p>
+      <div class="etapes">
+        <div class="etape" id="et18-0"><span class="coche">✓</span><span>Choisir un mot, avec deux clics</span></div>
+        <div class="etape" id="et18-1"><span class="coche">✓</span><span>Choisir toute la phrase, avec trois clics</span></div>
+      </div>
+    </div>
+    <div class="barre"><span class="score" id="s18">0 sur 2</span><button class="rejouer" data-rejouer="18">Recommencer</button></div>
   </section>
 
   <p class="titre-partie">Dix questions sur la souris</p>
@@ -901,6 +917,33 @@
     $("s17").textContent = "0 sur 4"; $("s17").classList.remove("fini");
   }
 
+  /* 18. deux clics = un mot, trois clics = la phrase
+     ⚠️ Le double-clic n'ouvre RIEN dans un texte : il choisit un mot. C'est le
+     même geste que sur un dossier, avec un effet different, et c'est ce qui
+     desoriente. */
+  function compter18() {
+    var n = 0;
+    if ($("et18-0").classList.contains("ok")) n++;
+    if ($("et18-1").classList.contains("ok")) n++;
+    $("s18").textContent = n + " sur 2";
+    $("s18").classList.toggle("fini", n === 2);
+  }
+  function monter18() {
+    $("et18-0").classList.remove("ok"); $("et18-1").classList.remove("ok");
+    var s = window.getSelection(); if (s) s.removeAllRanges();
+    compter18();
+  }
+  $("c18").addEventListener("click", function (e) {
+    var pris = (window.getSelection() || "").toString().trim();
+    if (e.detail >= 3) {
+      // Trois clics : la selection couvre une phrase entiere, donc plusieurs mots.
+      if (pris.split(/\s+/).length >= 5) { $("et18-1").classList.add("ok"); compter18(); }
+    } else if (e.detail === 2) {
+      // Deux clics : un seul mot, sans espace.
+      if (pris.length > 0 && pris.indexOf(" ") < 0) { $("et18-0").classList.add("ok"); compter18(); }
+    }
+  });
+
   /* ---- les deux series de questions ---- */
   var Q_SOURIS = [
     ["Combien de boutons a une souris ?", ["Deux", "Un", "Cinq"], 0,
@@ -1001,14 +1044,14 @@
   var MONTEURS = { 1: monter1, 2: monter2, 3: monter3, 4: monter4, 5: monter5,
                    7: monter7, 8: monter8, 9: monter9, 10: monter10, 11: monter11,
                    12: monter12, 13: monter13, 14: monter14, 15: monter15,
-                   16: monter16, 17: monter17 };
+                   16: monter16, 17: monter17, 18: monter18 };
   document.querySelectorAll("[data-rejouer]").forEach(function (b) {
     b.addEventListener("click", function () { MONTEURS[this.dataset.rejouer](); });
   });
 
   monter1(); monter2(); monter3(); monter4(); monter5(); monter6();
   monter7(); monter8(); monter9(); monter10(); monter11(); monter12(); monter13();
-  monter14(); monter15(); monter16(); monter17();
+  monter14(); monter15(); monter16(); monter17(); monter18();
   monterQuiz("qs", "ts", Q_SOURIS);
   monterQuiz("qc", "tc", Q_CLAVIER);
 })();

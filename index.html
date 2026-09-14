@@ -1,0 +1,1018 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Exercices de clavier et de souris pour grands debutants.">
+<style>:root{color-scheme:light dark}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Banc d'essai clavier souris</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Public+Sans:wght@400;600&display=swap">
+
+<style>
+  :root {
+    --encre:      #121A24;
+    --encre-doux: #4A5666;
+    --fond:       #EEF1F5;
+    --carte:      #FFFFFF;
+    --touche:     #FFFFFF;
+    --tranche:    #C7CEDA;
+    --trait:      #D8DEE7;
+    --bleu:       #2D6BD4;
+    --bleu-pale:  #DCE7F9;
+    --vert:       #2E7D54;
+    --vert-pale:  #DCEFE4;
+    --rouge:      #B3392B;
+    --rouge-pale: #F7E0DC;
+    --ambre:      #C9821A;
+    --ambre-pale: #F8ECD6;
+    --display: 'Archivo', 'Segoe UI', system-ui, sans-serif;
+    --corps:   'Public Sans', 'Segoe UI', system-ui, sans-serif;
+    --mono:    'IBM Plex Mono', 'Consolas', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --encre:#EAEEF4; --encre-doux:#9AA6B6; --fond:#11161D; --carte:#1A222C;
+      --touche:#242E3A; --tranche:#3A4655; --trait:#2C3744;
+      --bleu:#6FA0EA; --bleu-pale:#1E2E47; --vert:#6CC094; --vert-pale:#19301F;
+      --rouge:#E58573; --rouge-pale:#3A1E19; --ambre:#E0A94E; --ambre-pale:#33280F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --encre:#EAEEF4; --encre-doux:#9AA6B6; --fond:#11161D; --carte:#1A222C;
+    --touche:#242E3A; --tranche:#3A4655; --trait:#2C3744;
+    --bleu:#6FA0EA; --bleu-pale:#1E2E47; --vert:#6CC094; --vert-pale:#19301F;
+    --rouge:#E58573; --rouge-pale:#3A1E19; --ambre:#E0A94E; --ambre-pale:#33280F;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--fond); color: var(--encre); font-family: var(--corps);
+    font-size: 19px; line-height: 1.5; margin: 0; padding: 0 20px 70px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .page { max-width: 940px; margin: 0 auto; }
+
+  header { padding: 38px 0 24px; border-bottom: 3px solid var(--encre); }
+  h1 { font-family: var(--display); font-weight: 700; font-size: clamp(32px, 5vw, 50px);
+       line-height: 1.05; margin: 0 0 8px; letter-spacing: -.02em; }
+  .chapo { font-size: 20px; color: var(--encre-doux); margin: 0; }
+
+  .titre-partie {
+    font-family: var(--mono); font-size: 14px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--encre-doux);
+    padding: 34px 0 4px; border-bottom: 1px solid var(--trait); margin-bottom: 4px;
+  }
+
+  .station { border-bottom: 1px solid var(--trait); padding: 26px 0; }
+  .entete { display: flex; gap: 14px; align-items: baseline; flex-wrap: wrap; margin-bottom: 4px; }
+  .num { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--encre-doux); }
+  h2 { font-family: var(--display); font-weight: 600; font-size: 25px; margin: 0;
+       letter-spacing: -.01em; flex: 1 1 auto; }
+  .niv { font-family: var(--mono); font-size: 12px; font-weight: 600; text-transform: uppercase;
+         letter-spacing: .07em; padding: 4px 10px; border-radius: 3px; white-space: nowrap; }
+  .niv-1 { background: var(--vert-pale); color: var(--vert); }
+  .niv-2 { background: var(--bleu-pale); color: var(--bleu); }
+  .niv-3 { background: var(--ambre-pale); color: var(--ambre); }
+  .consigne { margin: 0 0 14px; font-size: 20px; }
+
+  .aire { background: var(--carte); border: 1px solid var(--trait); border-radius: 6px;
+          padding: 20px; position: relative; overflow: hidden; }
+  .barre { display: flex; align-items: center; gap: 14px; margin-top: 12px; flex-wrap: wrap; }
+  .score { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--encre-doux);
+           font-variant-numeric: tabular-nums; }
+  .score.fini { color: var(--vert); }
+  button.rejouer { font-family: var(--corps); font-size: 16px; color: var(--encre);
+    background: transparent; border: 1px solid var(--tranche); border-radius: 4px;
+    padding: 6px 14px; cursor: pointer; }
+  button.rejouer:hover { background: var(--fond); }
+  :focus-visible { outline: 3px solid var(--bleu); outline-offset: 2px; }
+
+  .cibles, .boites { display: flex; flex-wrap: wrap; gap: 15px; }
+  .pastille { width: 86px; height: 86px; border-radius: 50%; background: var(--bleu);
+    border: none; cursor: pointer; display: grid; place-items: center;
+    font-family: var(--mono); font-size: 15px; font-weight: 600; color: #fff; transition: transform .12s; }
+  .pastille:hover { transform: scale(1.06); }
+  .pastille.ok { background: var(--vert-pale); color: var(--vert); cursor: default; transform: none; }
+
+  .boite { width: 116px; height: 100px; border-radius: 5px; background: var(--touche);
+    border: 2px solid var(--tranche); display: grid; place-items: center; text-align: center;
+    gap: 4px; cursor: pointer; user-select: none; padding: 8px; font-size: 15px; color: var(--encre-doux); }
+  .boite .dossier { width: 44px; height: 32px; border-radius: 3px 8px 3px 3px; background: var(--ambre); }
+  .boite.ok { border-color: var(--vert); background: var(--vert-pale); color: var(--vert); }
+  .boite.ok .dossier { background: var(--vert); }
+
+  .menu { position: absolute; z-index: 5; min-width: 180px; background: var(--carte);
+    border: 1px solid var(--tranche); border-radius: 5px; box-shadow: 0 8px 22px rgba(0,0,0,.18);
+    padding: 5px; font-size: 16px; }
+  .menu div { padding: 8px 12px; border-radius: 3px; }
+  .menu div:hover { background: var(--bleu-pale); color: var(--bleu); }
+
+  .rangement { display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .depart { display: flex; flex-wrap: wrap; gap: 12px; flex: 1 1 220px; min-height: 90px; }
+  .jeton { width: 72px; height: 72px; border-radius: 5px; background: var(--bleu); color: #fff;
+    display: grid; place-items: center; cursor: grab; font-family: var(--mono);
+    font-size: 14px; font-weight: 600; user-select: none; }
+  .bac { flex: 0 0 220px; min-height: 124px; border: 3px dashed var(--tranche); border-radius: 6px;
+    display: flex; flex-wrap: wrap; gap: 10px; align-content: flex-start; padding: 13px;
+    color: var(--encre-doux); font-size: 15px; }
+  .bac.survol { border-color: var(--bleu); background: var(--bleu-pale); }
+  .bac .jeton { background: var(--vert); cursor: default; }
+  .bac .etiq { width: 100%; font-family: var(--mono); font-size: 13px;
+    text-transform: uppercase; letter-spacing: .07em; }
+
+  .bureau { position: relative; user-select: none; cursor: crosshair;
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px;
+    background: var(--carte); min-height: 200px; }
+  .icone { display: grid; place-items: center; gap: 5px; padding: 10px 4px;
+    border-radius: 4px; pointer-events: none; }
+  .icone .glyphe { width: 44px; height: 34px; border-radius: 3px 8px 3px 3px; background: var(--ambre); }
+  .icone .nom { font-size: 13px; color: var(--encre-doux); text-align: center; line-height: 1.2; }
+  .icone.vise .glyphe { background: var(--bleu); }
+  .icone.prise { background: var(--bleu-pale); }
+  .icone.prise .nom { color: var(--bleu); }
+  #rect { position: absolute; border: 1px solid var(--bleu);
+    background: color-mix(in srgb, var(--bleu) 22%, transparent); pointer-events: none; display: none; }
+
+  .rouleau { height: 180px; overflow-y: auto; border: 1px solid var(--trait);
+    border-radius: 5px; background: var(--carte); }
+  .rouleau p { margin: 0; padding: 11px 16px; border-bottom: 1px solid var(--trait); }
+  .rouleau p.tresor { background: var(--vert-pale); color: var(--vert); font-weight: 600; }
+
+  .revelateur { display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+    padding: 16px; background: var(--fond); border-radius: 5px; margin-bottom: 14px; }
+  .capuchon { min-width: 104px; height: 88px; padding: 0 16px; border-radius: 7px;
+    background: var(--touche); border: 1px solid var(--tranche); border-bottom: 4px solid var(--tranche);
+    display: grid; place-items: center; font-family: var(--mono); font-size: 29px;
+    font-weight: 600; color: var(--encre); }
+  .role { font-size: 17px; color: var(--encre-doux); }
+  .role b { color: var(--encre); font-weight: 600; }
+
+  .modele { font-family: var(--mono); font-size: 19px; background: var(--fond);
+    border-radius: 5px; padding: 13px 16px; margin: 0 0 12px; user-select: all; }
+  .saisie { width: 100%; padding: 13px 15px; font-family: var(--corps); font-size: 20px;
+    color: var(--encre); background: var(--carte); border: 2px solid var(--tranche); border-radius: 5px; }
+  .saisie.juste { border-color: var(--vert); background: var(--vert-pale); }
+  textarea.zone { font-family: var(--corps); line-height: 1.5; resize: vertical; display: block; }
+  .saisie::placeholder { color: var(--encre-doux); }
+  .deux-cases { display: flex; gap: 14px; flex-wrap: wrap; }
+  .deux-cases > div { flex: 1 1 240px; }
+  .etiq-case { font-family: var(--mono); font-size: 13px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .07em; color: var(--encre-doux); display: block; margin-bottom: 6px; }
+
+  .speciaux { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 14px; }
+  .spe { border: 2px solid var(--tranche); border-radius: 6px; background: var(--touche);
+    padding: 10px 14px; display: grid; place-items: center; gap: 2px; min-width: 116px; }
+  .spe .signe { font-family: var(--mono); font-size: 30px; font-weight: 600; line-height: 1; }
+  .spe .combi { font-family: var(--mono); font-size: 12px; color: var(--encre-doux); white-space: nowrap; }
+  .spe.ok { border-color: var(--vert); background: var(--vert-pale); }
+  .spe.ok .signe, .spe.ok .combi { color: var(--vert); }
+
+  .temoin { display: flex; align-items: center; gap: 13px; padding: 14px 16px;
+    border-radius: 6px; margin-bottom: 14px; border: 2px solid var(--tranche);
+    background: var(--fond); font-size: 18px; }
+  .temoin .voyant { flex: 0 0 20px; height: 20px; border-radius: 50%;
+    background: var(--tranche); }
+  .temoin.allume { border-color: var(--ambre); background: var(--ambre-pale); color: var(--ambre); }
+  .temoin.allume .voyant { background: var(--ambre); }
+  .temoin.eteint { border-color: var(--vert); background: var(--vert-pale); color: var(--vert); }
+  .temoin.eteint .voyant { background: var(--vert); }
+  .etapes { display: grid; gap: 9px; margin-top: 14px; }
+  .etape { display: flex; align-items: center; gap: 12px; padding: 11px 14px;
+    border: 1px solid var(--trait); border-radius: 5px; background: var(--carte); font-size: 17px; }
+  .etape .coche { flex: 0 0 24px; height: 24px; border-radius: 50%; border: 2px solid var(--tranche);
+    display: grid; place-items: center; font-size: 14px; color: transparent; }
+  .etape.ok { border-color: var(--vert); background: var(--vert-pale); }
+  .etape.ok .coche { border-color: var(--vert); background: var(--vert); color: #fff; }
+
+  .texte-liens { font-size: 20px; line-height: 2; margin: 0; }
+  .lien { color: var(--bleu); text-decoration: underline; text-underline-offset: 3px;
+    cursor: pointer; user-select: none; padding: 2px 1px; }
+  .lien:hover { background: var(--bleu-pale); }
+  .lien.ok { color: var(--vert); text-decoration: none; background: var(--vert-pale); }
+  .lien.ok::after { content: " ouvert"; font-size: 14px; font-family: var(--mono); }
+  .alerte-lien { color: var(--ambre); font-family: var(--mono); font-size: 15px; margin-top: 10px;
+    min-height: 22px; display: block; }
+
+  .grille { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px;
+    max-width: 480px; margin: 0 auto; }
+  .grille:focus-visible { outline: 3px solid var(--bleu); outline-offset: 6px; }
+  .case { aspect-ratio: 1; border-radius: 5px; background: var(--fond);
+    border: 1px solid var(--trait); display: grid; place-items: center; }
+  .case.but { background: var(--vert-pale); border-color: var(--vert); }
+  .case .pion { width: 68%; height: 68%; border-radius: 50%; background: var(--bleu); }
+  .case.but .pion { background: var(--vert); }
+
+  .quiz { display: grid; gap: 12px; }
+  .q { border: 1px solid var(--trait); border-radius: 6px; background: var(--carte); padding: 16px 18px; }
+  .q.repondu { border-color: var(--vert); }
+  .q .demande { font-size: 19px; margin: 0 0 11px; }
+  .q .demande .n { font-family: var(--mono); font-size: 14px; color: var(--encre-doux); margin-right: 8px; }
+  .choix { display: flex; gap: 9px; flex-wrap: wrap; }
+  .choix button { font-family: var(--corps); font-size: 17px; color: var(--encre);
+    background: var(--fond); border: 1px solid var(--tranche); border-radius: 4px;
+    padding: 9px 15px; cursor: pointer; }
+  .choix button:hover { border-color: var(--bleu); }
+  .choix button.bon { background: var(--vert-pale); border-color: var(--vert); color: var(--vert); }
+  .choix button.faux { background: var(--rouge-pale); border-color: var(--rouge); color: var(--rouge); }
+  .choix button[disabled] { cursor: default; }
+  .retour { margin: 12px 0 0; padding-left: 13px; border-left: 3px solid var(--bleu);
+    font-size: 17px; color: var(--encre-doux); }
+  .total { font-family: var(--mono); font-size: 17px; font-weight: 600; color: var(--encre-doux);
+    padding: 14px 0 0; font-variant-numeric: tabular-nums; }
+  .total.fini { color: var(--vert); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+  @media (max-width: 620px) {
+    body { font-size: 18px; padding: 0 14px 60px; }
+    .bureau { gap: 10px; }
+    .icone .glyphe { width: 34px; height: 26px; }
+    .icone .nom { font-size: 12px; }
+  }
+</style>
+
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Banc d'essai clavier souris</h1>
+    <p class="chapo">On essaie. On regarde ce qui se passe. Rien ne peut casser.</p>
+  </header>
+
+  <p class="titre-partie">La souris</p>
+
+  <section class="station">
+    <div class="entete"><span class="num">1</span><h2>Le clic gauche</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Cliquez une fois sur chaque rond.</p>
+    <div class="aire"><div class="cibles" id="c1"></div></div>
+    <div class="barre"><span class="score" id="s1">0 sur 6</span><button class="rejouer" data-rejouer="1">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">2</span><h2>Le double-clic</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Deux clics rapides. Ouvrez les quatre dossiers.</p>
+    <div class="aire"><div class="boites" id="c2"></div></div>
+    <div class="barre"><span class="score" id="s2">0 sur 4</span><button class="rejouer" data-rejouer="2">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">3</span><h2>Le clic droit</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Clic droit sur chaque dossier. Une liste apparaît.</p>
+    <div class="aire" id="aire3"><div class="boites" id="c3"></div></div>
+    <div class="barre"><span class="score" id="s3">0 sur 3</span><button class="rejouer" data-rejouer="3">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">4</span><h2>Glisser et déposer</h2><span class="niv niv-2">Si ça va vite</span></div>
+    <p class="consigne">Tirez les jetons dans le bac. Sans lâcher en route.</p>
+    <div class="aire">
+      <div class="rangement">
+        <div class="depart" id="c4"></div>
+        <div class="bac" id="bac4"><span class="etiq">Le bac</span></div>
+      </div>
+    </div>
+    <div class="barre"><span class="score" id="s4">0 sur 5</span><button class="rejouer" data-rejouer="4">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">5</span><h2>Le rectangle de sélection</h2><span class="niv niv-2">Si ça va vite</span></div>
+    <p class="consigne">Appuyez dans le vide. Tirez en diagonale. Entourez les quatre bleus.</p>
+    <div class="aire"><div class="bureau" id="c5"><div id="rect"></div></div></div>
+    <div class="barre"><span class="score" id="s5">Les 4 bleus du milieu</span><button class="rejouer" data-rejouer="5">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">6</span><h2>La molette</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Tournez la roue. Descendez jusqu'à la ligne verte.</p>
+    <div class="aire" style="padding:0;border:none"><div class="rouleau" id="c6"></div></div>
+    <div class="barre"><span class="score" id="s6">Pas encore en bas</span></div>
+  </section>
+
+  <p class="titre-partie">Le clavier</p>
+
+  <section class="station">
+    <div class="entete"><span class="num">7</span><h2>Quelle touche ?</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Cliquez dans le cadre. Appuyez sur une touche.</p>
+    <div class="aire">
+      <div class="revelateur">
+        <div class="capuchon" id="capuchon">?</div>
+        <div class="role" id="role">La touche s'affiche ici.</div>
+      </div>
+      <input class="saisie" id="essai7" placeholder="Tapez ici" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s7">0 touche essayée</span><button class="rejouer" data-rejouer="7">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">8</span><h2>Recopier</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Recopiez la phrase, à l'identique.</p>
+    <div class="aire">
+      <p class="modele" id="modele8">Le chat dort.</p>
+      <input class="saisie" id="essai8" placeholder="Recopiez ici" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s8">Phrase 1 sur 4</span><button class="rejouer" data-rejouer="8">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">9</span><h2>Effacer</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Un mot est en trop. Effacez-le avec la touche Retour.</p>
+    <div class="aire">
+      <p class="modele" id="modele9">Il fait beau.</p>
+      <input class="saisie" id="essai9" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s9">Mot en trop à enlever</span><button class="rejouer" data-rejouer="9">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">10</span><h2>Copier et coller</h2><span class="niv niv-2">Si ça va vite</span></div>
+    <p class="consigne">Sélectionnez le mot à gauche. Ctrl et C. Puis Ctrl et V à droite.</p>
+    <div class="aire">
+      <div class="deux-cases">
+        <div>
+          <span class="etiq-case">À copier</span>
+          <p class="modele" id="modele10">Bonjour</p>
+        </div>
+        <div>
+          <span class="etiq-case">À coller</span>
+          <input class="saisie" id="essai10" placeholder="Collez ici" autocomplete="off">
+        </div>
+      </div>
+    </div>
+    <div class="barre"><span class="score" id="s10">Mot pas encore collé</span><button class="rejouer" data-rejouer="10">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">11</span><h2>Deux touches à la fois</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">On garde la première touche appuyée, puis on frappe la seconde.</p>
+    <div class="aire">
+      <div class="speciaux" id="c11"></div>
+      <input class="saisie" id="essai11" placeholder="Tapez ici" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s11">0 sur 6</span><button class="rejouer" data-rejouer="11">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">12</span><h2>Les accents qui attendent</h2><span class="niv niv-3">Réserve</span></div>
+    <p class="consigne">L'accent d'abord, la lettre ensuite. Rien ne s'affiche au premier appui : c'est normal.</p>
+    <div class="aire">
+      <div class="speciaux" id="c12"></div>
+      <input class="saisie" id="essai12" placeholder="Tapez ici" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s12">0 sur 6</span><button class="rejouer" data-rejouer="12">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">13</span><h2>La touche Entrée</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Une course par ligne. Appuyez sur Entrée à la fin de chaque ligne.</p>
+    <div class="aire">
+      <p class="modele" id="modele13">pain<br>lait<br>café<br>pommes</p>
+      <textarea class="saisie zone" id="essai13" rows="5" placeholder="Tapez ici"></textarea>
+    </div>
+    <div class="barre"><span class="score" id="s13">0 ligne sur 4</span><button class="rejouer" data-rejouer="13">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">14</span><h2>Les quatre flèches</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Cliquez dans la grille. Amenez le rond sur la case verte.</p>
+    <div class="aire"><div class="grille" id="c14" tabindex="0"></div></div>
+    <div class="barre"><span class="score" id="s14">Rond en haut à gauche</span><button class="rejouer" data-rejouer="14">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">15</span><h2>La barre d'espace</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Les mots sont collés. Séparez-les avec la barre d'espace.</p>
+    <div class="aire">
+      <p class="modele" id="modele15">le chat dort</p>
+      <input class="saisie" id="essai15" autocomplete="off">
+    </div>
+    <div class="barre"><span class="score" id="s15">Phrase 1 sur 3</span><button class="rejouer" data-rejouer="15">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">16</span><h2>Le cadenas des majuscules</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Verr Maj reste allumé jusqu'à ce qu'on l'éteigne. Pensez toujours à l'éteindre.</p>
+    <div class="aire">
+      <div class="temoin" id="temoin16">
+        <span class="voyant"></span>
+        <span id="temoin16-txt">Tapez une touche pour voir l'état du cadenas.</span>
+      </div>
+      <input class="saisie" id="essai16" placeholder="Tapez ici" autocomplete="off">
+      <div class="etapes" id="c16">
+        <div class="etape" id="et16-0"><span class="coche">✓</span><span>Allumer Verr Maj et écrire PARIS</span></div>
+        <div class="etape" id="et16-1"><span class="coche">✓</span><span>Éteindre Verr Maj et écrire paris</span></div>
+      </div>
+    </div>
+    <div class="barre"><span class="score" id="s16">0 sur 2</span><button class="rejouer" data-rejouer="16">Recommencer</button></div>
+  </section>
+
+  <section class="station">
+    <div class="entete"><span class="num">17</span><h2>Les liens</h2><span class="niv niv-1">Socle</span></div>
+    <p class="consigne">Un lien s'ouvre en <b>un seul clic</b>. Jamais deux. Cliquez sur les quatre liens.</p>
+    <div class="aire">
+      <p class="texte-liens" id="c17"></p>
+    </div>
+    <div class="barre"><span class="score" id="s17">0 sur 4</span><button class="rejouer" data-rejouer="17">Recommencer</button></div>
+  </section>
+
+  <p class="titre-partie">Dix questions sur la souris</p>
+  <div class="quiz" id="qs"></div>
+  <p class="total" id="ts">0 sur 10</p>
+
+  <p class="titre-partie">Dix questions sur le clavier</p>
+  <div class="quiz" id="qc"></div>
+  <p class="total" id="tc">0 sur 10</p>
+
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+
+  /* 1. clic gauche */
+  function monter1() {
+    var z = $("c1"); z.innerHTML = ""; var n = 0;
+    for (var i = 1; i <= 6; i++) {
+      var b = document.createElement("button");
+      b.className = "pastille"; b.type = "button"; b.textContent = i;
+      b.addEventListener("click", function () {
+        if (this.classList.contains("ok")) return;
+        this.classList.add("ok"); this.textContent = "fait"; n++;
+        $("s1").textContent = n + " sur 6"; $("s1").classList.toggle("fini", n === 6);
+      });
+      z.appendChild(b);
+    }
+    $("s1").textContent = "0 sur 6"; $("s1").classList.remove("fini");
+  }
+
+  /* 2. double-clic */
+  function monter2() {
+    var z = $("c2"); z.innerHTML = ""; var n = 0;
+    ["Photos", "Lettres", "Recettes", "Impôts"].forEach(function (nom) {
+      var d = document.createElement("div");
+      d.className = "boite"; d.tabIndex = 0;
+      d.innerHTML = '<span class="dossier"></span><span>' + nom + "</span>";
+      d.addEventListener("dblclick", function () {
+        if (this.classList.contains("ok")) return;
+        this.classList.add("ok"); this.lastElementChild.textContent = "ouvert";
+        n++; $("s2").textContent = n + " sur 4"; $("s2").classList.toggle("fini", n === 4);
+      });
+      z.appendChild(d);
+    });
+    $("s2").textContent = "0 sur 4"; $("s2").classList.remove("fini");
+  }
+
+  /* 3. clic droit */
+  var menuOuvert = null;
+  function fermerMenu() { if (menuOuvert) { menuOuvert.remove(); menuOuvert = null; } }
+  document.addEventListener("click", fermerMenu);
+  function monter3() {
+    var z = $("c3"); z.innerHTML = ""; var n = 0, vus = {};
+    ["Vacances", "Papiers", "Musique"].forEach(function (nom) {
+      var d = document.createElement("div");
+      d.className = "boite"; d.tabIndex = 0;
+      d.innerHTML = '<span class="dossier"></span><span>' + nom + "</span>";
+      d.addEventListener("contextmenu", function (e) {
+        e.preventDefault(); fermerMenu();
+        var m = document.createElement("div");
+        m.className = "menu";
+        m.innerHTML = "<div>Ouvrir</div><div>Renommer</div><div>Copier</div><div>Supprimer</div>";
+        var c = $("aire3").getBoundingClientRect();
+        m.style.left = (e.clientX - c.left) + "px";
+        m.style.top = (e.clientY - c.top) + "px";
+        $("aire3").appendChild(m); menuOuvert = m;
+        if (!vus[nom]) {
+          vus[nom] = true; n++; this.classList.add("ok");
+          $("s3").textContent = n + " sur 3"; $("s3").classList.toggle("fini", n === 3);
+        }
+      });
+      z.appendChild(d);
+    });
+    $("s3").textContent = "0 sur 3"; $("s3").classList.remove("fini");
+  }
+
+  /* 4. glisser-deposer */
+  function monter4() {
+    var z = $("c4"), bac = $("bac4"); z.innerHTML = "";
+    bac.innerHTML = '<span class="etiq">Le bac</span>';
+    var n = 0;
+    for (var i = 1; i <= 5; i++) {
+      var j = document.createElement("div");
+      j.className = "jeton"; j.draggable = true; j.textContent = i;
+      j.addEventListener("dragstart", function (e) {
+        e.dataTransfer.setData("text/plain", this.textContent); this.style.opacity = ".4";
+      });
+      j.addEventListener("dragend", function () { this.style.opacity = "1"; });
+      z.appendChild(j);
+    }
+    bac.ondragover = function (e) { e.preventDefault(); bac.classList.add("survol"); };
+    bac.ondragleave = function () { bac.classList.remove("survol"); };
+    bac.ondrop = function (e) {
+      e.preventDefault(); bac.classList.remove("survol");
+      var v = e.dataTransfer.getData("text/plain");
+      var r = z.querySelectorAll(".jeton");
+      for (var k = 0; k < r.length; k++) {
+        if (r[k].textContent === v) {
+          r[k].remove();
+          var c = document.createElement("div"); c.className = "jeton"; c.textContent = v;
+          bac.appendChild(c);
+          n++; $("s4").textContent = n + " sur 5"; $("s4").classList.toggle("fini", n === 5);
+          break;
+        }
+      }
+    };
+    $("s4").textContent = "0 sur 5"; $("s4").classList.remove("fini");
+  }
+
+  /* 5. rectangle de selection — les 4 bleus forment un carre plein au centre */
+  var NOMS5 = ["Été 2019","Factures","Recettes","Petits-enfants","Ordonnances","Jardin","Impôts","Voyages"];
+  var VISES = [1, 2, 5, 6];
+  function monter5() {
+    var z = $("c5");
+    z.querySelectorAll(".icone").forEach(function (n) { n.remove(); });
+    NOMS5.forEach(function (nom, i) {
+      var d = document.createElement("div");
+      d.className = "icone" + (VISES.indexOf(i) >= 0 ? " vise" : "");
+      d.innerHTML = '<span class="glyphe"></span><span class="nom">' + nom + "</span>";
+      z.appendChild(d);
+    });
+    $("s5").textContent = "Les 4 bleus du milieu"; $("s5").classList.remove("fini");
+  }
+  (function () {
+    var z = $("c5"), rect = $("rect"), actif = false, x0 = 0, y0 = 0;
+    z.addEventListener("mousedown", function (e) {
+      if (e.button !== 0) return;
+      var c = z.getBoundingClientRect();
+      actif = true; x0 = e.clientX - c.left; y0 = e.clientY - c.top;
+      rect.style.display = "block"; rect.style.left = x0 + "px"; rect.style.top = y0 + "px";
+      rect.style.width = "0px"; rect.style.height = "0px";
+      z.querySelectorAll(".icone").forEach(function (n) { n.classList.remove("prise"); });
+      e.preventDefault();
+    });
+    window.addEventListener("mousemove", function (e) {
+      if (!actif) return;
+      var c = z.getBoundingClientRect();
+      var x = e.clientX - c.left, y = e.clientY - c.top;
+      var g = Math.min(x, x0), h = Math.min(y, y0), l = Math.abs(x - x0), t = Math.abs(y - y0);
+      rect.style.left = g + "px"; rect.style.top = h + "px";
+      rect.style.width = l + "px"; rect.style.height = t + "px";
+      z.querySelectorAll(".icone").forEach(function (n) {
+        var b = n.getBoundingClientRect();
+        var nx = b.left - c.left, ny = b.top - c.top;
+        n.classList.toggle("prise", nx < g + l && nx + b.width > g && ny < h + t && ny + b.height > h);
+      });
+    });
+    window.addEventListener("mouseup", function () {
+      if (!actif) return;
+      actif = false; rect.style.display = "none";
+      var bons = 0, faux = 0;
+      z.querySelectorAll(".icone").forEach(function (n, i) {
+        var p = n.classList.contains("prise"), v = VISES.indexOf(i) >= 0;
+        if (p && v) bons++; if (p && !v) faux++;
+      });
+      var s = $("s5");
+      if (bons === 4 && faux === 0) { s.textContent = "Les 4 bleus. Parfait."; s.classList.add("fini"); }
+      else if (bons === 4) { s.textContent = "Les 4 bleus, et " + faux + " en plus."; s.classList.add("fini"); }
+      else if (bons === 0) { s.textContent = "Partez d'un coin vide."; s.classList.remove("fini"); }
+      else { s.textContent = bons + " sur 4. Élargissez."; s.classList.remove("fini"); }
+    });
+  })();
+
+  /* 6. molette */
+  function monter6() {
+    var z = $("c6"); z.innerHTML = "";
+    ["Le rouleau descend", "Continuez", "Seule la roue tourne", "Encore un peu",
+     "Rien n'est déplacé", "La feuille glisse", "Presque", "Encore deux", "Encore une"]
+      .forEach(function (t) { var p = document.createElement("p"); p.textContent = t; z.appendChild(p); });
+    var f = document.createElement("p"); f.className = "tresor"; f.textContent = "La ligne verte. C'était la molette.";
+    z.appendChild(f);
+    z.scrollTop = 0; $("s6").textContent = "Pas encore en bas"; $("s6").classList.remove("fini");
+    z.onscroll = function () {
+      if (z.scrollTop + z.clientHeight >= z.scrollHeight - 4) {
+        $("s6").textContent = "En bas."; $("s6").classList.add("fini");
+      }
+    };
+  }
+
+  /* 7. revelateur */
+  var ROLES = {
+    " ": ["Espace", "Sépare deux mots."],
+    "Enter": ["Entrée", "Va à la ligne."],
+    "Backspace": ["Retour", "Efface à gauche."],
+    "Delete": ["Suppr", "Efface à droite."],
+    "Shift": ["Maj", "Donne les majuscules et les chiffres."],
+    "CapsLock": ["Verr Maj", "Tout en majuscules."],
+    "Tab": ["Tabulation", "Saute à la case suivante."],
+    "Control": ["Ctrl", "Se combine, comme Ctrl et C."],
+    "Alt": ["Alt", "Accompagne une autre touche."],
+    "AltGraph": ["Alt Gr", "Donne @ et €."],
+    "Escape": ["Échap", "Annule."],
+    "ArrowUp": ["Flèche haut", "Déplace le curseur."],
+    "ArrowDown": ["Flèche bas", "Déplace le curseur."],
+    "ArrowLeft": ["Flèche gauche", "Déplace le curseur."],
+    "ArrowRight": ["Flèche droite", "Déplace le curseur."]
+  };
+  var vues7 = {};
+  function monter7() {
+    vues7 = {}; $("essai7").value = ""; $("capuchon").textContent = "?";
+    $("role").innerHTML = "La touche s'affiche ici.";
+    $("s7").textContent = "0 touche essayée"; $("s7").classList.remove("fini");
+  }
+  $("essai7").addEventListener("keydown", function (e) {
+    var k = e.key, d = ROLES[k], etiq, txt;
+    if (d) { etiq = d[0]; txt = d[1]; }
+    else if (k.length === 1) { etiq = k; txt = "Un caractère."; }
+    else { etiq = k; txt = "Une touche de commande."; }
+    $("capuchon").textContent = etiq;
+    $("role").innerHTML = "<b>" + etiq + "</b> — " + txt;
+    if (!vues7[k]) {
+      vues7[k] = true;
+      var n = Object.keys(vues7).length;
+      $("s7").textContent = n + (n > 1 ? " touches essayées" : " touche essayée");
+      $("s7").classList.toggle("fini", n >= 10);
+    }
+  });
+
+  /* 8. recopier */
+  var PHRASES = ["Le chat dort.", "Il est huit heures.", "J'habite à Paris.", "Mon code est 4512."];
+  var i8 = 0;
+  function poser8() {
+    $("modele8").textContent = PHRASES[i8];
+    $("essai8").value = ""; $("essai8").classList.remove("juste");
+    $("s8").textContent = "Phrase " + (i8 + 1) + " sur 4";
+    $("s8").classList.toggle("fini", false);
+  }
+  function monter8() { i8 = 0; poser8(); }
+  $("essai8").addEventListener("input", function () {
+    if (this.value.trim() === PHRASES[i8]) {
+      this.classList.add("juste");
+      if (i8 < PHRASES.length - 1) {
+        i8++;
+        var self = this;
+        $("s8").textContent = "Juste. Phrase suivante.";
+        setTimeout(function () { poser8(); self.focus(); }, 700);
+      } else {
+        $("s8").textContent = "Les 4 phrases recopiées."; $("s8").classList.add("fini");
+      }
+    } else { this.classList.remove("juste"); }
+  });
+
+  /* 9. effacer */
+  var EFFACER = [
+    { depart: "Il fait très beau aujourd'hui", cible: "Il fait très beau" },
+    { depart: "Le train part à huit heures demain", cible: "Le train part à huit heures" },
+    { depart: "J'achète du pain et du lait aussi", cible: "J'achète du pain et du lait" }
+  ];
+  var i9 = 0;
+  function poser9() {
+    $("modele9").textContent = EFFACER[i9].cible;
+    $("essai9").value = EFFACER[i9].depart;
+    $("essai9").classList.remove("juste");
+    $("s9").textContent = "Phrase " + (i9 + 1) + " sur 3";
+  }
+  function monter9() { i9 = 0; poser9(); $("s9").classList.remove("fini"); }
+  $("essai9").addEventListener("input", function () {
+    if (this.value.trim() === EFFACER[i9].cible) {
+      this.classList.add("juste");
+      if (i9 < EFFACER.length - 1) {
+        i9++; var self = this;
+        $("s9").textContent = "Juste. Phrase suivante.";
+        setTimeout(function () { poser9(); self.focus(); }, 700);
+      } else { $("s9").textContent = "Les 3 phrases nettoyées."; $("s9").classList.add("fini"); }
+    } else { this.classList.remove("juste"); }
+  });
+
+  /* 10. copier-coller */
+  var MOTS10 = ["Bonjour", "Merci beaucoup", "À bientôt"];
+  var i10 = 0;
+  function poser10() {
+    $("modele10").textContent = MOTS10[i10];
+    $("essai10").value = ""; $("essai10").classList.remove("juste");
+    $("s10").textContent = "Mot " + (i10 + 1) + " sur 3";
+  }
+  function monter10() { i10 = 0; poser10(); $("s10").classList.remove("fini"); }
+  $("essai10").addEventListener("input", function () {
+    if (this.value.trim() === MOTS10[i10]) {
+      this.classList.add("juste");
+      if (i10 < MOTS10.length - 1) {
+        i10++; var self = this;
+        $("s10").textContent = "Collé. Mot suivant.";
+        setTimeout(function () { poser10(); self.focus(); }, 700);
+      } else { $("s10").textContent = "Les 3 mots collés."; $("s10").classList.add("fini"); }
+    } else { this.classList.remove("juste"); }
+  });
+
+  /* 11. caracteres a deux touches — combinaisons du clavier AZERTY francais */
+  var SPECIAUX = [
+    { signe: "@", combi: "Alt Gr + à" },
+    { signe: "€", combi: "Alt Gr + e" },
+    { signe: "?", combi: "Maj + ," },
+    { signe: ".", combi: "Maj + ;" },
+    { signe: "%", combi: "Maj + ù" },
+    { signe: "7", combi: "Maj + 7" }
+  ];
+  function monter11() {
+    var z = $("c11"); z.innerHTML = ""; $("essai11").value = "";
+    SPECIAUX.forEach(function (s, i) {
+      var d = document.createElement("div");
+      d.className = "spe"; d.id = "spe-" + i;
+      d.innerHTML = '<span class="signe">' + s.signe + '</span><span class="combi">' + s.combi + "</span>";
+      z.appendChild(d);
+    });
+    $("s11").textContent = "0 sur 6"; $("s11").classList.remove("fini");
+  }
+  $("essai11").addEventListener("input", function () {
+    var v = this.value, n = 0;
+    SPECIAUX.forEach(function (s, i) {
+      var ok = v.indexOf(s.signe) >= 0;
+      $("spe-" + i).classList.toggle("ok", ok);
+      if (ok) n++;
+    });
+    $("s11").textContent = n + " sur 6";
+    $("s11").classList.toggle("fini", n === 6);
+  });
+
+  /* 12. touches mortes — l'accent ne s'affiche qu'une fois la lettre frappee */
+  var ACCENTS = [
+    { signe: "â", combi: "^ puis a" },
+    { signe: "ä", combi: "Maj + ^ puis a" },
+    { signe: "ê", combi: "^ puis e" },
+    { signe: "ë", combi: "Maj + ^ puis e" },
+    { signe: "î", combi: "^ puis i" },
+    { signe: "ö", combi: "Maj + ^ puis o" }
+  ];
+  function monter12() {
+    var z = $("c12"); z.innerHTML = ""; $("essai12").value = "";
+    ACCENTS.forEach(function (s, i) {
+      var d = document.createElement("div");
+      d.className = "spe"; d.id = "acc-" + i;
+      d.innerHTML = '<span class="signe">' + s.signe + '</span><span class="combi">' + s.combi + "</span>";
+      z.appendChild(d);
+    });
+    $("s12").textContent = "0 sur 6"; $("s12").classList.remove("fini");
+  }
+  $("essai12").addEventListener("input", function () {
+    var v = this.value, n = 0;
+    ACCENTS.forEach(function (s, i) {
+      var ok = v.indexOf(s.signe) >= 0;
+      $("acc-" + i).classList.toggle("ok", ok);
+      if (ok) n++;
+    });
+    $("s12").textContent = n + " sur 6";
+    $("s12").classList.toggle("fini", n === 6);
+  });
+
+  /* 13. touche Entree — on compte les lignes vraiment ecrites */
+  function monter13() {
+    $("essai13").value = "";
+    $("s13").textContent = "0 ligne sur 4"; $("s13").classList.remove("fini");
+  }
+  $("essai13").addEventListener("input", function () {
+    var lignes = this.value.split("\n").filter(function (l) { return l.trim() !== ""; });
+    var n = lignes.length;
+    if (n >= 4) {
+      $("s13").textContent = "4 lignes. C'était la touche Entrée.";
+      $("s13").classList.add("fini");
+    } else {
+      $("s13").textContent = n + " ligne" + (n > 1 ? "s" : "") + " sur 4";
+      $("s13").classList.remove("fini");
+    }
+  });
+
+  /* 14. les quatre fleches — grille 6 x 3, le pion part en haut a gauche */
+  var COL14 = 6, LIG14 = 3, px = 0, py = 0, bx = 5, by = 2;
+  function dessiner14() {
+    var z = $("c14"); z.innerHTML = "";
+    for (var y = 0; y < LIG14; y++) {
+      for (var x = 0; x < COL14; x++) {
+        var c = document.createElement("div");
+        c.className = "case" + (x === bx && y === by ? " but" : "");
+        if (x === px && y === py) c.innerHTML = '<span class="pion"></span>';
+        z.appendChild(c);
+      }
+    }
+  }
+  function monter14() {
+    px = 0; py = 0; dessiner14();
+    $("s14").textContent = "Rond en haut à gauche"; $("s14").classList.remove("fini");
+  }
+  $("c14").addEventListener("keydown", function (e) {
+    var bouge = true;
+    if (e.key === "ArrowRight" && px < COL14 - 1) px++;
+    else if (e.key === "ArrowLeft" && px > 0) px--;
+    else if (e.key === "ArrowDown" && py < LIG14 - 1) py++;
+    else if (e.key === "ArrowUp" && py > 0) py--;
+    else bouge = false;
+    if (!bouge) return;
+    e.preventDefault();
+    dessiner14();
+    if (px === bx && py === by) {
+      $("s14").textContent = "Arrivé. C'étaient les flèches."; $("s14").classList.add("fini");
+    } else {
+      $("s14").textContent = "Continuez"; $("s14").classList.remove("fini");
+    }
+  });
+  $("c14").addEventListener("click", function () { this.focus(); });
+
+  /* 15. barre d'espace */
+  var COLLES = [
+    { colle: "lechatdort",     cible: "le chat dort" },
+    { colle: "ilfaitbeau",     cible: "il fait beau" },
+    { colle: "bonjourmadame",  cible: "bonjour madame" }
+  ];
+  var i15 = 0;
+  function poser15() {
+    $("modele15").textContent = COLLES[i15].cible;
+    $("essai15").value = COLLES[i15].colle;
+    $("essai15").classList.remove("juste");
+    $("s15").textContent = "Phrase " + (i15 + 1) + " sur 3";
+  }
+  function monter15() { i15 = 0; poser15(); $("s15").classList.remove("fini"); }
+  $("essai15").addEventListener("input", function () {
+    if (this.value.trim() === COLLES[i15].cible) {
+      this.classList.add("juste");
+      if (i15 < COLLES.length - 1) {
+        i15++; var self = this;
+        $("s15").textContent = "Juste. Phrase suivante.";
+        setTimeout(function () { poser15(); self.focus(); }, 700);
+      } else { $("s15").textContent = "Les 3 phrases séparées."; $("s15").classList.add("fini"); }
+    } else { this.classList.remove("juste"); }
+  });
+
+  /* 16. Verr Maj — temoin en direct via getModifierState */
+  function etatCadenas(e) {
+    var t = $("temoin16"), txt = $("temoin16-txt");
+    var on;
+    try { on = e.getModifierState("CapsLock"); } catch (err) { return; }
+    t.classList.toggle("allume", on);
+    t.classList.toggle("eteint", !on);
+    txt.textContent = on
+      ? "Cadenas ALLUMÉ. Tout s'écrit en majuscules."
+      : "Cadenas éteint. L'écriture est normale.";
+  }
+  function monter16() {
+    $("essai16").value = "";
+    $("et16-0").classList.remove("ok"); $("et16-1").classList.remove("ok");
+    var t = $("temoin16");
+    t.classList.remove("allume", "eteint");
+    $("temoin16-txt").textContent = "Tapez une touche pour voir l'état du cadenas.";
+    $("s16").textContent = "0 sur 2"; $("s16").classList.remove("fini");
+  }
+  $("essai16").addEventListener("keydown", etatCadenas);
+  $("essai16").addEventListener("keyup", etatCadenas);
+  $("essai16").addEventListener("input", function () {
+    var v = this.value, n = 0;
+    if (v.indexOf("PARIS") >= 0) { $("et16-0").classList.add("ok"); }
+    if (v.indexOf("paris") >= 0) { $("et16-1").classList.add("ok"); }
+    if ($("et16-0").classList.contains("ok")) n++;
+    if ($("et16-1").classList.contains("ok")) n++;
+    $("s16").textContent = n + " sur 2";
+    $("s16").classList.toggle("fini", n === 2);
+  });
+
+  /* 17. les liens — UN seul clic, et on le dit quand il y en a deux */
+  var MOTS17 = ["la météo", "les horaires", "mes messages", "la recette"];
+  function monter17() {
+    var z = $("c17"); z.innerHTML = ""; var n = 0;
+    z.appendChild(document.createTextNode("Sur une page, les mots soulignés en bleu conduisent ailleurs. Ouvrez "));
+    MOTS17.forEach(function (mot, i) {
+      var a = document.createElement("span");
+      a.className = "lien"; a.tabIndex = 0; a.textContent = mot;
+      a.addEventListener("click", function () {
+        if (this.classList.contains("ok")) return;
+        this.classList.add("ok"); n++;
+        $("s17").textContent = n + " sur 4";
+        $("s17").classList.toggle("fini", n === 4);
+        alerte.textContent = "";
+      });
+      a.addEventListener("dblclick", function () {
+        alerte.textContent = "Un seul clic suffit sur un lien.";
+      });
+      z.appendChild(a);
+      if (i < MOTS17.length - 2) z.appendChild(document.createTextNode(", "));
+      else if (i === MOTS17.length - 2) z.appendChild(document.createTextNode(" et "));
+    });
+    z.appendChild(document.createTextNode("."));
+    var alerte = document.createElement("span");
+    alerte.className = "alerte-lien";
+    z.appendChild(alerte);
+    $("s17").textContent = "0 sur 4"; $("s17").classList.remove("fini");
+  }
+
+  /* ---- les deux series de questions ---- */
+  var Q_SOURIS = [
+    ["Combien de boutons a une souris ?", ["Deux", "Un", "Cinq"], 0,
+     "Deux boutons, et une roue entre les deux."],
+    ["Quel bouton sert le plus souvent ?", ["Le gauche", "Le droit"], 0,
+     "Le gauche désigne et ouvre. C'est lui qu'on utilise presque toujours."],
+    ["Que fait le double-clic ?", ["Il ouvre", "Il efface", "Il imprime"], 0,
+     "Deux clics rapprochés ouvrent un dossier ou un fichier."],
+    ["À quoi sert le clic droit ?", ["À voir une liste de choix", "À supprimer", "À éteindre"], 0,
+     "Il propose une liste. Il ne décide rien tout seul."],
+    ["À quoi sert la molette ?", ["À monter et descendre", "À régler le son", "À changer la couleur"], 0,
+     "Elle fait glisser la feuille. Rien n'est déplacé ni choisi."],
+    ["Pour déplacer un dossier ?", ["Je garde le bouton appuyé", "Je clique trois fois"], 0,
+     "Le doigt ne se relève qu'à l'arrivée."],
+    ["Pour prendre plusieurs dossiers ?", ["Je trace un rectangle", "J'appuie plus fort"], 0,
+     "On part du vide, à côté, et on tire en diagonale."],
+    ["La flèche à l'écran s'appelle ?", ["Le pointeur", "La molette", "Le curseur"], 0,
+     "Le pointeur. Le curseur, c'est le trait qui clignote dans un texte."],
+    ["Un mot bleu souligné sur une page ?", ["Un seul clic", "Deux clics"], 0,
+     "Un lien s'ouvre en un clic. Le double-clic, c'est pour les dossiers."],
+    ["Un clic droit par erreur, c'est grave ?", ["Non, rien n'est modifié", "Oui, tout est effacé"], 0,
+     "Rien ne change. On clique à côté et la liste disparaît."]
+  ];
+  var Q_CLAVIER = [
+    ["Pour une majuscule, je maintiens ?", ["Maj", "Ctrl", "Alt"], 0,
+     "Maj maintenue, puis la lettre. On relâche après."],
+    ["La grande barre du bas sert à ?", ["Séparer les mots", "Valider"], 0,
+     "C'est la barre d'espace. Elle sépare deux mots."],
+    ["La touche Entrée sert à ?", ["Aller à la ligne", "Effacer"], 0,
+     "Elle va à la ligne, et elle valide un formulaire."],
+    ["La touche Retour efface ?", ["À gauche", "À droite"], 0,
+     "À gauche du curseur. Suppr efface à droite."],
+    ["Pour écrire le chiffre 5 ?", ["Maj et 5", "5 deux fois"], 0,
+     "Sans Maj, on obtient une parenthèse."],
+    ["Où trouve-t-on l'arobase @ ?", ["Alt Gr et à", "Maj et a"], 0,
+     "Alt Gr est à droite de la barre d'espace."],
+    ["Après avoir utilisé Verr Maj ?", ["Je pense à l'éteindre", "Je le laisse allumé"], 0,
+     "Sinon tout reste en majuscules, même les mots de passe."],
+    ["Pour copier ?", ["Ctrl et C", "Alt et C"], 0,
+     "Ctrl et C. C comme copier."],
+    ["Pour coller ?", ["Ctrl et V", "Ctrl et P"], 0,
+     "Ctrl et V. Ctrl et P lancerait l'impression."],
+    ["La touche Échap sert à ?", ["Annuler", "Imprimer"], 0,
+     "En haut à gauche. Elle ferme et annule."]
+  ];
+
+  function melanger(t) {
+    var a = t.slice();
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1)); var x = a[i]; a[i] = a[j]; a[j] = x;
+    }
+    return a;
+  }
+
+  function monterQuiz(zoneId, totalId, questions) {
+    var zone = $(zoneId), total = $(totalId), justes = 0, repondues = 0;
+    zone.innerHTML = "";
+    questions.forEach(function (q, i) {
+      var bonTexte = q[1][q[2]];
+      var ordre = melanger(q[1]);
+      var bloc = document.createElement("div");
+      bloc.className = "q";
+      var d = document.createElement("p");
+      d.className = "demande";
+      d.innerHTML = '<span class="n">' + (i + 1) + "</span>" + q[0];
+      bloc.appendChild(d);
+      var ch = document.createElement("div");
+      ch.className = "choix";
+      ordre.forEach(function (txt) {
+        var b = document.createElement("button");
+        b.type = "button"; b.textContent = txt;
+        b.addEventListener("click", function () {
+          if (bloc.classList.contains("repondu")) return;
+          bloc.classList.add("repondu");
+          repondues++;
+          ch.querySelectorAll("button").forEach(function (autre) {
+            autre.disabled = true;
+            if (autre.textContent === bonTexte) autre.classList.add("bon");
+          });
+          if (txt !== bonTexte) this.classList.add("faux"); else justes++;
+          bloc.querySelector(".retour").hidden = false;
+          total.textContent = justes + " sur " + questions.length;
+          total.classList.toggle("fini", repondues === questions.length && justes === questions.length);
+        });
+        ch.appendChild(b);
+      });
+      bloc.appendChild(ch);
+      var retour = document.createElement("p");
+      retour.className = "retour"; retour.hidden = true;
+      retour.textContent = q[3];
+      bloc.appendChild(retour);
+      zone.appendChild(bloc);
+    });
+    total.textContent = "0 sur " + questions.length;
+    total.classList.remove("fini");
+  }
+
+  var MONTEURS = { 1: monter1, 2: monter2, 3: monter3, 4: monter4, 5: monter5,
+                   7: monter7, 8: monter8, 9: monter9, 10: monter10, 11: monter11,
+                   12: monter12, 13: monter13, 14: monter14, 15: monter15,
+                   16: monter16, 17: monter17 };
+  document.querySelectorAll("[data-rejouer]").forEach(function (b) {
+    b.addEventListener("click", function () { MONTEURS[this.dataset.rejouer](); });
+  });
+
+  monter1(); monter2(); monter3(); monter4(); monter5(); monter6();
+  monter7(); monter8(); monter9(); monter10(); monter11(); monter12(); monter13();
+  monter14(); monter15(); monter16(); monter17();
+  monterQuiz("qs", "ts", Q_SOURIS);
+  monterQuiz("qc", "tc", Q_CLAVIER);
+})();
+</script>
+
+</body>
+</html>

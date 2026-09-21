@@ -7,6 +7,17 @@ aucun son. Rien n'est enregistré : le poste peut être remis à zéro entre deu
 
 **La page : https://edouardparnel-dotcom.github.io/clavier-souris/**
 
+## La mission en binôme
+
+Une fiche à part, pour un exercice de 40 minutes à deux : taper une vraie
+lettre de résiliation, geste par geste, et repartir avec.
+
+**La fiche : https://edouardparnel-dotcom.github.io/clavier-souris/lettre/**
+
+32 gestes numérotés. Chacun dit ce qu'il faut faire, ce qu'on doit voir à
+l'écran, et quoi faire si ça ne marche pas. Elle est faite pour être
+photocopiée : une par binôme, pas une par personne.
+
 ## Ce qu'on y travaille
 
 **La souris** — clic gauche, double-clic, clic droit, glisser-déposer,

@@ -1,0 +1,568 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Mission en binome : taper une vraie lettre de resiliation, geste par geste.">
+<style>:root{color-scheme:light dark}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>La lettre de résiliation</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+  /* Palette : le formulaire administratif francais. Fond bleu-gris pale des
+     Cerfa, encre marine, bleu de tampon. L'ocre ne sert qu'a deux choses :
+     le PILOTE (le seul qui touche la souris) et les depannages.
+     Corps en Atkinson Hyperlegible, dessinee par la Braille Institute pour
+     les lecteurs malvoyants : c'est exactement le public. */
+  :root {
+    --papier: #ffffff;
+    --fond: #e9eef4;
+    --encre: #16243a;
+    --douce: #4a5c74;
+    --trait: #b7c4d2;
+    --trait-fin: #d6dee7;
+    --bleu: #17558f;
+    --ocre: #9c5f08;
+    --vert: #2c6b4c;
+    --surbrillance: #fdf3dd;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --papier: #171e27;
+      --fond: #0f141a;
+      --encre: #e4eaf1;
+      --douce: #9aa8b8;
+      --trait: #34424f;
+      --trait-fin: #26313c;
+      --bleu: #7db4ef;
+      --ocre: #e0a95c;
+      --vert: #6cbf93;
+      --surbrillance: #2a2418;
+    }
+  }
+  :root[data-theme="dark"] {
+    --papier: #171e27;
+    --fond: #0f141a;
+    --encre: #e4eaf1;
+    --douce: #9aa8b8;
+    --trait: #34424f;
+    --trait-fin: #26313c;
+    --bleu: #7db4ef;
+    --ocre: #e0a95c;
+    --vert: #6cbf93;
+    --surbrillance: #2a2418;
+  }
+
+  body {
+    background: var(--fond);
+    color: var(--encre);
+    font-family: "Atkinson Hyperlegible", "Segoe UI", system-ui, sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+  }
+  .feuille {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    padding-block: 32px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 34px;
+  }
+
+  h1, h2, h3, .etiquette, .numero, .rang, dt { font-family: Archivo, "Segoe UI", system-ui, sans-serif; }
+
+  /* En-tete */
+  header { border-bottom: 3px solid var(--encre); padding-bottom: 20px; }
+  .bandeau {
+    font-size: 13px; font-weight: 600; letter-spacing: .14em;
+    text-transform: uppercase; color: var(--bleu); margin-bottom: 10px;
+  }
+  h1 {
+    font-size: clamp(32px, 7vw, 46px); font-weight: 700; line-height: 1.05;
+    margin: 0 0 12px; text-wrap: balance; letter-spacing: -.02em;
+  }
+  .chapeau { font-size: 19px; margin: 0; max-width: 34em; }
+
+  h2 {
+    font-size: 15px; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--douce);
+    margin: 0 0 16px; padding-bottom: 8px; border-bottom: 1px solid var(--trait);
+  }
+
+  /* Les deux roles */
+  .roles { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; }
+  .role {
+    background: var(--papier); border: 1px solid var(--trait);
+    border-left: 6px solid var(--bleu); padding: 16px 18px;
+  }
+  .role.pilote { border-left-color: var(--ocre); }
+  .role h3 {
+    font-size: 15px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase;
+    margin: 0 0 6px; color: var(--bleu);
+  }
+  .role.pilote h3 { color: var(--ocre); }
+  .role p { margin: 0; font-size: 16px; }
+  .regle {
+    margin-top: 14px; background: var(--surbrillance); color: var(--encre);
+    border: 1px solid var(--ocre); padding: 14px 18px;
+    font-weight: 700; font-size: 17px;
+  }
+  .regle span { display: block; font-weight: 400; color: var(--douce); margin-top: 4px; }
+
+  /* Vocabulaire et touches */
+  .lexique {
+    background: var(--papier); border: 1px solid var(--trait);
+    padding: 18px 20px; margin: 0;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 12px 30px;
+  }
+  .lexique div { display: grid; grid-template-columns: 9.5em 1fr; gap: 12px; align-items: baseline; }
+  .lexique dt { font-weight: 600; font-size: 14px; letter-spacing: .04em; text-transform: uppercase; color: var(--bleu); }
+  .lexique dd { margin: 0; font-size: 16px; }
+
+  /* Les etapes */
+  .etapes { display: flex; flex-direction: column; gap: 0; }
+  .etape {
+    background: var(--papier); border: 1px solid var(--trait-fin);
+    border-top: 1px solid var(--trait); padding: 20px 18px;
+  }
+  .etape + .etape { border-top: none; }
+  .titre-etape {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px;
+    margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--trait-fin);
+  }
+  .numero {
+    font-size: 22px; font-weight: 700; line-height: 1;
+    color: var(--papier); background: var(--encre);
+    width: 36px; height: 36px; display: grid; place-items: center; flex: none;
+  }
+  .titre-etape h3 { font-size: 21px; font-weight: 600; margin: 0; }
+  .etiquette {
+    font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase;
+    border: 1px solid var(--trait); color: var(--douce); padding: 2px 8px;
+  }
+  .duree { font-size: 14px; color: var(--douce); margin-left: auto; }
+
+  /* Une micro-action : rang, case a cocher, corps */
+  .actions { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 15px; }
+  .actions li { display: grid; grid-template-columns: 30px 22px 1fr; gap: 0 11px; align-items: start; }
+  .rang { font-size: 18px; font-weight: 700; color: var(--douce); text-align: right; }
+  .actions input[type="checkbox"] { width: 20px; height: 20px; margin: 1px 0 0; accent-color: var(--bleu); }
+  .faire { font-weight: 700; cursor: pointer; display: block; }
+  .voir, .secours { display: block; font-size: 15.5px; margin-top: 4px; padding-left: 1.3em; text-indent: -1.3em; }
+  .voir { color: var(--bleu); }
+  .voir::before { content: "\2192\00a0\00a0"; font-weight: 700; }
+  .secours { color: var(--ocre); }
+  .secours::before { content: "\26A0\FE0E\00a0\00a0"; font-weight: 700; }
+
+  kbd {
+    font-family: Archivo, system-ui, sans-serif; font-size: .88em; font-weight: 600;
+    background: var(--papier); color: var(--encre);
+    border: 1px solid var(--trait); border-bottom-width: 3px;
+    border-radius: 4px; padding: 1px 7px; white-space: nowrap;
+  }
+
+  /* Les touches qui resistent */
+  .defilant { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; background: var(--papier); font-size: 16px; }
+  th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--trait-fin); }
+  th {
+    font-family: Archivo, sans-serif; font-size: 12px; font-weight: 600;
+    letter-spacing: .1em; text-transform: uppercase; color: var(--douce);
+    border-bottom: 2px solid var(--trait);
+  }
+  td:first-child { font-size: 22px; font-weight: 700; width: 3.5em; white-space: nowrap; }
+  tr:last-child td { border-bottom: none; }
+
+  /* Le modele de lettre */
+  .lettre {
+    background: var(--papier); border: 1px solid var(--trait);
+    box-shadow: 3px 3px 0 var(--trait-fin);
+    padding: 34px 38px; font-size: 16.5px; line-height: 1.75;
+  }
+  .lettre p { margin: 0 0 16px; }
+  .lettre .bloc { margin-bottom: 26px; }
+  .lettre .bloc p { margin: 0; }
+  .pointille { border-bottom: 1px dotted var(--douce); display: inline-block; min-width: 9em; }
+  .lettre .signature { margin-top: 30px; margin-bottom: 0; font-weight: 700; }
+
+  /* Relecture */
+  .relecture { background: var(--papier); border: 1px solid var(--trait); border-left: 6px solid var(--vert); padding: 18px; }
+  .relecture .actions li { grid-template-columns: 22px 1fr; }
+  .relecture input[type="checkbox"] { accent-color: var(--vert); }
+  .relecture .faire { font-weight: 400; }
+
+  /* Les trois niveaux */
+  .niveaux { display: flex; flex-direction: column; gap: 0; margin: 0; }
+  .niveau { display: grid; grid-template-columns: 170px 1fr; gap: 16px; padding: 14px 0; border-top: 1px solid var(--trait-fin); }
+  .niveau:first-child { border-top: 2px solid var(--trait); }
+  .niveau dt { font-weight: 600; font-size: 13px; letter-spacing: .1em; text-transform: uppercase; color: var(--bleu); }
+  .niveau dd { margin: 0; }
+
+  /* Bloc formateur, hors photocopie */
+  .formateur { background: var(--encre); color: var(--papier); padding: 26px 28px; }
+  .formateur h2 { color: var(--trait); border-bottom-color: var(--douce); }
+  .formateur kbd { background: transparent; color: var(--papier); border-color: var(--douce); }
+  .formateur .avis {
+    font-size: 13px; letter-spacing: .1em; text-transform: uppercase;
+    font-family: Archivo, sans-serif; font-weight: 600; color: var(--ocre); margin-bottom: 14px;
+  }
+  .formateur ul { margin: 0; padding-left: 1.2em; display: flex; flex-direction: column; gap: 10px; }
+  .formateur strong { color: var(--ocre); }
+
+  @media (max-width: 460px) {
+    .actions li { grid-template-columns: 26px 22px 1fr; gap: 0 8px; }
+    .lexique div { grid-template-columns: 1fr; gap: 2px; }
+    .niveau { grid-template-columns: 1fr; gap: 4px; }
+    .duree { margin-left: 0; }
+    .lettre { padding: 22px 20px; }
+  }
+
+  @media print {
+    body { background: #fff; color: #000; font-size: 11.5pt; }
+    .feuille { max-width: none; padding: 0; gap: 20px; }
+    .lettre { box-shadow: none; }
+    .voir { color: #000; }
+    .secours { color: #000; font-style: italic; }
+    .formateur { background: #fff; color: #000; border: 2px solid #000; break-before: page; }
+    .formateur h2, .formateur .avis, .formateur strong, .formateur kbd { color: #000; }
+    .etape, .role, .lettre, .relecture, .lexique { break-inside: avoid; }
+  }
+  :focus-visible { outline: 3px solid var(--bleu); outline-offset: 2px; }
+</style>
+</head>
+<body>
+<div class="feuille">
+
+  <header>
+    <div class="bandeau">Mission en binôme &middot; 40 minutes &middot; 32 gestes</div>
+    <h1>La lettre de résiliation</h1>
+    <p class="chapeau">À la fin, chacun repart avec une vraie lettre, tapée de sa main.</p>
+  </header>
+
+  <section>
+    <h2>Qui fait quoi</h2>
+    <div class="roles">
+      <div class="role pilote">
+        <h3>Le pilote</h3>
+        <p>Il tient la souris. Il tape au clavier.</p>
+      </div>
+      <div class="role">
+        <h3>Le copilote</h3>
+        <p>Il lit les gestes à voix haute, un par un. Il montre du doigt.</p>
+      </div>
+    </div>
+    <p class="regle">
+      Le copilote ne touche jamais la souris du pilote.
+      <span>Au signal, vous échangez les rôles. Le pilote devient copilote.</span>
+    </p>
+  </section>
+
+  <section>
+    <h2>Les mots de la fiche</h2>
+    <dl class="lexique">
+      <div><dt>Le Bureau</dt><dd>Le fond de l'écran, avec les petites images.</dd></div>
+      <div><dt>Un dossier</dt><dd>L'image jaune. Elle contient d'autres choses.</dd></div>
+      <div><dt>Un fichier</dt><dd>L'image blanche. Elle contient du texte.</dd></div>
+      <div><dt>Une fenêtre</dt><dd>Le grand cadre blanc qui s'ouvre.</dd></div>
+      <div><dt>La flèche</dt><dd>Elle bouge quand vous bougez la souris.</dd></div>
+      <div><dt>Le curseur</dt><dd>Le petit trait qui clignote. Le texte s'écrit là.</dd></div>
+      <div><dt>Bouton de gauche</dt><dd>Il sert à choisir. C'est celui qu'on utilise le plus.</dd></div>
+      <div><dt>Bouton de droite</dt><dd>Il ouvre une liste de choix.</dd></div>
+      <div><dt><kbd>Entrée</kbd></dt><dd>La grande touche, à droite des lettres.</dd></div>
+      <div><dt>Retour arrière</dt><dd>La flèche vers la gauche, au-dessus d'<kbd>Entrée</kbd>. Elle efface.</dd></div>
+      <div><dt><kbd>Maj</kbd></dt><dd>La grosse flèche vers le haut. Il y en a deux.</dd></div>
+    </dl>
+  </section>
+
+  <section>
+    <h2>La mission, geste par geste</h2>
+    <div class="etapes">
+
+      <div class="etape">
+        <div class="titre-etape">
+          <span class="numero">1</span>
+          <h3>Ouvrir votre dossier</h3>
+          <span class="etiquette">Windows</span>
+          <span class="duree">5 min</span>
+        </div>
+        <ul class="actions">
+          <li><span class="rang">1</span><input type="checkbox" id="a1"><span>
+            <label class="faire" for="a1">Posez la main sur la souris. Ne cliquez pas.</label>
+            <span class="voir">La flèche bouge sur l'écran quand vous bougez la main.</span>
+          </span></li>
+          <li><span class="rang">2</span><input type="checkbox" id="a2"><span>
+            <label class="faire" for="a2">Sur le Bureau, cherchez le dossier jaune à votre prénom.</label>
+            <span class="voir">Votre prénom est écrit sous l'image jaune.</span>
+          </span></li>
+          <li><span class="rang">3</span><input type="checkbox" id="a3"><span>
+            <label class="faire" for="a3">Amenez la flèche sur ce dossier. Ne cliquez pas.</label>
+            <span class="voir">Le dossier change de couleur. Il s'éclaircit.</span>
+          </span></li>
+          <li><span class="rang">4</span><input type="checkbox" id="a4"><span>
+            <label class="faire" for="a4">Cliquez deux fois de suite, très vite, bouton de gauche.</label>
+            <span class="voir">Une fenêtre s'ouvre. C'est votre dossier.</span>
+            <span class="secours">Rien ne s'ouvre ? Les deux clics étaient trop lents. Recommencez plus vite.</span>
+          </span></li>
+        </ul>
+      </div>
+
+      <div class="etape">
+        <div class="titre-etape">
+          <span class="numero">2</span>
+          <h3>Fabriquer le dossier Courriers</h3>
+          <span class="etiquette">Windows</span>
+          <span class="duree">5 min</span>
+        </div>
+        <ul class="actions">
+          <li><span class="rang">5</span><input type="checkbox" id="a5"><span>
+            <label class="faire" for="a5">Amenez la flèche dans la fenêtre, sur une zone blanche et vide.</label>
+            <span class="voir">Rien d'écrit à cet endroit, rien de coloré.</span>
+          </span></li>
+          <li><span class="rang">6</span><input type="checkbox" id="a6"><span>
+            <label class="faire" for="a6">Appuyez une fois sur le bouton de droite.</label>
+            <span class="voir">Une liste de mots apparaît sous la flèche.</span>
+          </span></li>
+          <li><span class="rang">7</span><input type="checkbox" id="a7"><span>
+            <label class="faire" for="a7">Descendez la flèche sur le mot Nouveau. Ne cliquez pas.</label>
+            <span class="voir">Une deuxième liste s'ouvre sur le côté.</span>
+          </span></li>
+          <li><span class="rang">8</span><input type="checkbox" id="a8"><span>
+            <label class="faire" for="a8">Cliquez une fois, bouton de gauche, sur le mot Dossier.</label>
+            <span class="voir">Un dossier jaune apparaît. Son nom est surligné en bleu.</span>
+          </span></li>
+          <li><span class="rang">9</span><input type="checkbox" id="a9"><span>
+            <label class="faire" for="a9">Le nom est bleu : tapez tout de suite le mot Courriers.</label>
+            <span class="voir">Courriers s'écrit à la place du nom bleu.</span>
+            <span class="secours">Le bleu a disparu ? Bouton de droite sur le dossier, puis Renommer.</span>
+          </span></li>
+          <li><span class="rang">10</span><input type="checkbox" id="a10"><span>
+            <label class="faire" for="a10">Appuyez sur <kbd>Entrée</kbd>.</label>
+            <span class="voir">Le nom devient noir. Le dossier est fait.</span>
+          </span></li>
+        </ul>
+      </div>
+
+      <div class="etape">
+        <div class="titre-etape">
+          <span class="numero">3</span>
+          <h3>Aller chercher le modèle</h3>
+          <span class="etiquette">Souris</span>
+          <span class="duree">5 min</span>
+        </div>
+        <ul class="actions">
+          <li><span class="rang">11</span><input type="checkbox" id="a11"><span>
+            <label class="faire" for="a11">Cliquez sur la croix, tout en haut à droite de la fenêtre.</label>
+            <span class="voir">La fenêtre disparaît. Vous revoyez le Bureau.</span>
+          </span></li>
+          <li><span class="rang">12</span><input type="checkbox" id="a12"><span>
+            <label class="faire" for="a12">Sur le Bureau, trouvez le dossier jaune Modèles.</label>
+          </span></li>
+          <li><span class="rang">13</span><input type="checkbox" id="a13"><span>
+            <label class="faire" for="a13">Ouvrez-le : deux clics rapides, bouton de gauche.</label>
+            <span class="voir">Une fenêtre s'ouvre. Dedans, un fichier blanc : lettre.txt</span>
+          </span></li>
+          <li><span class="rang">14</span><input type="checkbox" id="a14"><span>
+            <label class="faire" for="a14">Cliquez UNE SEULE fois sur lettre.txt.</label>
+            <span class="voir">Le fichier se colore en bleu. Il est choisi.</span>
+          </span></li>
+          <li><span class="rang">15</span><input type="checkbox" id="a15"><span>
+            <label class="faire" for="a15">Sans bouger la flèche, appuyez sur le bouton de droite.</label>
+            <span class="voir">Une liste de mots apparaît.</span>
+          </span></li>
+          <li><span class="rang">16</span><input type="checkbox" id="a16"><span>
+            <label class="faire" for="a16">Cliquez sur le mot Copier.</label>
+            <span class="voir">La liste disparaît, et rien d'autre ne bouge. C'est normal.</span>
+          </span></li>
+          <li><span class="rang">17</span><input type="checkbox" id="a17"><span>
+            <label class="faire" for="a17">Fermez la fenêtre par la croix, en haut à droite.</label>
+            <span class="voir">Vous revoyez le Bureau.</span>
+          </span></li>
+          <li><span class="rang">18</span><input type="checkbox" id="a18"><span>
+            <label class="faire" for="a18">Ouvrez le dossier à votre prénom, puis le dossier Courriers.</label>
+            <span class="voir">Deux clics rapides à chaque fois. La fenêtre Courriers est vide.</span>
+          </span></li>
+          <li><span class="rang">19</span><input type="checkbox" id="a19"><span>
+            <label class="faire" for="a19">Bouton de droite dans le blanc, puis cliquez sur Coller.</label>
+            <span class="voir">lettre.txt apparaît dans Courriers. Vous en avez votre copie.</span>
+          </span></li>
+        </ul>
+      </div>
+
+      <div class="etape">
+        <div class="titre-etape">
+          <span class="numero">4</span>
+          <h3>Écrire la lettre</h3>
+          <span class="etiquette">Clavier</span>
+          <span class="duree">15 min</span>
+        </div>
+        <ul class="actions">
+          <li><span class="rang">20</span><input type="checkbox" id="a20"><span>
+            <label class="faire" for="a20">Deux clics rapides sur lettre.txt, celui de Courriers.</label>
+            <span class="voir">Une fenêtre blanche s'ouvre. Un petit trait clignote en haut à gauche.</span>
+            <span class="secours">Vérifiez le nom de la fenêtre : Courriers, pas Modèles.</span>
+          </span></li>
+          <li><span class="rang">21</span><input type="checkbox" id="a21"><span>
+            <label class="faire" for="a21">Recopiez la lettre de la page suivante, ligne par ligne.</label>
+            <span class="voir">Les lettres s'écrivent là où le trait clignote.</span>
+          </span></li>
+          <li><span class="rang">22</span><input type="checkbox" id="a22"><span>
+            <label class="faire" for="a22">Au bout d'une ligne, appuyez sur <kbd>Entrée</kbd>.</label>
+            <span class="voir">Le trait qui clignote descend d'une ligne, tout à gauche.</span>
+          </span></li>
+          <li><span class="rang">23</span><input type="checkbox" id="a23"><span>
+            <label class="faire" for="a23">Pour laisser une ligne vide, appuyez deux fois sur <kbd>Entrée</kbd>.</label>
+          </span></li>
+          <li><span class="rang">24</span><input type="checkbox" id="a24"><span>
+            <label class="faire" for="a24">Une faute ? Appuyez sur Retour arrière.</label>
+            <span class="voir">La lettre d'avant s'efface. Le trait recule d'un cran.</span>
+          </span></li>
+          <li><span class="rang">25</span><input type="checkbox" id="a25"><span>
+            <label class="faire" for="a25">Pour é, à, @, € et les chiffres : voir le tableau plus bas.</label>
+            <span class="secours">Une touche qui n'affiche rien n'est pas cassée. Le tableau l'explique.</span>
+          </span></li>
+        </ul>
+      </div>
+
+      <div class="etape">
+        <div class="titre-etape">
+          <span class="numero">5</span>
+          <h3>Garder la lettre, et la relire</h3>
+          <span class="etiquette">Windows</span>
+          <span class="duree">10 min</span>
+        </div>
+        <ul class="actions">
+          <li><span class="rang">26</span><input type="checkbox" id="a26"><span>
+            <label class="faire" for="a26">En haut à gauche de la fenêtre, cliquez sur le mot Fichier.</label>
+            <span class="voir">Une liste s'ouvre juste en dessous.</span>
+          </span></li>
+          <li><span class="rang">27</span><input type="checkbox" id="a27"><span>
+            <label class="faire" for="a27">Cliquez sur Enregistrer.</label>
+            <span class="voir">La liste se ferme. Rien d'autre ne bouge : le texte est gardé.</span>
+          </span></li>
+          <li><span class="rang">28</span><input type="checkbox" id="a28"><span>
+            <label class="faire" for="a28">Fermez la fenêtre par la croix, en haut à droite.</label>
+            <span class="secours">Une question apparaît ? Le texte n'était pas gardé. Cliquez sur Enregistrer.</span>
+          </span></li>
+          <li><span class="rang">29</span><input type="checkbox" id="a29"><span>
+            <label class="faire" for="a29">Deux clics sur lettre.txt pour le rouvrir.</label>
+            <span class="voir">Votre texte est là. C'est la preuve qu'il est bien enregistré.</span>
+          </span></li>
+          <li><span class="rang">30</span><input type="checkbox" id="a30"><span>
+            <label class="faire" for="a30">Le copilote lit la lettre à voix haute. Le pilote corrige.</label>
+          </span></li>
+          <li><span class="rang">31</span><input type="checkbox" id="a31"><span>
+            <label class="faire" for="a31">Cochez les six points de la relecture, plus bas.</label>
+          </span></li>
+          <li><span class="rang">32</span><input type="checkbox" id="a32"><span>
+            <label class="faire" for="a32">Appelez le formateur. On imprime.</label>
+            <span class="voir">Chacun repart avec sa lettre.</span>
+          </span></li>
+        </ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>Les touches qui résistent</h2>
+    <div class="defilant">
+      <table>
+        <thead>
+          <tr><th>Signe</th><th>Comment le faire</th><th>Où il sert</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>é</td><td>La touche du 2. Rien d'autre à tenir.</td><td>résiliation, adhérent</td></tr>
+          <tr><td>è</td><td>La touche du 7. Rien d'autre à tenir.</td><td>deuxième</td></tr>
+          <tr><td>à</td><td>La touche du 0. Rien d'autre à tenir.</td><td>à compter du</td></tr>
+          <tr><td>ç</td><td>La touche du 9. Rien d'autre à tenir.</td><td>j'ai reçu</td></tr>
+          <tr><td>û</td><td>D'abord <kbd>^</kbd>, puis <kbd>u</kbd>. Rien ne s'affiche au premier appui. C'est normal.</td><td>coûte</td></tr>
+          <tr><td>4 7 8</td><td>Tenez <kbd>Maj</kbd>, puis appuyez sur le chiffre, en haut du clavier.</td><td>le numéro d'adhérent</td></tr>
+          <tr><td>@</td><td>Tenez <kbd>Alt Gr</kbd>, à droite de la barre d'espace, puis appuyez sur <kbd>à</kbd>.</td><td>l'adresse de courriel</td></tr>
+          <tr><td>€</td><td>Tenez <kbd>Alt Gr</kbd>, puis appuyez sur <kbd>e</kbd>.</td><td>29,90 € par mois</td></tr>
+          <tr><td>.</td><td>Tenez <kbd>Maj</kbd>, puis la touche du point-virgule.</td><td>fin de chaque phrase</td></tr>
+          <tr><td>D U P</td><td>Tenez <kbd>Maj</kbd>, puis appuyez sur la lettre.</td><td>le nom de famille</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Le modèle à recopier</h2>
+    <div class="lettre">
+      <div class="bloc">
+        <p>Marie DUPONT</p>
+        <p>8 rue des Acacias</p>
+        <p>92220 Bagneux</p>
+      </div>
+      <div class="bloc">
+        <p>Salle de sport Forme Plus</p>
+        <p>12 rue des Lilas</p>
+        <p>92220 Bagneux</p>
+      </div>
+      <div class="bloc">
+        <p>Bagneux, le <span class="pointille"></span></p>
+      </div>
+      <div class="bloc">
+        <p>Objet : résiliation de mon abonnement</p>
+        <p>Numéro d'adhérent : 4782019</p>
+      </div>
+      <p>Madame, Monsieur,</p>
+      <p>Je suis adhérente chez vous depuis deux ans. Mon abonnement me coûte 29,90 € par mois.</p>
+      <p>Je vous informe que je souhaite le résilier à compter du 31 décembre 2026. J'ai téléphoné deux fois, et je n'ai reçu aucune réponse.</p>
+      <p>Merci de me confirmer cette résiliation par courriel, à l'adresse marie.dupont@orange.fr.</p>
+      <p>Veuillez agréer, Madame, Monsieur, mes salutations distinguées.</p>
+      <p class="signature">Marie DUPONT</p>
+    </div>
+  </section>
+
+  <section>
+    <h2>La relecture, à deux</h2>
+    <div class="relecture">
+      <ul class="actions">
+        <li><input type="checkbox" id="r1"><label class="faire" for="r1">Mon nom et mon adresse sont tout en haut.</label></li>
+        <li><input type="checkbox" id="r2"><label class="faire" for="r2">La ville et la date sont écrites.</label></li>
+        <li><input type="checkbox" id="r3"><label class="faire" for="r3">Le mot Objet est suivi de deux points.</label></li>
+        <li><input type="checkbox" id="r4"><label class="faire" for="r4">La lettre commence par Madame, Monsieur,</label></li>
+        <li><input type="checkbox" id="r5"><label class="faire" for="r5">L'adresse de courriel contient un @ et un point.</label></li>
+        <li><input type="checkbox" id="r6"><label class="faire" for="r6">Le nom est signé tout en bas.</label></li>
+      </ul>
+    </div>
+  </section>
+
+  <section>
+    <h2>Si vous avez fini</h2>
+    <dl class="niveaux">
+      <div class="niveau">
+        <dt>Socle</dt>
+        <dd>Recopier le modèle à l'identique. C'est la mission faite.</dd>
+      </div>
+      <div class="niveau">
+        <dt>Si ça va vite</dt>
+        <dd>Remplacer Marie DUPONT par votre nom, et son adresse par la vôtre.</dd>
+      </div>
+      <div class="niveau">
+        <dt>En réserve</dt>
+        <dd>Écrire une deuxième lettre, sans modèle : demander un rendez-vous à la mairie.</dd>
+      </div>
+    </dl>
+  </section>
+
+  <section class="formateur">
+    <div class="avis">Cette page ne se photocopie pas pour le groupe</div>
+    <h2>Avant la séance</h2>
+    <ul>
+      <li>Poser sur le Bureau un dossier <strong>Modèles</strong> contenant <strong>lettre.txt, vide</strong>. Le texte ne doit pas y être : c'est eux qui le tapent.</li>
+      <li>Vérifier que <strong>l'affichage des extensions est activé</strong>, sinon le fichier s'appelle « lettre » et pas « lettre.txt » comme sur la fiche.</li>
+      <li>Photocopier la fiche <strong>une par binôme</strong>, pas une par personne. Ça oblige le copilote à lire pour deux.</li>
+      <li><strong>Le piège du circonflexe</strong> : au premier appui sur <kbd>^</kbd>, rien ne s'affiche. Le dire avant le geste 21, sinon ils croient le clavier cassé et frappent quatre fois.</li>
+      <li><strong>Le piège des chiffres</strong> : sur le numéro d'adhérent, ceux qui ignorent <kbd>Maj</kbd> obtiennent des symboles et s'arrêtent net. C'est là que ça décroche.</li>
+      <li><strong>Le piège du geste 20</strong> : s'ils ouvrent le modèle au lieu de leur copie, ils écrivent dans Modèles, et le groupe suivant trouve la lettre déjà faite. Vérifier au passage en salle.</li>
+      <li><strong>Le geste 16 ne montre rien</strong> : après Copier, l'écran ne bouge pas. C'est le moment où un débutant recommence en boucle. La fiche le dit, le redire quand même.</li>
+      <li>Sans imprimante : chaque binôme lit sa lettre au binôme voisin, qui cherche une faute. Le concret tient quand même.</li>
+    </ul>
+  </section>
+
+</div>
+</body>
+</html>

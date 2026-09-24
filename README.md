@@ -18,6 +18,20 @@ lettre de résiliation, geste par geste, et repartir avec.
 l'écran, et quoi faire si ça ne marche pas. Elle est faite pour être
 photocopiée : une par binôme, pas une par personne.
 
+## Le niveau 2
+
+Une suite, légèrement plus avancée : les gestes de tous les jours.
+
+**La page : https://edouardparnel-dotcom.github.io/clavier-souris/niveau2/**
+
+22 stations et 12 questions. Viser de plus en plus petit, cocher des cases,
+choisir dans une liste, fermer une fenêtre ou une publicité, refuser les
+cookies, déplacer une fenêtre, ranger des fichiers dans le bon dossier, la
+barre de défilement ; passer de case en case avec Tab, écrire une date, un
+numéro de téléphone, une adresse, corriger des fautes, la ponctuation, le pavé
+des chiffres, un prix en euros ; chercher sur internet sans cliquer les
+annonces, taper un mot de passe caché, renommer un dossier.
+
 ## Ce qu'on y travaille
 
 **La souris** — clic gauche, double-clic, clic droit, glisser-déposer,

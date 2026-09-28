@@ -32,6 +32,27 @@ numéro de téléphone, une adresse, corriger des fautes, la ponctuation, le pav
 des chiffres, un prix en euros ; chercher sur internet sans cliquer les
 annonces, taper un mot de passe caché, renommer un dossier.
 
+## Le bureau Windows d'entraînement
+
+Un faux bureau Windows, dans le navigateur : on peut tout essayer, rien ne casse.
+
+**La page : https://edouardparnel-dotcom.github.io/clavier-souris/windows/**
+
+Icônes (un clic, deux clics, clic droit, glisser, encadrer), menu Démarrer avec
+sa recherche, fenêtres (réduire, agrandir, fermer, déplacer), barre des tâches,
+heure et calendrier, Bloc-notes qui demande d'enregistrer avant de fermer,
+explorateur de fichiers, Calculatrice, Photos, Paramètres (fond d'écran),
+Corbeille (jeter, restaurer, vider), et éteindre puis rallumer.
+
+**Seul** : 22 missions guidées, reconnues automatiquement, en trois niveaux.
+
+**À deux, côte à côte** : chacun sur son poste, les deux tapent le même code à
+4 chiffres et disent s'ils sont assis à gauche ou à droite. Le premier chiffre
+choisit le scénario (1 à 4), le dernier qui commence (pair : la gauche).
+Chaque geste se fait deux fois : l'un fait, l'autre lit la consigne et guide
+sans toucher la souris, puis on inverse. Des consignes « mettez-vous
+d'accord » font parler le binôme.
+
 ## Ce qu'on y travaille
 
 **La souris** — clic gauche, double-clic, clic droit, glisser-déposer,

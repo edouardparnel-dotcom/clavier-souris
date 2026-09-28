@@ -1,0 +1,1562 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Un faux bureau Windows pour s'entraîner sans risque : icônes, menu Démarrer, fenêtres, corbeille, éteindre.">
+<style>:root{color-scheme:light dark}[hidden]{display:none!important}</style>
+<title>Bureau Windows d'entraînement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Public+Sans:wght@400;600&display=swap">
+<style>
+  :root {
+    --encre:#121A24; --encre-doux:#4A5666; --fond:#EEF1F5; --carte:#FFFFFF; --tranche:#C7CEDA; --trait:#D8DEE7;
+    --bleu:#2D6BD4; --bleu-pale:#DCE7F9; --vert:#2E7D54; --vert-pale:#DCEFE4; --ambre:#C9821A; --ambre-pale:#F8ECD6;
+    --display:'Archivo','Segoe UI',system-ui,sans-serif; --corps:'Public Sans','Segoe UI',system-ui,sans-serif;
+    --mono:'IBM Plex Mono','Consolas',monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --encre:#EAEEF4; --encre-doux:#9AA6B6; --fond:#11161D; --carte:#1A222C; --tranche:#3A4655; --trait:#2C3744;
+      --bleu:#6FA0EA; --bleu-pale:#1E2E47; --vert:#6CC094; --vert-pale:#19301F; --ambre:#E0A94E; --ambre-pale:#33280F;
+    }
+  }
+  :root[data-theme="dark"] {
+    --encre:#EAEEF4; --encre-doux:#9AA6B6; --fond:#11161D; --carte:#1A222C; --tranche:#3A4655; --trait:#2C3744;
+    --bleu:#6FA0EA; --bleu-pale:#1E2E47; --vert:#6CC094; --vert-pale:#19301F; --ambre:#E0A94E; --ambre-pale:#33280F;
+  }
+  * { box-sizing: border-box; }
+  body { background:var(--fond); color:var(--encre); font-family:var(--corps); font-size:19px; line-height:1.5;
+         margin:0; padding:0 20px 70px; -webkit-font-smoothing:antialiased; }
+  .page { max-width:1180px; margin:0 auto; }
+  header { padding:34px 0 20px; border-bottom:3px solid var(--encre); margin-bottom:20px; }
+  h1 { font-family:var(--display); font-weight:700; font-size:clamp(30px,5vw,46px); line-height:1.05; margin:0 0 8px; letter-spacing:-.02em; }
+  .chapo { font-size:20px; color:var(--encre-doux); margin:0; }
+  .liens-niveaux { display:flex; gap:22px; flex-wrap:wrap; margin-top:12px; }
+  .liens-niveaux a { font-family:var(--mono); font-size:15px; color:var(--bleu); text-decoration:underline; text-underline-offset:3px; }
+
+  .num { font-family:var(--mono); font-size:15px; font-weight:600; color:var(--encre-doux); }
+  .niv { font-family:var(--mono); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:.07em;
+         padding:4px 10px; border-radius:3px; white-space:nowrap; }
+  .niv-1 { background:var(--vert-pale); color:var(--vert); }
+  .niv-2 { background:var(--bleu-pale); color:var(--bleu); }
+  .niv-3 { background:var(--ambre-pale); color:var(--ambre); }
+  .voir { margin:0; font-size:18px; color:var(--encre-doux); }
+  .depanne { margin:4px 0 0; font-size:16px; color:var(--ambre); }
+  button.rejouer { font-family:var(--corps); font-size:16px; color:var(--encre); background:transparent;
+    border:1px solid var(--tranche); border-radius:4px; padding:6px 14px; cursor:pointer; }
+  button.rejouer:hover { background:var(--carte); }
+  :focus-visible { outline:3px solid var(--bleu); outline-offset:2px; }
+
+  /* La mission du moment */
+  .mission { background:var(--carte); border:2px solid var(--bleu); border-radius:8px; padding:14px 18px;
+    margin-bottom:14px; display:grid; grid-template-columns:1fr auto; gap:4px 18px; align-items:start; }
+  .mission.reussi { border-color:var(--vert); background:var(--vert-pale); }
+  .m-haut { display:flex; gap:12px; align-items:center; flex-wrap:wrap; }
+  .m-faire { font-family:var(--display); font-weight:600; font-size:25px; margin:4px 0 2px; line-height:1.2; }
+  .mission.reussi .m-faire { color:var(--vert); }
+  .m-boutons { grid-row:1 / span 4; grid-column:2; display:flex; flex-direction:column; gap:8px; }
+  .mission.tout-fini { border-color:var(--vert); }
+
+  .modes { display:flex; gap:0; margin-bottom:12px; border:2px solid var(--encre); border-radius:6px; width:fit-content; overflow:hidden; }
+  .mode { font-family:var(--corps); font-size:18px; font-weight:600; padding:9px 20px; border:none; background:var(--carte);
+    color:var(--encre); cursor:pointer; }
+  .mode.ici { background:var(--encre); color:var(--fond); }
+  .binome { background:var(--carte); border:2px solid var(--bleu); border-radius:8px; padding:14px 18px; margin-bottom:14px; }
+  .binome.moi { border-color:var(--vert); }
+  .binome.lui { border-color:var(--ambre); }
+  .binome.reussi { background:var(--vert-pale); }
+  .b-ligne { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin-top:12px; }
+  .b-code { display:flex; align-items:center; gap:10px; font-size:19px; }
+  .b-code input { width:130px; font-family:var(--mono); font-size:30px; font-weight:600; letter-spacing:.2em; text-align:center;
+    padding:4px 8px; border:2px solid var(--tranche); border-radius:6px; background:var(--carte); color:var(--encre); }
+  .b-place { font-family:var(--corps); font-size:18px; padding:9px 18px; border:2px solid var(--tranche); border-radius:6px;
+    background:var(--carte); color:var(--encre); cursor:pointer; }
+  .b-place.ici { border-color:var(--bleu); background:var(--bleu-pale); color:var(--bleu); font-weight:600; }
+  .b-go { font-family:var(--corps); font-size:18px; font-weight:600; padding:10px 20px; margin-top:12px; border:none; border-radius:6px;
+    background:var(--bleu); color:#fff; cursor:pointer; }
+  .b-ligne .b-go { margin-top:0; }
+  .b-go.fort { background:var(--vert); }
+  .b-parle { margin:8px 0 0; font-size:18px; color:var(--bleu); font-weight:600; }
+  .b-parle:empty, .b-etat:empty { display:none; }
+  .b-etat { margin:6px 0 0; font-size:17px; }
+  .niv-moi { background:var(--vert-pale); color:var(--vert); }
+  .niv-lui { background:var(--ambre-pale); color:var(--ambre); }
+  .barre { display:flex; align-items:center; gap:14px; margin-top:12px; flex-wrap:wrap; }
+  .score { font-family:var(--mono); font-size:15px; font-weight:600; color:var(--encre-doux); font-variant-numeric:tabular-nums; }
+  .score.fini { color:var(--vert); }
+
+  .titre-partie { font-family:var(--mono); font-size:14px; font-weight:600; text-transform:uppercase; letter-spacing:.12em;
+    color:var(--encre-doux); padding:26px 0 4px; border-bottom:1px solid var(--trait); margin:0 0 10px; }
+  .liste-missions { display:grid; gap:8px; }
+  .etape { display:flex; align-items:center; gap:12px; padding:9px 14px; border:1px solid var(--trait); border-radius:5px;
+    background:var(--carte); font-size:17px; cursor:pointer; text-align:left; font-family:var(--corps); color:var(--encre); width:100%; }
+  .etape:hover { border-color:var(--bleu); }
+  .etape .coche { flex:0 0 24px; height:24px; border-radius:50%; border:2px solid var(--tranche); display:grid; place-items:center;
+    font-size:14px; color:transparent; }
+  .etape .n { font-family:var(--mono); font-size:14px; color:var(--encre-doux); flex:0 0 26px; }
+  .etape.ok { border-color:var(--vert); background:var(--vert-pale); }
+  .etape.ok .coche { border-color:var(--vert); background:var(--vert); color:#fff; }
+  .etape.courante { border:2px solid var(--bleu); }
+
+  /* ── L'écran simulé : toujours clair, comme un vrai Windows ── */
+  .moniteur { background:#1B1F24; border-radius:12px; padding:10px 10px 12px; }
+  .ecran { position:relative; height:clamp(470px, 70vh, 680px); overflow:hidden; border-radius:4px;
+    font-family:'Segoe UI', system-ui, sans-serif; font-size:14px; line-height:1.35; color:#1B1B1B;
+    user-select:none; -webkit-user-select:none; color-scheme:light; }
+  .ecran input, .ecran textarea { user-select:text; -webkit-user-select:text; }
+  .ecran button { font-family:inherit; }
+  #fond { position:absolute; inset:0; transition:background .4s; }
+  #zone { position:absolute; left:0; top:0; right:0; bottom:48px; }
+  #rect { position:absolute; border:1px solid #3A8DDE; background:rgba(58,141,222,.25); pointer-events:none; display:none; z-index:3; }
+
+  .ico { position:absolute; width:80px; padding:6px 2px 4px; border:1px solid transparent; border-radius:3px;
+    display:grid; justify-items:center; gap:3px; cursor:default; z-index:2; touch-action:none; }
+  .ico:hover { background:rgba(255,255,255,.14); border-color:rgba(255,255,255,.2); }
+  .ico.sel { background:rgba(170,210,255,.38); border-color:rgba(200,228,255,.75); }
+  .ico svg { width:44px; height:44px; pointer-events:none; filter:drop-shadow(0 1px 2px rgba(0,0,0,.35)); }
+  .ico .nom { color:#fff; font-size:13px; text-align:center; line-height:1.2; text-shadow:0 1px 3px rgba(0,0,0,.85);
+    word-break:break-word; pointer-events:none; }
+  .ico.vole { z-index:900; opacity:.8; pointer-events:none; }
+  .ico input, .ex-item input { width:100%; font-size:13px; padding:1px 3px; border:1px solid #3A8DDE; border-radius:2px;
+    text-align:center; color:#1B1B1B; background:#fff; outline:none; }
+
+  /* Barre des tâches */
+  #taches { position:absolute; left:0; right:0; bottom:0; height:48px; z-index:1000;
+    background:rgba(238,240,244,.93); backdrop-filter:blur(18px); border-top:1px solid rgba(0,0,0,.08);
+    display:flex; align-items:center; padding:0 8px; gap:4px; }
+  .tb { position:relative; width:44px; height:40px; border:none; border-radius:5px; background:transparent;
+    display:grid; place-items:center; cursor:default; padding:0; }
+  .tb:hover { background:rgba(255,255,255,.75); }
+  .tb svg { width:24px; height:24px; pointer-events:none; }
+  .tb.ouvert::after { content:""; position:absolute; bottom:2px; left:50%; width:6px; height:3px; margin-left:-3px;
+    border-radius:2px; background:#8A8F98; }
+  .tb.actif { background:rgba(255,255,255,.85); }
+  .tb.actif::after { width:16px; margin-left:-8px; background:#0A64C8; }
+  .tb-droite { margin-left:auto; display:flex; align-items:center; gap:2px; }
+  .tb-heure { height:40px; border:none; border-radius:5px; background:transparent; padding:0 10px; cursor:default;
+    text-align:right; font-size:12px; line-height:1.3; color:#1B1B1B; }
+  .tb-heure:hover { background:rgba(255,255,255,.75); }
+
+  /* Fenêtres */
+  .fen { position:absolute; background:#fff; border:1px solid #BDBDBD; border-radius:8px; overflow:hidden;
+    box-shadow:0 12px 36px rgba(0,0,0,.28); display:flex; flex-direction:column; min-width:240px; }
+  .fen.max { left:0!important; top:0!important; width:100%!important; height:calc(100% - 48px)!important; border-radius:0; }
+  .fen-titre { flex:0 0 34px; display:flex; align-items:center; background:#EDEDED; touch-action:none; }
+  .fen.inactif .fen-titre { background:#F7F7F7; color:#7A7A7A; }
+  .fen-ic { width:18px; height:18px; margin:0 8px 0 10px; flex:0 0 18px; }
+  .fen-ic svg { width:18px; height:18px; }
+  .fen-nom { flex:1; font-size:13px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .fb { width:46px; height:34px; border:none; background:transparent; display:grid; place-items:center; cursor:default; padding:0; }
+  .fb:hover { background:rgba(0,0,0,.08); }
+  .fb.fermer:hover { background:#C42B1C; }
+  .fb.fermer:hover svg { stroke:#fff; }
+  .fb svg { width:12px; height:12px; stroke:#1B1B1B; fill:none; stroke-width:1.2; pointer-events:none; }
+  .fen-corps { flex:1; min-height:0; display:flex; flex-direction:column; position:relative; }
+
+  /* Menu Démarrer */
+  #demarrer { position:absolute; left:8px; bottom:56px; width:min(560px, calc(100% - 16px)); z-index:1100;
+    background:rgba(243,244,247,.97); backdrop-filter:blur(24px); border:1px solid rgba(0,0,0,.12); border-radius:10px;
+    box-shadow:0 18px 44px rgba(0,0,0,.3); display:flex; flex-direction:column; }
+  .dm-recherche { margin:22px 28px 6px; }
+  .dm-recherche input { width:100%; padding:9px 14px 9px 36px; font-size:14px; border:1px solid #C9CCD2;
+    border-bottom:2px solid #0A64C8; border-radius:18px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23555' stroke-width='2'%3E%3Ccircle cx='10' cy='10' r='6'/%3E%3Cpath d='M15 15l5 5'/%3E%3C/svg%3E") no-repeat 12px center/16px; color:#1B1B1B; outline:none; }
+  .dm-titre { margin:12px 32px 6px; font-weight:600; font-size:14px; }
+  .dm-grille { display:grid; grid-template-columns:repeat(auto-fill, minmax(92px,1fr)); gap:4px; padding:0 24px 16px; min-height:190px; align-content:start; }
+  .dm-app { border:none; background:transparent; border-radius:6px; padding:10px 4px; display:grid; justify-items:center;
+    gap:6px; font-size:12.5px; color:#1B1B1B; cursor:default; }
+  .dm-app:hover, .dm-app.premier { background:rgba(255,255,255,.9); }
+  .dm-app svg { width:36px; height:36px; pointer-events:none; }
+  .dm-vide { padding:20px 32px; color:#555; grid-column:1 / -1; }
+  .dm-bas { display:flex; align-items:center; justify-content:space-between; padding:10px 28px; border-top:1px solid rgba(0,0,0,.08);
+    background:rgba(0,0,0,.03); border-radius:0 0 10px 10px; position:relative; }
+  .dm-user { display:flex; align-items:center; gap:10px; font-size:13px; }
+  .dm-user .av { width:32px; height:32px; border-radius:50%; background:#5B7DB1; color:#fff; display:grid; place-items:center; font-weight:600; }
+  .dm-alim { width:40px; height:40px; border:none; border-radius:6px; background:transparent; display:grid; place-items:center; cursor:default; }
+  .dm-alim:hover { background:rgba(255,255,255,.9); }
+  .dm-alim svg { width:20px; height:20px; stroke:#1B1B1B; fill:none; stroke-width:2; }
+  .pop { position:absolute; z-index:1200; background:#F9F9FB; border:1px solid rgba(0,0,0,.14); border-radius:8px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25); padding:5px; min-width:190px; }
+  .pop button { display:flex; align-items:center; gap:10px; width:100%; border:none; background:transparent; text-align:left;
+    font-size:14px; padding:8px 12px; border-radius:4px; color:#1B1B1B; cursor:default; }
+  .pop button:hover:not([disabled]) { background:#E6EBF3; }
+  .pop button[disabled] { color:#9A9A9A; }
+  .pop hr { border:none; border-top:1px solid #E1E1E1; margin:4px 6px; }
+  #alim-menu { right:18px; bottom:56px; }
+
+  .cal { right:8px; bottom:56px; width:300px; padding:14px; }
+  .cal .mois { font-weight:600; font-size:15px; margin-bottom:10px; text-transform:capitalize; }
+  .cal .jours { display:grid; grid-template-columns:repeat(7,1fr); gap:2px; text-align:center; font-size:13px; }
+  .cal .jours span { padding:6px 0; border-radius:50%; }
+  .cal .jours .js { color:#6A6A6A; font-size:12px; }
+  .cal .jours .auj { background:#0A64C8; color:#fff; font-weight:600; }
+  .son { right:120px; bottom:56px; width:280px; padding:16px; font-size:14px; }
+  .son input { width:100%; accent-color:#0A64C8; }
+
+  /* Boîtes de dialogue */
+  .voile { position:absolute; inset:0; z-index:1500; background:rgba(0,0,0,.18); display:grid; place-items:center; }
+  .dlg { width:min(420px, 92%); background:#fff; border:1px solid #BDBDBD; border-radius:8px; box-shadow:0 20px 50px rgba(0,0,0,.35); }
+  .dlg h4 { margin:0; font-size:13px; font-weight:400; padding:9px 14px; background:#EDEDED; border-radius:8px 8px 0 0; }
+  .dlg p { margin:16px 18px 8px; font-size:15px; }
+  .dlg label { display:block; margin:6px 18px; font-size:13px; color:#444; }
+  .dlg input { width:100%; margin-top:4px; padding:7px 9px; font-size:15px; border:1px solid #9A9A9A; border-bottom:2px solid #0A64C8; border-radius:4px; outline:none; }
+  .dlg .boutons { display:flex; justify-content:flex-end; gap:8px; padding:14px 18px; background:#F3F3F3; border-radius:0 0 8px 8px; margin-top:14px; flex-wrap:wrap; }
+  .btn-w { min-width:92px; padding:6px 14px; font-size:14px; border-radius:4px; border:1px solid #C4C4C4; background:#fff; color:#1B1B1B; cursor:default; }
+  .btn-w:hover { background:#F5F5F5; }
+  .btn-w.plein { background:#0A64C8; border-color:#0A64C8; color:#fff; }
+  .btn-w.plein:hover { background:#1A72D6; }
+
+  /* Écrans noirs : arrêt, démarrage, veille */
+  .noir { position:absolute; inset:0; z-index:2000; background:#000; color:#fff; display:grid; place-items:center; text-align:center; }
+  .noir .rond { width:26px; height:26px; margin:0 auto 14px; border:3px solid rgba(255,255,255,.25); border-top-color:#fff; border-radius:50%; animation:tourne 1s linear infinite; }
+  .noir .texte { font-size:17px; }
+  .noir .petit { font-size:14px; color:#AFAFAF; margin-top:10px; min-height:20px; }
+  .bouton-alim { width:92px; height:92px; border-radius:50%; border:3px solid #6A6A6A; background:#1A1A1A; display:grid; place-items:center; margin:0 auto 16px; cursor:pointer; }
+  .bouton-alim:hover { border-color:#AFAFAF; }
+  .bouton-alim svg { width:40px; height:40px; stroke:#DADADA; fill:none; stroke-width:2.2; }
+  .logo-dem { width:64px; height:64px; margin:0 auto 26px; display:grid; grid-template-columns:1fr 1fr; gap:4px; }
+  .logo-dem i { background:#2D9CFF; }
+  @keyframes tourne { to { transform:rotate(360deg); } }
+
+  /* Applications */
+  .bn-menu { display:flex; gap:2px; padding:2px 6px; border-bottom:1px solid #E5E5E5; position:relative; }
+  .bn-menu > button { border:none; background:transparent; padding:5px 10px; font-size:13px; border-radius:4px; color:#1B1B1B; cursor:default; }
+  .bn-menu > button:hover:not([disabled]) { background:#EEE; }
+  .bn-menu > button[disabled] { color:#1B1B1B; opacity:.55; }
+  .bn-texte { flex:1; border:none; resize:none; padding:10px 12px; font-family:Consolas, 'Cascadia Mono', monospace; font-size:15px; outline:none; color:#1B1B1B; background:#fff; }
+  .bn-etat { font-size:12px; color:#555; padding:4px 12px; border-top:1px solid #E5E5E5; background:#F7F7F7; }
+
+  .ex-barre { display:flex; align-items:center; gap:8px; padding:6px 8px; border-bottom:1px solid #E5E5E5; background:#F7F7F7; }
+  .ex-barre button { border:1px solid transparent; background:transparent; padding:5px 10px; border-radius:4px; font-size:13px; cursor:default; color:#1B1B1B; }
+  .ex-barre button:hover:not([disabled]) { background:#E6E6E6; }
+  .ex-barre button[disabled] { opacity:.4; }
+  .ex-chemin { flex:1; padding:5px 10px; border:1px solid #D5D5D5; border-radius:4px; background:#fff; font-size:13px; white-space:nowrap; overflow:hidden; }
+  .ex-main { flex:1; display:flex; min-height:0; }
+  .ex-cote { flex:0 0 150px; border-right:1px solid #E5E5E5; padding:8px 6px; display:flex; flex-direction:column; gap:2px; }
+  .ex-cote button { display:flex; align-items:center; gap:8px; border:none; background:transparent; text-align:left; padding:6px 8px; border-radius:4px; font-size:13px; cursor:default; color:#1B1B1B; }
+  .ex-cote button svg { width:18px; height:18px; }
+  .ex-cote button:hover { background:#EEE; }
+  .ex-cote button.ici { background:#E1ECF9; }
+  .ex-liste { flex:1; padding:10px; display:flex; flex-wrap:wrap; gap:6px; align-content:flex-start; overflow:auto; }
+  .ex-item { width:92px; padding:6px 4px; border:1px solid transparent; border-radius:4px; display:grid; justify-items:center; gap:4px; font-size:12.5px; text-align:center; word-break:break-word; cursor:default; }
+  .ex-item:hover { background:#EEF4FC; }
+  .ex-item.sel { background:#CCE4FF; border-color:#99C9FF; }
+  .ex-item svg { width:42px; height:42px; pointer-events:none; }
+  .ex-vide { color:#777; padding:12px; font-size:13px; }
+
+  .calc { flex:1; display:flex; flex-direction:column; background:#F3F3F3; padding:8px; gap:6px; }
+  .calc-ecran { text-align:right; padding:10px 8px 4px; }
+  .calc-ecran .op { font-size:13px; color:#666; min-height:18px; }
+  .calc-ecran .val { font-size:36px; font-weight:600; overflow:hidden; white-space:nowrap; }
+  .calc-touches { flex:1; display:grid; grid-template-columns:repeat(4,1fr); gap:3px; }
+  .calc-touches button { border:1px solid #E2E2E2; border-radius:4px; background:#FBFBFB; font-size:18px; cursor:default; color:#1B1B1B; }
+  .calc-touches button:hover { background:#F0F0F0; }
+  .calc-touches button.op { background:#F5F5F5; }
+  .calc-touches button.egal { background:#0A64C8; color:#fff; border-color:#0A64C8; }
+
+  .ph-grille { flex:1; padding:12px; display:grid; grid-template-columns:repeat(auto-fill, minmax(140px,1fr)); gap:10px; align-content:start; overflow:auto; }
+  .ph-vign { border:none; padding:0; border-radius:6px; overflow:hidden; background:#EEE; cursor:default; text-align:left; }
+  .ph-vign div { height:92px; }
+  .ph-vign span { display:block; padding:6px 8px; font-size:12.5px; color:#1B1B1B; }
+  .ph-grand { flex:1; display:flex; flex-direction:column; background:#202020; }
+  .ph-grand .img { flex:1; margin:12px; border-radius:4px; }
+  .ph-grand .bas { display:flex; justify-content:space-between; align-items:center; padding:0 12px 10px; color:#EEE; font-size:13px; }
+  .ph-grand button { border:1px solid #555; background:#333; color:#EEE; border-radius:4px; padding:5px 12px; cursor:default; }
+
+  .nav { flex:1; display:flex; flex-direction:column; }
+  .nav-barre { display:flex; gap:6px; padding:6px 8px; background:#F7F7F7; border-bottom:1px solid #E5E5E5; }
+  .nav-barre input { flex:1; padding:6px 12px; border:1px solid #D0D0D0; border-radius:14px; font-size:13px; color:#1B1B1B; background:#fff; outline:none; }
+  .nav-page { flex:1; overflow:auto; padding:30px 24px; text-align:center; }
+  .nav-page h3 { font-family:Georgia, serif; font-size:34px; margin:10px 0 18px; color:#2D6BD4; }
+  .nav-page form { display:flex; gap:8px; max-width:440px; margin:0 auto; }
+  .nav-page form input { flex:1; padding:9px 16px; border:1px solid #C9C9C9; border-radius:20px; font-size:15px; color:#1B1B1B; background:#fff; outline:none; }
+  .nav-page form button { border:none; background:#2D6BD4; color:#fff; border-radius:20px; padding:0 16px; cursor:default; }
+  .nav-res { text-align:left; max-width:520px; margin:18px auto 0; }
+  .nav-res p { margin:0 0 14px; font-size:14px; }
+  .nav-res b { color:#1A0DAB; font-weight:400; font-size:16px; display:block; }
+
+  .par { flex:1; display:flex; min-height:0; }
+  .par-cote { flex:0 0 170px; background:#F3F3F3; padding:14px 8px; font-size:13px; }
+  .par-cote div { padding:7px 10px; border-radius:4px; }
+  .par-cote .ici { background:#fff; font-weight:600; }
+  .par-main { flex:1; padding:16px 20px; overflow:auto; }
+  .par-main h3 { margin:0 0 4px; font-size:20px; font-weight:600; }
+  .par-main p { margin:0 0 12px; font-size:13px; color:#555; }
+  .apercu { height:96px; width:170px; border-radius:6px; margin-bottom:14px; border:1px solid #CCC; }
+  .fonds { display:grid; grid-template-columns:repeat(auto-fill, minmax(96px,1fr)); gap:10px; }
+  .fonds button { border:2px solid transparent; border-radius:6px; padding:0; background:none; cursor:default; text-align:center; font-size:12px; color:#1B1B1B; }
+  .fonds button div { height:58px; border-radius:4px; }
+  .fonds button.ici { border-color:#0A64C8; }
+
+  .corb { flex:1; overflow:auto; }
+  .corb-barre { display:flex; gap:8px; padding:6px 8px; border-bottom:1px solid #E5E5E5; background:#F7F7F7; }
+  .corb-ligne { display:flex; align-items:center; gap:10px; padding:6px 12px; border-bottom:1px solid #F0F0F0; font-size:13px; }
+  .corb-ligne svg { width:26px; height:26px; }
+  .corb-ligne span { flex:1; }
+
+  @media (max-width: 700px) {
+    body { font-size:18px; padding:0 12px 60px; }
+    .mission { grid-template-columns:1fr; }
+    .m-boutons { grid-row:auto; grid-column:1; flex-direction:row; }
+    .ex-cote, .par-cote { display:none; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition:none!important; animation-duration:3s!important; } }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header>
+    <h1>Un bureau Windows pour s'entraîner</h1>
+    <p class="chapo">Tout est faux ici. Rien ne peut casser.</p>
+    <nav class="liens-niveaux">
+      <a href="../">← Niveau 1</a>
+      <a href="../niveau2/">← Niveau 2</a>
+    </nav>
+  </header>
+
+  <div class="modes">
+    <button class="mode ici" id="mode-seul">Seul</button>
+    <button class="mode" id="mode-deux">À deux, côte à côte</button>
+  </div>
+
+  <section class="binome" id="binome" hidden aria-live="polite">
+    <div id="b-debut">
+      <p class="m-faire">Chacun sur son ordinateur, le même code.</p>
+      <p class="voir">→ Un seul code pour les deux. Tapez le même.</p>
+      <div class="b-ligne">
+        <label class="b-code">Code <input id="b-code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off"></label>
+        <button class="rejouer" id="b-creer">Créer un code</button>
+      </div>
+      <div class="b-ligne">
+        <span>Vous êtes assis :</span>
+        <button class="b-place" data-place="gauche">À gauche</button>
+        <button class="b-place" data-place="droite">À droite</button>
+      </div>
+      <button class="b-go" id="b-go">Commencer à deux</button>
+      <p class="depanne" id="b-err"></p>
+    </div>
+    <div id="b-jeu" hidden>
+      <div class="m-haut"><span class="num" id="b-num"></span><span class="niv" id="b-qui"></span><span class="num" id="b-titre"></span></div>
+      <p class="m-faire" id="b-faire"></p>
+      <p class="voir" id="b-voir"></p>
+      <p class="b-parle" id="b-parle"></p>
+      <p class="b-etat" id="b-etat"></p>
+      <div class="b-ligne">
+        <button class="rejouer" id="b-prec">← Tour d'avant</button>
+        <button class="b-go" id="b-suiv"></button>
+        <button class="rejouer" id="b-quitter">Changer de code</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="mission" id="mission" aria-live="polite">
+    <div class="m-haut"><span class="num" id="m-num"></span><span class="niv" id="m-niv"></span></div>
+    <p class="m-faire" id="m-faire"></p>
+    <p class="voir" id="m-voir"></p>
+    <p class="depanne" id="m-dep"></p>
+    <div class="m-boutons"><button class="rejouer" id="m-passer">Passer →</button></div>
+  </section>
+
+  <div class="moniteur">
+    <div class="ecran" id="ecran">
+      <div id="fond"></div>
+      <div id="zone"><div id="rect"></div></div>
+      <div id="fenetres"></div>
+
+      <div id="demarrer" hidden>
+        <div class="dm-recherche"><input id="dm-cherche" type="text" placeholder="Rechercher une application" autocomplete="off" spellcheck="false"></div>
+        <div class="dm-titre" id="dm-titre">Épinglé</div>
+        <div class="dm-grille" id="dm-grille"></div>
+        <div class="dm-bas">
+          <div class="dm-user"><span class="av">A</span>Adhérent</div>
+          <button class="dm-alim" id="dm-alim" title="Marche/Arrêt"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
+        </div>
+      </div>
+      <div class="pop" id="alim-menu" hidden>
+        <button data-alim="veille">Mettre en veille</button>
+        <button data-alim="arreter">Arrêter</button>
+        <button data-alim="redemarrer">Redémarrer</button>
+      </div>
+      <div class="pop cal" id="calendrier" hidden></div>
+      <div class="pop son" id="volume" hidden>
+        <div style="margin-bottom:8px">Volume</div>
+        <input type="range" min="0" max="100" value="60" id="vol">
+      </div>
+
+      <div id="taches">
+        <button class="tb" id="tb-demarrer" title="Démarrer"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="3" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/></svg></button>
+        <button class="tb" id="tb-cherche" title="Rechercher"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg></button>
+        <div id="tb-apps" style="display:flex;gap:4px"></div>
+        <div class="tb-droite">
+          <button class="tb" id="tb-son" title="Son"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#333"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+          <button class="tb-heure" id="tb-heure" title="Date et heure"><div id="h-heure"></div><div id="h-date"></div></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="barre">
+    <span class="score" id="m-score"></span>
+    <button class="rejouer" id="raz">Remettre le bureau à zéro</button>
+  </div>
+
+  <div id="solo-listes">
+    <h2 class="titre-partie">Socle</h2>
+    <div class="liste-missions" id="liste-1"></div>
+    <h2 class="titre-partie">Si ça va vite</h2>
+    <div class="liste-missions" id="liste-2"></div>
+    <h2 class="titre-partie">En réserve</h2>
+    <div class="liste-missions" id="liste-3"></div>
+  </div>
+  <div id="deux-liste" hidden>
+    <h2 class="titre-partie" id="b-liste-titre">Les tours</h2>
+    <div class="liste-missions" id="b-liste"></div>
+  </div>
+
+</div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const norm = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+
+  /* ── Les missions ─────────────────────────────────────────── */
+  const MISSIONS = [
+    { k: 'selection',   n: 1, faire: 'Cliquez une fois sur la Corbeille.', voir: '→ Elle se colore en bleu.', dep: '⚠ Une fenêtre s’ouvre ? C’était deux clics. Fermez-la par la croix.' },
+    { k: 'deselection', n: 1, faire: 'Cliquez dans le vide du bureau.', voir: '→ Le bleu disparaît.' },
+    { k: 'demarrer',    n: 1, faire: 'Cliquez sur Démarrer, en bas à gauche.', voir: '→ Un grand menu s’ouvre.', dep: '⚠ Démarrer : le logo à quatre carreaux bleus.' },
+    { k: 'demarrer_ferme', n: 1, faire: 'Refermez-le : un clic dans le vide.', voir: '→ Le menu disparaît.' },
+    { k: 'ouvrir_bn',   n: 1, faire: 'Deux clics sur Bloc-notes, sur le bureau.', voir: '→ Une fenêtre s’ouvre.', dep: '⚠ Rien ? Deux clics plus rapides, sans bouger la main.' },
+    { k: 'fermer',      n: 1, faire: 'Fermez-la par la croix, en haut à droite.', voir: '→ La fenêtre disparaît.', dep: '⚠ La croix devient rouge sous la flèche.' },
+    { k: 'heure',       n: 1, faire: 'Cliquez sur l’heure, en bas à droite.', voir: '→ Un calendrier s’ouvre.' },
+    { k: 'reduire',     n: 2, faire: 'Ouvrez Photos. Cliquez sur le petit trait.', voir: '→ La fenêtre se cache en bas.', dep: '⚠ Le trait est à gauche du carré et de la croix.' },
+    { k: 'restaurer',   n: 2, faire: 'Faites-la revenir : son icône, en bas.', voir: '→ La fenêtre réapparaît.', dep: '⚠ Son icône est soulignée dans la barre du bas.' },
+    { k: 'agrandir',    n: 2, faire: 'Cliquez sur le carré, en haut à droite.', voir: '→ La fenêtre prend tout l’écran.' },
+    { k: 'deplacer',    n: 2, faire: 'Tirez une fenêtre par sa barre du haut.', voir: '→ La fenêtre suit la souris.', dep: '⚠ Elle ne bouge pas ? Recliquez d’abord sur le carré.' },
+    { k: 'chercher',    n: 2, faire: 'Démarrer, puis tapez : calc', voir: '→ Calculatrice apparaît. Un clic dessus.', dep: '⚠ Tapez sans cliquer ailleurs : le menu écoute déjà.' },
+    { k: 'calcul',      n: 2, faire: 'Calculez 12 + 30, puis =', voir: '→ Le résultat 42 s’affiche.', dep: '⚠ Une erreur ? La touche C efface tout.' },
+    { k: 'dossier',     n: 3, faire: 'Clic droit dans le vide : Nouveau dossier.', voir: '→ Un dossier jaune apparaît.' },
+    { k: 'renommer',    n: 3, faire: 'Tapez Recettes, puis Entrée.', voir: '→ Le dossier s’appelle Recettes.', dep: '⚠ Plus de cadre bleu ? Clic droit sur le dossier : Renommer.' },
+    { k: 'fond',        n: 3, faire: 'Clic droit dans le vide : Personnaliser.', voir: '→ Cliquez une image : le fond change.' },
+    { k: 'enregistrer', n: 3, faire: 'Bloc-notes : écrivez, puis Fichier, Enregistrer.', voir: '→ Nommez-le : courses. Il va dans Documents.' },
+    { k: 'corbeille',   n: 3, faire: 'Tirez le dossier Recettes sur la Corbeille.', voir: '→ Il disparaît du bureau.', dep: '⚠ Gardez le bouton appuyé jusqu’à la Corbeille.' },
+    { k: 'restaurer_corb', n: 3, faire: 'Ouvrez la Corbeille, puis Restaurer.', voir: '→ Le dossier revient sur le bureau.' },
+    { k: 'rectangle',   n: 3, faire: 'Encadrez 3 icônes : tirez dans le vide.', voir: '→ Un cadre bleu, puis 3 icônes bleues.', dep: '⚠ Partez du vide, pas d’une icône.' },
+    { k: 'eteindre',    n: 3, faire: 'Démarrer, le bouton rond, puis Arrêter.', voir: '→ L’écran devient noir.' },
+    { k: 'rallumer',    n: 3, faire: 'Rallumez : un seul appui sur le bouton.', voir: '→ Attendez. Le bureau revient.', dep: '⚠ On n’appuie pas dix fois. On attend.' },
+  ];
+  const NIVEAUX = { 1: ['niv-1', 'Socle'], 2: ['niv-2', 'Si ça va vite'], 3: ['niv-3', 'En réserve'] };
+  let faites = new Set(), courante = 0, flash = null;
+
+  function signal(k) {
+    binomeVoit(k);
+    if (faites.has(k)) return;
+    const i = MISSIONS.findIndex(m => m.k === k);
+    if (i < 0) return;
+    faites.add(k);
+    const etaitCourante = i === courante;
+    if (etaitCourante) {
+      const suivante = MISSIONS.findIndex((m, j) => j > i && !faites.has(m.k));
+      courante = suivante >= 0 ? suivante : MISSIONS.findIndex(m => !faites.has(m.k));
+      bravo();
+    } else majMissions();
+  }
+  function bravo() {
+    clearTimeout(flash);
+    const el = $('#mission');
+    el.classList.add('reussi');
+    $('#m-faire').textContent = '✓ Bravo !';
+    $('#m-voir').textContent = ''; $('#m-dep').textContent = '';
+    majListe();
+    flash = setTimeout(() => { el.classList.remove('reussi'); majMissions(); }, 1300);
+  }
+  function majMissions() {
+    const el = $('#mission');
+    if (courante < 0 || faites.size === MISSIONS.length) {
+      el.classList.add('tout-fini');
+      $('#m-num').textContent = 'Toutes les missions sont faites';
+      $('#m-niv').className = 'niv niv-1'; $('#m-niv').textContent = 'Bravo';
+      $('#m-faire').textContent = 'Le bureau est à vous : explorez librement.';
+      $('#m-voir').textContent = '→ Rien ne peut casser.'; $('#m-dep').textContent = '';
+      $('#m-passer').hidden = true;
+    } else {
+      el.classList.remove('tout-fini');
+      const m = MISSIONS[courante];
+      $('#m-num').textContent = `Mission ${courante + 1} sur ${MISSIONS.length}`;
+      $('#m-niv').className = 'niv ' + NIVEAUX[m.n][0]; $('#m-niv').textContent = NIVEAUX[m.n][1];
+      $('#m-faire').textContent = m.faire; $('#m-voir').textContent = m.voir; $('#m-dep').textContent = m.dep || '';
+      $('#m-passer').hidden = false;
+    }
+    majListe();
+  }
+  function majListe() {
+    [1, 2, 3].forEach(n => {
+      const box = $('#liste-' + n);
+      box.innerHTML = '';
+      MISSIONS.forEach((m, i) => {
+        if (m.n !== n) return;
+        const b = document.createElement('button');
+        b.className = 'etape' + (faites.has(m.k) ? ' ok' : '') + (i === courante ? ' courante' : '');
+        b.innerHTML = `<span class="coche">✓</span><span class="n">${i + 1}</span><span>${esc(m.faire)}</span>`;
+        b.onclick = () => { courante = i; clearTimeout(flash); $('#mission').classList.remove('reussi'); majMissions(); $('#mission').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+        box.appendChild(b);
+      });
+    });
+    const s = $('#m-score');
+    s.textContent = `${faites.size} sur ${MISSIONS.length} missions`;
+    s.classList.toggle('fini', faites.size === MISSIONS.length);
+  }
+  $('#m-passer').onclick = () => {
+    const suivante = MISSIONS.findIndex((m, j) => j > courante && !faites.has(m.k));
+    courante = suivante >= 0 ? suivante : MISSIONS.findIndex(m => !faites.has(m.k));
+    majMissions();
+  };
+
+  /* ── À deux, côte à côte ──────────────────────────────────────
+     Le code choisit le scénario (1er chiffre) et qui commence (dernier chiffre pair : la gauche).
+     Chaque étape se joue deux fois : l'un fait, l'autre guide, puis on inverse. */
+  const SCENARIOS = [
+    { titre: 'La liste de courses', etapes: [
+      { k: 'ouvrir:blocnotes', faire: 'Deux clics sur Bloc-notes.', voir: 'Une fenêtre blanche s’ouvre.' },
+      { k: 'trois_lignes', faire: 'Écrivez 3 choses à acheter, une par ligne.', voir: 'Trois lignes écrites.', parle: 'Décidez ensemble des 3 choses, avant d’écrire.' },
+      { k: 'enregistrer', faire: 'Fichier, Enregistrer. Nom : courses.', voir: 'Le titre devient courses.txt.' },
+      { k: 'fermer', faire: 'Fermez Bloc-notes par la croix.', voir: 'La fenêtre disparaît.' },
+      { k: 'ouvrir_fichier', faire: 'Deux clics sur Documents, puis sur courses.', voir: 'Votre liste réapparaît.', parle: 'Relisez vos deux listes : sont-elles pareilles ?' },
+    ] },
+    { titre: 'Ranger le bureau', etapes: [
+      { k: 'dossier', faire: 'Clic droit dans le vide : Nouveau dossier.', voir: 'Un dossier jaune apparaît.', parle: 'Choisissez ensemble un nom pour ce dossier.' },
+      { k: 'renomme', faire: 'Tapez le nom choisi, puis Entrée.', voir: 'Le dossier porte votre nom.' },
+      { k: 'icone_deplacee', faire: 'Tirez une icône à un autre endroit.', voir: 'L’icône reste là où vous lâchez.', parle: 'Laquelle, et où ? Décidez ensemble.' },
+      { k: 'rectangle', faire: 'Encadrez 3 icônes : tirez dans le vide.', voir: 'Trois icônes deviennent bleues.' },
+      { k: 'corbeille', faire: 'Tirez votre dossier sur la Corbeille.', voir: 'Il disparaît du bureau.' },
+      { k: 'restaurer_corb', faire: 'Ouvrez la Corbeille, puis Restaurer.', voir: 'Le dossier revient.', parle: 'Rien n’est perdu tant que la Corbeille n’est pas vidée.' },
+    ] },
+    { titre: 'Un bureau à votre goût', etapes: [
+      { k: 'ouvrir:parametres', faire: 'Clic droit dans le vide : Personnaliser.', voir: 'Les Paramètres s’ouvrent.' },
+      { k: 'fond', faire: 'Cliquez sur une image de fond.', voir: 'Le fond du bureau change.', parle: 'Chacun choisit le sien. Dites pourquoi à votre voisin.' },
+      { k: 'fermer', faire: 'Fermez les Paramètres par la croix.', voir: 'Le bureau réapparaît, avec le nouveau fond.' },
+      { k: 'heure', faire: 'Cliquez sur l’heure, en bas à droite.', voir: 'Un calendrier s’ouvre.', parle: 'Lisez la date à voix haute.' },
+      { k: 'photo_grande', faire: 'Ouvrez Photos. Un clic sur une photo.', voir: 'La photo s’affiche en grand.', parle: 'Montrez votre photo préférée à votre voisin.' },
+      { k: 'reduire', faire: 'Cliquez sur le petit trait.', voir: 'La fenêtre se cache en bas.' },
+      { k: 'restaurer', faire: 'Faites-la revenir : son icône, en bas.', voir: 'Photos réapparaît.' },
+    ] },
+    { titre: 'Les calculs du marché', etapes: [
+      { k: 'chercher', faire: 'Démarrer, tapez calc, un clic sur Calculatrice.', voir: 'La Calculatrice s’ouvre.' },
+      { k: 'resultat:12', faire: '3 kilos de pommes à 4 € : calculez 3 × 4.', voir: 'Le résultat 12 s’affiche.', parle: 'Dites le résultat de tête, avant de calculer.' },
+      { k: 'resultat:42', faire: 'Ajoutez 30 € de viande : 12 + 30.', voir: 'Le résultat 42 s’affiche.', parle: 'Votre voisin trouve-t-il pareil ?' },
+      { k: 'deplacer', faire: 'Tirez la Calculatrice par sa barre du haut.', voir: 'Elle suit la souris.' },
+      { k: 'fermer', faire: 'Fermez la Calculatrice par la croix.', voir: 'Elle disparaît.' },
+      { k: 'eteindre', faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.' },
+      { k: 'rallumer', faire: 'Un seul appui sur le bouton, puis on attend.', voir: 'Le bureau revient.', parle: 'On n’appuie pas dix fois : on attend ensemble.' },
+    ] },
+  ];
+  const bi = { actif: false, code: '', place: null, scen: null, tour: 0, fait: false, commence: 'gauche' };
+  const autre = p => p === 'gauche' ? 'droite' : 'gauche';
+  function binomeVoit(k) {
+    if (!bi.actif || !bi.scen || bi.fait) return;
+    const t = bi.tour, e = bi.scen.etapes[Math.floor(t / 2)];
+    if (!e || quiFait(t) !== bi.place || e.k !== k) return;
+    bi.fait = true;
+    majBinome();
+  }
+  function quiFait(t) { return t % 2 === 0 ? bi.commence : autre(bi.commence); }
+  function majBinome() {
+    const box = $('#binome');
+    $('#b-debut').hidden = !!bi.scen; $('#b-jeu').hidden = !bi.scen;
+    box.classList.remove('moi', 'lui', 'reussi');
+    if (!bi.scen) return;
+    const total = bi.scen.etapes.length * 2;
+    if (bi.tour >= total) {
+      box.classList.add('reussi');
+      $('#b-num').textContent = `${bi.scen.titre}`;
+      $('#b-qui').className = 'niv niv-moi'; $('#b-qui').textContent = 'Terminé';
+      $('#b-titre').textContent = '';
+      $('#b-faire').textContent = '✓ Bravo à vous deux !';
+      $('#b-voir').textContent = '→ Changez de code pour un autre scénario.';
+      $('#b-parle').textContent = 'Qu’est-ce qui a été le plus difficile ? Dites-le à votre voisin.';
+      $('#b-etat').textContent = '';
+      $('#b-suiv').hidden = true;
+      majListeBinome(); return;
+    }
+    $('#b-suiv').hidden = false;
+    const e = bi.scen.etapes[Math.floor(bi.tour / 2)];
+    const moi = quiFait(bi.tour) === bi.place;
+    box.classList.add(moi ? 'moi' : 'lui');
+    $('#b-num').textContent = `Tour ${bi.tour + 1} sur ${total}`;
+    $('#b-titre').textContent = '· ' + bi.scen.titre;
+    $('#b-qui').className = 'niv ' + (moi ? 'niv-moi' : 'niv-lui');
+    $('#b-qui').textContent = moi ? 'À vous de faire' : 'À votre voisin';
+    $('#b-parle').textContent = e.parle ? '💬 ' + e.parle : '';
+    if (moi && bi.fait) {
+      box.classList.add('reussi');
+      $('#b-faire').textContent = '✓ Réussi !';
+      $('#b-voir').textContent = '';
+      $('#b-etat').textContent = 'Tournez-vous : c’est à votre voisin. Vous le guidez.';
+      $('#b-suiv').textContent = 'À mon voisin →'; $('#b-suiv').classList.add('fort');
+    } else if (moi) {
+      $('#b-faire').textContent = e.faire;
+      $('#b-voir').textContent = '→ ' + e.voir;
+      $('#b-etat').textContent = 'Votre voisin lit et vous guide. Il ne touche pas votre souris.';
+      $('#b-suiv').textContent = 'C’est fait →'; $('#b-suiv').classList.remove('fort');
+    } else {
+      $('#b-faire').textContent = 'Guidez-le : « ' + e.faire + ' »';
+      $('#b-voir').textContent = '→ Sur son écran : ' + e.voir;
+      $('#b-etat').textContent = 'Lisez-lui la consigne. Montrez du doigt, sans toucher sa souris.';
+      $('#b-suiv').textContent = 'Il a réussi →'; $('#b-suiv').classList.add('fort');
+    }
+    majListeBinome();
+  }
+  function majListeBinome() {
+    const box = $('#b-liste'); box.innerHTML = '';
+    $('#b-liste-titre').textContent = bi.scen ? bi.scen.titre : 'Les tours';
+    if (!bi.scen) return;
+    bi.scen.etapes.forEach((e, n) => [0, 1].forEach(d => {
+      const t = n * 2 + d;
+      const b = document.createElement('button');
+      const moi = quiFait(t) === bi.place;
+      b.className = 'etape' + (t < bi.tour ? ' ok' : '') + (t === bi.tour ? ' courante' : '');
+      b.innerHTML = `<span class="coche">✓</span><span class="n">${t + 1}</span><span><b>${moi ? 'Moi' : 'Mon voisin'}</b> · ${esc(e.faire)}</span>`;
+      b.onclick = () => { bi.tour = t; bi.fait = false; majBinome(); $('#binome').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+      box.appendChild(b);
+    }));
+  }
+  function lireCode(c) {
+    if (!/^\d{4}$/.test(c)) return null;
+    const s = SCENARIOS[+c[0] - 1];
+    return s ? { scen: s, commence: (+c[3]) % 2 === 0 ? 'gauche' : 'droite' } : null;
+  }
+  $('#b-creer').onclick = () => {
+    const c = String(1 + Math.floor(Math.random() * SCENARIOS.length)) + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
+    $('#b-code').value = c; $('#b-err').textContent = 'Dites ce code à votre voisin : il tape le même.';
+  };
+  document.querySelectorAll('.b-place').forEach(b => b.onclick = () => {
+    bi.place = b.dataset.place;
+    document.querySelectorAll('.b-place').forEach(x => x.classList.toggle('ici', x === b));
+  });
+  $('#b-go').onclick = () => {
+    const c = $('#b-code').value.trim(), l = lireCode(c);
+    if (!l) { $('#b-err').textContent = '⚠ Code inconnu. 4 chiffres, le premier de 1 à ' + SCENARIOS.length + '.'; return; }
+    if (!bi.place) { $('#b-err').textContent = '⚠ Choisissez : à gauche ou à droite.'; return; }
+    Object.assign(bi, { code: c, scen: l.scen, commence: l.commence, tour: 0, fait: false });
+    $('#b-err').textContent = '';
+    majBinome();
+  };
+  $('#b-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#b-go').click(); });
+  $('#b-suiv').onclick = () => { bi.tour++; bi.fait = false; majBinome(); };
+  $('#b-prec').onclick = () => { if (bi.tour > 0) { bi.tour--; bi.fait = false; majBinome(); } };
+  $('#b-quitter').onclick = () => { bi.scen = null; $('#b-code').value = ''; majBinome(); majListeBinome(); };
+  function choisirMode(deux) {
+    bi.actif = deux;
+    $('#mode-seul').classList.toggle('ici', !deux); $('#mode-deux').classList.toggle('ici', deux);
+    $('#binome').hidden = !deux; $('#mission').hidden = deux;
+    $('#solo-listes').hidden = deux; $('#deux-liste').hidden = !deux; $('#m-score').hidden = deux;
+    majBinome();
+  }
+  $('#mode-seul').onclick = () => choisirMode(false);
+  $('#mode-deux').onclick = () => choisirMode(true);
+
+  /* ── Les dessins ──────────────────────────────────────────── */
+  const G = {
+    corbeille: `<svg viewBox="0 0 48 48"><rect x="11" y="10" width="26" height="5" rx="2" fill="#C9D6E4"/><path d="M14 15h20l-2 27H16z" fill="#EAF1F8" stroke="#7D8FA3" stroke-width="2"/><path d="M20 21v15M24 21v15M28 21v15" stroke="#9AAABB" stroke-width="2"/></svg>`,
+    corbeillePleine: `<svg viewBox="0 0 48 48"><path d="M16 12l6-6 6 4 5-3 2 7z" fill="#fff" stroke="#9AAABB"/><rect x="11" y="10" width="26" height="5" rx="2" fill="#C9D6E4"/><path d="M14 15h20l-2 27H16z" fill="#EAF1F8" stroke="#7D8FA3" stroke-width="2"/><path d="M20 21v15M24 21v15M28 21v15" stroke="#9AAABB" stroke-width="2"/></svg>`,
+    dossier: `<svg viewBox="0 0 48 48"><path d="M4 12a3 3 0 0 1 3-3h11l4 4h19a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#E8A815"/><path d="M4 18h40v19a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#FFCB45"/></svg>`,
+    explorateur: `<svg viewBox="0 0 48 48"><path d="M4 12a3 3 0 0 1 3-3h11l4 4h19a3 3 0 0 1 3 3v21a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#E8A815"/><path d="M4 18h40v19a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3z" fill="#FFCB45"/><rect x="4" y="24" width="40" height="5" fill="#2D8CFF"/></svg>`,
+    blocnotes: `<svg viewBox="0 0 48 48"><rect x="9" y="6" width="30" height="36" rx="3" fill="#fff" stroke="#3A7BD5" stroke-width="2"/><rect x="9" y="6" width="30" height="7" rx="3" fill="#3A7BD5"/><path d="M15 20h18M15 26h18M15 32h12" stroke="#9FB3C8" stroke-width="2"/></svg>`,
+    photos: `<svg viewBox="0 0 48 48"><rect x="5" y="9" width="38" height="30" rx="4" fill="#8EC3EE"/><path d="M5 33l12-12 9 9 6-6 11 11v1a3 3 0 0 1-3 3H8a3 3 0 0 1-3-3z" fill="#3F8F55"/><circle cx="34" cy="17" r="4" fill="#FFD259"/></svg>`,
+    internet: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#2D8CFF"/><path d="M7 24h34M24 7c-7 5-7 29 0 34M24 7c7 5 7 29 0 34M10 15h28M10 33h28" stroke="#fff" stroke-width="2" fill="none"/></svg>`,
+    calculatrice: `<svg viewBox="0 0 48 48"><rect x="10" y="5" width="28" height="38" rx="4" fill="#4E5862"/><rect x="14" y="9" width="20" height="8" rx="1" fill="#D9F0E3"/><g fill="#fff"><rect x="14" y="21" width="5" height="5" rx="1"/><rect x="21.5" y="21" width="5" height="5" rx="1"/><rect x="29" y="21" width="5" height="5" rx="1"/><rect x="14" y="28" width="5" height="5" rx="1"/><rect x="21.5" y="28" width="5" height="5" rx="1"/><rect x="29" y="28" width="5" height="12" rx="1" fill="#FF9F2E"/><rect x="14" y="35" width="12.5" height="5" rx="1"/></g></svg>`,
+    parametres: `<svg viewBox="0 0 48 48"><g transform="translate(24 24)" fill="#6B7785"><circle r="12"/><g id="dent"><rect x="-3.5" y="-18" width="7" height="8" rx="1.5"/></g><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(45)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(90)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(135)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(180)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(225)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(270)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(315)"/><circle r="5" fill="#fff"/></g></svg>`,
+    txt: `<svg viewBox="0 0 48 48"><path d="M11 5h19l9 9v29H11z" fill="#fff" stroke="#8A96A3" stroke-width="2"/><path d="M30 5v9h9" fill="#E3E8EE" stroke="#8A96A3" stroke-width="2"/><path d="M16 22h17M16 28h17M16 34h11" stroke="#9FB3C8" stroke-width="2"/></svg>`,
+    img: `<svg viewBox="0 0 48 48"><path d="M11 5h19l9 9v29H11z" fill="#fff" stroke="#8A96A3" stroke-width="2"/><rect x="15" y="20" width="20" height="16" fill="#8EC3EE"/><path d="M15 34l6-6 4 4 3-3 7 7v0H15z" fill="#3F8F55"/></svg>`,
+  };
+  const APPS = {
+    blocnotes:   { titre: 'Bloc-notes', l: 480, h: 330, g: 'blocnotes' },
+    explorateur: { titre: 'Explorateur de fichiers', l: 590, h: 370, g: 'explorateur' },
+    calculatrice:{ titre: 'Calculatrice', l: 290, h: 420, g: 'calculatrice' },
+    photos:      { titre: 'Photos', l: 560, h: 380, g: 'photos' },
+    internet:    { titre: 'Internet', l: 620, h: 400, g: 'internet' },
+    parametres:  { titre: 'Paramètres', l: 600, h: 390, g: 'parametres' },
+    corbeille:   { titre: 'Corbeille', l: 480, h: 320, g: 'corbeille' },
+  };
+  const EPINGLES_DM = ['blocnotes', 'calculatrice', 'photos', 'internet', 'parametres', 'explorateur'];
+  const EPINGLES_TB = ['explorateur', 'internet'];
+  const FONDS = [
+    { nom: 'Bleu Windows', css: 'radial-gradient(ellipse at 68% 58%, #7FD4FF 0%, #1E7BE6 22%, #0A3FA8 48%, #081B4D 80%)' },
+    { nom: 'Coucher de soleil', css: 'linear-gradient(#FFB36B 0%, #F47C5B 38%, #6FA8CC 39%, #2A6B92 68%, #E6D2A2 69%, #D9BF86 100%)' },
+    { nom: 'Forêt', css: 'linear-gradient(165deg, #173F22 0%, #3E8E3A 55%, #CFE5A0 100%)' },
+    { nom: 'Lavande', css: 'linear-gradient(135deg, #7D6BB8 0%, #BFA9E0 50%, #F3DDEE 100%)' },
+    { nom: 'Nuit étoilée', css: 'radial-gradient(circle at 18% 22%, #2C3E70 0%, #0B1020 70%)' },
+    { nom: 'Uni', css: '#4F6377' },
+  ];
+  const PHOTOS = {
+    'Plage.jpg': 'linear-gradient(#9ED4F5 0 55%, #3B8FC2 55% 72%, #F0D9A0 72%)',
+    'Montagne.jpg': 'linear-gradient(160deg, #C9E4F7 0 40%, #7C8FA6 40% 62%, #3F7A4A 62%)',
+    'Jardin.jpg': 'radial-gradient(circle at 30% 40%, #F4A3C0 0 10%, transparent 11%), radial-gradient(circle at 65% 55%, #FFD259 0 9%, transparent 10%), linear-gradient(#BFE3F7 0 45%, #5FAE58 45%)',
+    'Anniversaire.jpg': 'radial-gradient(circle at 50% 70%, #FFFFFF 0 18%, transparent 19%), linear-gradient(#FFD1DC, #FF9FB6)',
+    'Chat.jpg': 'radial-gradient(circle at 50% 55%, #E09A4B 0 24%, transparent 25%), linear-gradient(#EDE3D5, #C9B79C)',
+    'Marché.jpg': 'repeating-linear-gradient(90deg, #E8453C 0 30px, #fff 30px 60px), #eee',
+  };
+
+  /* ── L'état du bureau ─────────────────────────────────────── */
+  let icones, fs, corbeille, fond, selection, fen, zTop, cascade, compteId, eteint;
+  function etatDepart() {
+    icones = [
+      { id: 'corbeille', nom: 'Corbeille', genre: 'app', app: 'corbeille', col: 0, row: 0 },
+      { id: 'documents', nom: 'Documents', genre: 'dossier', chemin: 'Documents', col: 0, row: 1 },
+      { id: 'blocnotes', nom: 'Bloc-notes', genre: 'app', app: 'blocnotes', col: 0, row: 2 },
+      { id: 'photos', nom: 'Photos', genre: 'app', app: 'photos', col: 0, row: 3 },
+      { id: 'internet', nom: 'Internet', genre: 'app', app: 'internet', col: 0, row: 4 },
+    ];
+    fs = {
+      'Documents': [
+        { nom: 'Rendez-vous.txt', genre: 'txt', contenu: 'Mardi 10 h : dentiste.\nJeudi : cours d’informatique.' },
+        { nom: 'Recette crêpes.txt', genre: 'txt', contenu: '250 g de farine\n4 œufs\n1/2 litre de lait\n1 pincée de sel' },
+      ],
+      'Images': Object.keys(PHOTOS).map(nom => ({ nom, genre: 'img' })),
+    };
+    corbeille = []; fond = 0; selection = new Set(); fen = {}; zTop = 10; cascade = 0; compteId = 0; eteint = false;
+  }
+
+  const ecran = $('#ecran'), zone = $('#zone'), couche = $('#fenetres'), rect = $('#rect');
+  const CW = 88, CH = 98, M = 6;
+
+  /* ── Les icônes du bureau ─────────────────────────────────── */
+  function colsMax() { return Math.max(1, Math.floor((zone.clientWidth - M) / CW)); }
+  function lignesMax() { return Math.max(1, Math.floor((zone.clientHeight - M) / CH)); }
+  function occupe(col, row, sauf) { return icones.some(i => i !== sauf && i.col === col && i.row === row); }
+  function celluleLibre(sauf) {
+    const rows = lignesMax();
+    for (let c = 0; c < colsMax(); c++) for (let r = 0; r < rows; r++) if (!occupe(c, r, sauf)) return [c, r];
+    return [0, 0];
+  }
+  function recaler() {
+    const rows = lignesMax(), vus = new Set();
+    icones.forEach(i => {
+      const cle = i.col + ':' + i.row;
+      if (i.row >= rows || vus.has(cle)) { i.col = -1; }
+      else vus.add(cle);
+    });
+    icones.forEach(i => { if (i.col < 0) { const [c, r] = celluleLibre(i); i.col = c; i.row = r; } });
+  }
+  function glypheIcone(i) {
+    if (i.id === 'corbeille') return corbeille.length ? G.corbeillePleine : G.corbeille;
+    if (i.genre === 'dossier') return G.dossier;
+    if (i.genre === 'txt') return G.txt;
+    return G[i.app] || G.txt;
+  }
+  function dessinerIcones() {
+    zone.querySelectorAll('.ico').forEach(e => e.remove());
+    recaler();
+    icones.forEach(i => {
+      const e = document.createElement('div');
+      e.className = 'ico' + (selection.has(i.id) ? ' sel' : '');
+      e.dataset.id = i.id;
+      e.style.left = (M + i.col * CW) + 'px';
+      e.style.top = (M + i.row * CH) + 'px';
+      e.innerHTML = glypheIcone(i) + `<span class="nom">${esc(i.nom)}</span>`;
+      zone.appendChild(e);
+    });
+  }
+  const icone = id => icones.find(i => i.id === id);
+  function selectionner(ids) {
+    selection = new Set(ids);
+    zone.querySelectorAll('.ico').forEach(e => e.classList.toggle('sel', selection.has(e.dataset.id)));
+  }
+  function nomUnique(nom, existants) {
+    const pris = new Set(existants.map(norm));
+    if (!pris.has(norm(nom))) return nom;
+    const m = nom.match(/^(.*?)(\.[a-z]+)?$/i);
+    for (let k = 2; ; k++) { const n = `${m[1]} (${k})${m[2] || ''}`; if (!pris.has(norm(n))) return n; }
+  }
+
+  function ouvrirIcone(i, origine) {
+    if (i.genre === 'app') ouvrir(i.app, null, origine === 'bureau' ? 'icone' : origine);
+    else if (i.genre === 'dossier') ouvrir('explorateur', i.chemin);
+  }
+
+  /* Glisser, sélectionner, encadrer */
+  let geste = null;
+  zone.addEventListener('pointerdown', e => {
+    if (e.button !== 0 || eteint) return;
+    fermerPopups();
+    const el = e.target.closest('.ico');
+    const bz = zone.getBoundingClientRect();
+    if (el) {
+      if (el.querySelector('input')) return;
+      const id = el.dataset.id;
+      if (!selection.has(id)) {
+        selectionner([id]);
+        if (id === 'corbeille') signal('selection');
+      }
+      geste = { type: 'icone', id, el, x0: e.clientX, y0: e.clientY, dx: e.clientX - el.getBoundingClientRect().left, dy: e.clientY - el.getBoundingClientRect().top, bouge: false };
+      el.setPointerCapture(e.pointerId);
+    } else {
+      if (selection.size) { selectionner([]); signal('deselection'); }
+      geste = { type: 'cadre', x0: e.clientX - bz.left, y0: e.clientY - bz.top, bouge: false };
+      zone.setPointerCapture(e.pointerId);
+    }
+  });
+  zone.addEventListener('pointermove', e => {
+    if (!geste) return;
+    const bz = zone.getBoundingClientRect();
+    if (geste.type === 'icone') {
+      if (!geste.bouge && Math.hypot(e.clientX - geste.x0, e.clientY - geste.y0) < 6) return;
+      geste.bouge = true;
+      geste.el.classList.add('vole');
+      geste.el.style.left = (e.clientX - bz.left - geste.dx) + 'px';
+      geste.el.style.top = (e.clientY - bz.top - geste.dy) + 'px';
+      const cible = cibleSous(e.clientX, e.clientY, geste.id);
+      zone.querySelectorAll('.ico').forEach(x => { if (x !== geste.el) x.classList.toggle('sel', x === cible || selection.has(x.dataset.id)); });
+    } else {
+      const x = e.clientX - bz.left, y = e.clientY - bz.top;
+      if (!geste.bouge && Math.hypot(x - geste.x0, y - geste.y0) < 5) return;
+      geste.bouge = true;
+      const l = Math.min(x, geste.x0), t = Math.min(y, geste.y0), w = Math.abs(x - geste.x0), h = Math.abs(y - geste.y0);
+      Object.assign(rect.style, { display: 'block', left: l + 'px', top: t + 'px', width: w + 'px', height: h + 'px' });
+      const pris = [];
+      zone.querySelectorAll('.ico').forEach(ic => {
+        const r = ic.getBoundingClientRect();
+        const il = r.left - bz.left, it = r.top - bz.top;
+        if (il < l + w && il + r.width > l && it < t + h && it + r.height > t) pris.push(ic.dataset.id);
+      });
+      selectionner(pris);
+    }
+  });
+  function cibleSous(x, y, sauf) {
+    return document.elementsFromPoint(x, y).find(el => el.classList && el.classList.contains('ico') && el.dataset.id !== sauf) || null;
+  }
+  function finGeste(e) {
+    if (!geste) return;
+    const g = geste; geste = null;
+    if (g.type === 'icone' && g.bouge) {
+      const i = icone(g.id);
+      const cible = cibleSous(e.clientX, e.clientY, g.id);
+      if (cible && cible.dataset.id === 'corbeille' && g.id !== 'corbeille') {
+        jeterIcone(i); return;
+      }
+      if (cible && icone(cible.dataset.id).genre === 'dossier' && i.genre !== 'app' && i.genre === 'txt') {
+        const d = icone(cible.dataset.id);
+        (fs[d.chemin] = fs[d.chemin] || []).push({ nom: i.nom, genre: 'txt', contenu: i.contenu || '' });
+        icones = icones.filter(x => x !== i); selection.clear(); dessinerIcones(); majFenetres(); return;
+      }
+      const bz = zone.getBoundingClientRect();
+      const rows = lignesMax();
+      let col = Math.min(colsMax() - 1, Math.max(0, Math.round((e.clientX - bz.left - g.dx - M) / CW)));
+      let row = Math.min(rows - 1, Math.max(0, Math.round((e.clientY - bz.top - g.dy - M) / CH)));
+      if (occupe(col, row, i)) {
+        let best = null, dmin = 1e9;
+        for (let c = 0; c < colsMax(); c++) for (let r = 0; r < rows; r++) if (!occupe(c, r, i)) {
+          const d = (c - col) ** 2 + (r - row) ** 2; if (d < dmin) { dmin = d; best = [c, r]; }
+        }
+        [col, row] = best;
+      }
+      if (i.col !== col || i.row !== row) signal('icone_deplacee');
+      i.col = col; i.row = row;
+      dessinerIcones();
+    } else if (g.type === 'cadre') {
+      rect.style.display = 'none';
+      if (g.bouge && selection.size >= 3) signal('rectangle');
+    }
+  }
+  zone.addEventListener('pointerup', finGeste);
+  zone.addEventListener('pointercancel', () => { geste = null; rect.style.display = 'none'; dessinerIcones(); });
+  zone.addEventListener('dblclick', e => {
+    const el = e.target.closest('.ico');
+    if (!el || el.querySelector('input')) return;
+    const i = icone(el.dataset.id);
+    if (i) ouvrirIcone(i, 'bureau');
+  });
+
+  /* Clic droit */
+  ecran.addEventListener('contextmenu', e => {
+    e.preventDefault();
+    if (eteint) return;
+    const el = e.target.closest('.ico');
+    if (el) {
+      const i = icone(el.dataset.id);
+      selectionner([i.id]);
+      if (i.id === 'corbeille') {
+        menuContexte(e, [
+          { t: 'Ouvrir', f: () => ouvrir('corbeille') },
+          { t: 'Vider la Corbeille', f: viderCorbeille, off: !corbeille.length },
+        ]);
+      } else {
+        menuContexte(e, [
+          { t: 'Ouvrir', f: () => ouvrirIcone(i, 'menu') },
+          '-',
+          { t: 'Renommer', f: () => renommerIcone(i) },
+          { t: 'Supprimer', f: () => jeterIcone(i) },
+        ]);
+      }
+    } else if (e.target === zone || e.target.id === 'fond') {
+      selectionner([]);
+      const bz = zone.getBoundingClientRect();
+      dernierClicDroit = [Math.max(0, Math.round((e.clientX - bz.left - M - 40) / CW)), Math.max(0, Math.round((e.clientY - bz.top - M - 40) / CH))];
+      menuContexte(e, [
+        { t: 'Affichage', off: true },
+        { t: 'Actualiser', f: () => { zone.style.opacity = .4; setTimeout(() => zone.style.opacity = 1, 120); } },
+        '-',
+        { t: 'Nouveau dossier', f: nouveauDossierBureau },
+        '-',
+        { t: 'Personnaliser', f: () => ouvrir('parametres') },
+      ]);
+    }
+  });
+  function menuContexte(e, items) {
+    fermerPopups();
+    const m = document.createElement('div');
+    m.className = 'pop'; m.id = 'menu-ctx';
+    items.forEach(it => {
+      if (it === '-') { m.appendChild(document.createElement('hr')); return; }
+      const b = document.createElement('button');
+      b.textContent = it.t; b.disabled = !!it.off;
+      b.onclick = () => { m.remove(); it.f && it.f(); };
+      m.appendChild(b);
+    });
+    ecran.appendChild(m);
+    const be = ecran.getBoundingClientRect();
+    let x = e.clientX - be.left, y = e.clientY - be.top;
+    x = Math.min(x, be.width - m.offsetWidth - 4); y = Math.min(y, be.height - 48 - m.offsetHeight - 4);
+    m.style.left = Math.max(4, x) + 'px'; m.style.top = Math.max(4, y) + 'px';
+    m.style.zIndex = 1300;
+  }
+
+  let dernierClicDroit = null;
+  function celluleProche([c0, r0]) {
+    const rows = lignesMax(); let best = null, dmin = 1e9;
+    r0 = Math.min(r0, rows - 1);
+    for (let c = 0; c < colsMax(); c++) for (let r = 0; r < rows; r++) if (!occupe(c, r)) {
+      const d = (c - c0) ** 2 + (r - r0) ** 2; if (d < dmin) { dmin = d; best = [c, r]; }
+    }
+    return best || [0, 0];
+  }
+  function nouveauDossierBureau() {
+    const nom = nomUnique('Nouveau dossier', icones.map(i => i.nom));
+    const [col, row] = dernierClicDroit ? celluleProche(dernierClicDroit) : celluleLibre();
+    const i = { id: 'i' + (++compteId), nom, genre: 'dossier', chemin: 'Bureau/' + nom, col, row };
+    fs[i.chemin] = [];
+    icones.push(i);
+    selectionner([i.id]);
+    dessinerIcones();
+    signal('dossier');
+    renommerIcone(i);
+  }
+  function deplacerChemin(ancien, nouveau) {
+    Object.keys(fs).forEach(k => {
+      if (k === ancien || k.startsWith(ancien + '/')) { fs[nouveau + k.slice(ancien.length)] = fs[k]; delete fs[k]; }
+    });
+    Object.values(fen).forEach(w => { if (w.chemin && (w.chemin === ancien || w.chemin.startsWith(ancien + '/'))) w.chemin = nouveau + w.chemin.slice(ancien.length); });
+  }
+  function renommerIcone(i) {
+    if (i.id === 'corbeille') return;
+    const el = zone.querySelector(`.ico[data-id="${i.id}"]`);
+    if (!el) return;
+    const span = el.querySelector('.nom');
+    const inp = document.createElement('input');
+    inp.value = i.nom;
+    span.replaceWith(inp);
+    inp.focus(); inp.select();
+    let fini = false;
+    const valider = garder => {
+      if (fini) return; fini = true;
+      const v = inp.value.trim();
+      if (garder && v && v !== i.nom) {
+        const nom = nomUnique(v, icones.filter(x => x !== i).map(x => x.nom));
+        if (i.genre === 'dossier' && i.chemin.startsWith('Bureau/')) {
+          const nouveau = 'Bureau/' + nom; deplacerChemin(i.chemin, nouveau); i.chemin = nouveau;
+        }
+        i.nom = nom;
+        if (i.genre === 'dossier') signal('renomme');
+        if (i.genre === 'dossier' && norm(nom) === 'recettes') signal('renommer');
+      }
+      dessinerIcones(); majFenetres();
+    };
+    inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') valider(true); if (ev.key === 'Escape') valider(false); });
+    inp.addEventListener('blur', () => valider(true));
+    inp.addEventListener('pointerdown', ev => ev.stopPropagation());
+  }
+
+  /* La corbeille */
+  function empaqueter(chemin) {
+    const paquet = {};
+    Object.keys(fs).forEach(k => { if (k === chemin || k.startsWith(chemin + '/')) { paquet[k.slice(chemin.length)] = fs[k]; delete fs[k]; } });
+    return paquet;
+  }
+  function deballer(paquet, chemin) { Object.keys(paquet).forEach(k => { fs[chemin + k] = paquet[k]; }); }
+  function jeterIcone(i) {
+    if (!i || i.id === 'corbeille') return;
+    const entree = { nom: i.nom, genre: i.genre, depuis: 'Bureau', icone: { ...i } };
+    if (i.genre === 'dossier' && i.chemin.startsWith('Bureau/')) entree.paquet = empaqueter(i.chemin);
+    corbeille.push(entree);
+    icones = icones.filter(x => x !== i);
+    selection.delete(i.id);
+    dessinerIcones(); majFenetres();
+    signal('corbeille');
+  }
+  function jeterFichier(chemin, item) {
+    const liste = fs[chemin]; if (!liste) return;
+    fs[chemin] = liste.filter(x => x !== item);
+    const entree = { nom: item.nom, genre: item.genre, depuis: chemin, item };
+    if (item.genre === 'dossier') entree.paquet = empaqueter(chemin + '/' + item.nom);
+    corbeille.push(entree);
+    dessinerIcones(); majFenetres();
+    signal('corbeille');
+  }
+  function restaurer(entree) {
+    corbeille = corbeille.filter(x => x !== entree);
+    if (entree.depuis === 'Bureau' && entree.icone) {
+      const i = entree.icone;
+      i.nom = nomUnique(i.nom, icones.map(x => x.nom));
+      if (i.genre === 'dossier' && i.chemin.startsWith('Bureau/')) { i.chemin = 'Bureau/' + i.nom; deballer(entree.paquet || { '': [] }, i.chemin); }
+      if (occupe(i.col, i.row)) { const [c, r] = celluleLibre(); i.col = c; i.row = r; }
+      icones.push(i);
+    } else {
+      const liste = fs[entree.depuis] || (fs[entree.depuis] = []);
+      const item = entree.item;
+      item.nom = nomUnique(item.nom, liste.map(x => x.nom));
+      liste.push(item);
+      if (entree.paquet) deballer(entree.paquet, entree.depuis + '/' + item.nom);
+    }
+    dessinerIcones(); majFenetres();
+    signal('restaurer_corb');
+  }
+  async function viderCorbeille() {
+    if (!corbeille.length) return;
+    const n = corbeille.length;
+    const r = await demander({ titre: 'Supprimer plusieurs éléments', texte: n > 1 ? `Supprimer définitivement ces ${n} éléments ?` : 'Supprimer définitivement cet élément ?', boutons: ['Oui', 'Non'] });
+    if (r.bouton !== 'Oui') return;
+    corbeille = [];
+    dessinerIcones(); majFenetres();
+  }
+
+  /* ── Boîte de dialogue ────────────────────────────────────── */
+  function demander({ titre, texte, champ, valeur = '', boutons }) {
+    return new Promise(res => {
+      const v = document.createElement('div');
+      v.className = 'voile';
+      v.innerHTML = `<div class="dlg" role="dialog"><h4>${esc(titre)}</h4>${texte ? `<p>${esc(texte)}</p>` : ''}${champ ? `<label>${esc(champ)}<input type="text" value="${esc(valeur)}" spellcheck="false"></label>` : ''}<div class="boutons"></div></div>`;
+      const zoneB = v.querySelector('.boutons');
+      const inp = v.querySelector('input');
+      const fin = b => { v.remove(); res({ bouton: b, valeur: inp ? inp.value : '' }); };
+      boutons.forEach((b, k) => {
+        const el = document.createElement('button');
+        el.className = 'btn-w' + (k === 0 ? ' plein' : ''); el.textContent = b;
+        el.onclick = () => fin(b);
+        zoneB.appendChild(el);
+      });
+      v.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter') fin(boutons[0]); if (e.key === 'Escape') fin(boutons[boutons.length - 1]); });
+      ecran.appendChild(v);
+      (inp || zoneB.firstChild).focus();
+      if (inp) inp.select();
+    });
+  }
+
+  /* ── Les fenêtres ─────────────────────────────────────────── */
+  const SVG_MIN = '<svg viewBox="0 0 12 12"><path d="M1 6h10"/></svg>';
+  const SVG_MAX = '<svg viewBox="0 0 12 12"><rect x="1.5" y="1.5" width="9" height="9" rx="1"/></svg>';
+  const SVG_RES = '<svg viewBox="0 0 12 12"><rect x="1.5" y="3.5" width="7" height="7" rx="1"/><path d="M3.5 3.5V1.5h7v7h-2"/></svg>';
+  const SVG_X = '<svg viewBox="0 0 12 12"><path d="M1.5 1.5l9 9M10.5 1.5l-9 9"/></svg>';
+
+  function ouvrir(app, arg, origine) {
+    fermerPopups(true);
+    signal('ouvrir:' + app);
+    if (app === 'blocnotes' && arg) signal('ouvrir_fichier');
+    if (fen[app]) {
+      const w = fen[app];
+      if (w.min) { w.min = false; w.el.hidden = false; }
+      if (w.charger) w.charger(arg);
+      activer(app);
+      if (app === 'calculatrice' && origine === 'recherche') signal('chercher');
+      return;
+    }
+    const a = APPS[app];
+    const el = document.createElement('div');
+    el.className = 'fen';
+    const be = ecran.getBoundingClientRect();
+    const l = Math.min(a.l, be.width - 20), h = Math.min(a.h, be.height - 48 - 20);
+    const x = Math.min(120 + cascade * 30, Math.max(0, be.width - l - 10));
+    const y = Math.min(24 + cascade * 26, Math.max(0, be.height - 48 - h - 10));
+    cascade = (cascade + 1) % 6;
+    Object.assign(el.style, { left: x + 'px', top: y + 'px', width: l + 'px', height: h + 'px' });
+    el.innerHTML = `<div class="fen-titre"><span class="fen-ic">${G[a.g]}</span><span class="fen-nom">${esc(a.titre)}</span>
+      <button class="fb reduire" title="Réduire">${SVG_MIN}</button><button class="fb agrandir" title="Agrandir">${SVG_MAX}</button><button class="fb fermer" title="Fermer">${SVG_X}</button></div>
+      <div class="fen-corps"></div>`;
+    couche.appendChild(el);
+    const w = { app, el, min: false, max: false, corps: el.querySelector('.fen-corps') };
+    fen[app] = w;
+    CONTENU[app](w, arg);
+    el.addEventListener('pointerdown', () => activer(app), true);
+    el.querySelector('.reduire').onclick = () => reduire(app);
+    el.querySelector('.agrandir').onclick = () => agrandir(app);
+    el.querySelector('.fermer').onclick = () => fermer(app);
+    const titre = el.querySelector('.fen-titre');
+    titre.addEventListener('dblclick', e => { if (!e.target.closest('.fb')) agrandir(app); });
+    titre.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || e.target.closest('.fb') || w.max) return;
+      const r = el.getBoundingClientRect(), bz = ecran.getBoundingClientRect();
+      const d = { dx: e.clientX - r.left, dy: e.clientY - r.top, x0: e.clientX, y0: e.clientY };
+      titre.setPointerCapture(e.pointerId);
+      const bouge = ev => {
+        let nx = ev.clientX - bz.left - d.dx, ny = ev.clientY - bz.top - d.dy;
+        nx = Math.max(-r.width + 80, Math.min(nx, bz.width - 80));
+        ny = Math.max(0, Math.min(ny, bz.height - 48 - 34));
+        el.style.left = nx + 'px'; el.style.top = ny + 'px';
+        if (Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) > 80) signal('deplacer');
+      };
+      const fin = () => { titre.removeEventListener('pointermove', bouge); titre.removeEventListener('pointerup', fin); };
+      titre.addEventListener('pointermove', bouge);
+      titre.addEventListener('pointerup', fin);
+    });
+    activer(app);
+    if (app === 'blocnotes' && origine === 'icone') signal('ouvrir_bn');
+    if (app === 'calculatrice' && origine === 'recherche') signal('chercher');
+  }
+  function activer(app) {
+    Object.values(fen).forEach(w => w.el.classList.add('inactif'));
+    const w = fen[app]; if (!w) return;
+    w.el.classList.remove('inactif');
+    w.el.style.zIndex = ++zTop;
+    actif = app;
+    majBarre();
+  }
+  let actif = null;
+  function premierVisible() {
+    return Object.values(fen).filter(w => !w.min).sort((a, b) => b.el.style.zIndex - a.el.style.zIndex)[0];
+  }
+  function reduire(app) {
+    const w = fen[app]; w.min = true; w.el.hidden = true;
+    signal('reduire');
+    const p = premierVisible(); actif = null;
+    if (p) activer(p.app); else majBarre();
+  }
+  function agrandir(app) {
+    const w = fen[app]; w.max = !w.max;
+    w.el.classList.toggle('max', w.max);
+    const b = w.el.querySelector('.agrandir');
+    b.innerHTML = w.max ? SVG_RES : SVG_MAX; b.title = w.max ? 'Niveau inférieur' : 'Agrandir';
+    if (w.max) signal('agrandir');
+  }
+  async function fermer(app, force) {
+    const w = fen[app]; if (!w) return;
+    if (!force && w.avantFermer && !(await w.avantFermer())) return;
+    w.el.remove(); delete fen[app];
+    if (w.fin) w.fin();
+    signal('fermer');
+    const p = premierVisible(); actif = null;
+    if (p) activer(p.app); else majBarre();
+  }
+  function titreFenetre(w, t) { w.el.querySelector('.fen-nom').textContent = t; }
+  function majFenetres() { Object.values(fen).forEach(w => w.rafraichir && w.rafraichir()); }
+
+  /* ── La barre des tâches ──────────────────────────────────── */
+  function majBarre() {
+    const box = $('#tb-apps'); box.innerHTML = '';
+    const liste = [...EPINGLES_TB, ...Object.keys(fen).filter(k => !EPINGLES_TB.includes(k))];
+    liste.forEach(app => {
+      const b = document.createElement('button');
+      const w = fen[app];
+      b.className = 'tb' + (w ? ' ouvert' : '') + (w && !w.min && actif === app ? ' actif' : '');
+      b.title = APPS[app].titre;
+      b.innerHTML = G[APPS[app].g];
+      b.onclick = () => {
+        fermerPopups(true);
+        if (!w) return ouvrir(app, app === 'explorateur' ? 'Documents' : null);
+        if (w.min) { w.min = false; w.el.hidden = false; activer(app); signal('restaurer'); }
+        else if (actif === app) reduire(app);
+        else activer(app);
+      };
+      box.appendChild(b);
+    });
+  }
+
+  /* ── Menu Démarrer ────────────────────────────────────────── */
+  const dm = $('#demarrer'), dmCherche = $('#dm-cherche');
+  function ouvrirDemarrer() {
+    fermerPopups();
+    dm.hidden = false; dmCherche.value = ''; remplirDemarrer();
+    signal('demarrer');
+    setTimeout(() => dmCherche.focus(), 80);
+  }
+  function fermerDemarrer() {
+    if (dm.hidden) return;
+    dm.hidden = true; $('#alim-menu').hidden = true;
+    signal('demarrer_ferme');
+  }
+  function remplirDemarrer() {
+    const q = norm(dmCherche.value);
+    const g = $('#dm-grille'); g.innerHTML = '';
+    const apps = q ? Object.keys(APPS).filter(k => k !== 'corbeille' && norm(APPS[k].titre).split(/[\s-]+/).some(m => m.startsWith(q)) || (k !== 'corbeille' && norm(APPS[k].titre).startsWith(q))) : EPINGLES_DM;
+    const uniques = [...new Set(apps)];
+    $('#dm-titre').textContent = q ? 'Meilleur résultat' : 'Épinglé';
+    if (!uniques.length) { g.innerHTML = `<div class="dm-vide">Aucun résultat pour « ${esc(dmCherche.value)} »</div>`; return; }
+    uniques.forEach((k, n) => {
+      const b = document.createElement('button');
+      b.className = 'dm-app' + (q && n === 0 ? ' premier' : '');
+      b.innerHTML = G[APPS[k].g] + `<span>${esc(APPS[k].titre)}</span>`;
+      b.onclick = () => { dm.hidden = true; ouvrir(k, k === 'explorateur' ? 'Documents' : null, q ? 'recherche' : 'demarrer'); };
+      g.appendChild(b);
+    });
+  }
+  dmCherche.addEventListener('input', remplirDemarrer);
+  dmCherche.addEventListener('keydown', e => {
+    if (e.key === 'Enter' && dmCherche.value.trim()) { const b = $('#dm-grille .dm-app'); if (b) b.click(); }
+    if (e.key === 'Escape') fermerDemarrer();
+  });
+  $('#tb-demarrer').onclick = () => dm.hidden ? ouvrirDemarrer() : fermerDemarrer();
+  $('#tb-cherche').onclick = () => dm.hidden ? ouvrirDemarrer() : dmCherche.focus();
+  $('#dm-alim').onclick = e => { e.stopPropagation(); const a = $('#alim-menu'); a.hidden = !a.hidden; };
+  document.querySelectorAll('[data-alim]').forEach(b => b.onclick = () => {
+    $('#alim-menu').hidden = true; dm.hidden = true;
+    ({ veille, arreter: () => arreter(false), redemarrer: () => arreter(true) })[b.dataset.alim]();
+  });
+
+  function fermerPopups(sansSignal) {
+    const m = $('#menu-ctx'); if (m) m.remove();
+    $('#calendrier').hidden = true; $('#volume').hidden = true; $('#alim-menu').hidden = true;
+    if (!dm.hidden) { if (sansSignal) dm.hidden = true; else fermerDemarrer(); }
+  }
+  // Un clic n'importe où hors d'un menu le referme
+  ecran.addEventListener('pointerdown', e => {
+    if (e.target.closest('#demarrer, #alim-menu, #tb-demarrer, #tb-cherche, #calendrier, #volume, #tb-heure, #tb-son, #menu-ctx, .voile')) return;
+    if (e.target.closest('#zone')) return; // géré par la zone
+    fermerPopups();
+  });
+
+  /* ── Heure, calendrier, son ───────────────────────────────── */
+  function majHeure() {
+    const d = new Date();
+    $('#h-heure').textContent = d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
+    $('#h-date').textContent = d.toLocaleDateString('fr-FR');
+  }
+  $('#tb-heure').onclick = () => {
+    const c = $('#calendrier');
+    if (!c.hidden) { c.hidden = true; return; }
+    fermerPopups();
+    const d = new Date(), an = d.getFullYear(), mo = d.getMonth();
+    const premier = (new Date(an, mo, 1).getDay() + 6) % 7, nb = new Date(an, mo + 1, 0).getDate();
+    let h = `<div>${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</div><div class="mois" style="margin-top:8px">${d.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' })}</div><div class="jours">`;
+    ['L', 'M', 'M', 'J', 'V', 'S', 'D'].forEach(j => h += `<span class="js">${j}</span>`);
+    for (let k = 0; k < premier; k++) h += '<span></span>';
+    for (let j = 1; j <= nb; j++) h += `<span class="${j === d.getDate() ? 'auj' : ''}">${j}</span>`;
+    c.innerHTML = h + '</div>';
+    c.hidden = false;
+    signal('heure');
+  };
+  $('#tb-son').onclick = () => { const v = $('#volume'); const etait = v.hidden; fermerPopups(); v.hidden = !etait; };
+
+  /* ── Arrêt, démarrage, veille ─────────────────────────────── */
+  function noir(html) {
+    const n = document.createElement('div'); n.className = 'noir'; n.innerHTML = html; ecran.appendChild(n); return n;
+  }
+  function arreter(relancer) {
+    fermerPopups(true);
+    eteint = true;
+    const n = noir('<div><div class="rond"></div><div class="texte">Arrêt en cours…</div></div>');
+    setTimeout(() => {
+      Object.keys(fen).forEach(k => fermer(k, true));
+      n.remove();
+      if (relancer) return demarrer();
+      signal('eteindre');
+      const e = noir(`<div><button class="bouton-alim" title="Bouton d'allumage"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button><div class="texte">L’ordinateur est éteint.</div><div class="petit">Pour rallumer : un seul appui sur le bouton.</div></div>`);
+      e.querySelector('.bouton-alim').onclick = () => { e.remove(); demarrer(); };
+    }, 2200);
+  }
+  function demarrer() {
+    const n = noir('<div><div class="logo-dem"><i></i><i></i><i></i><i></i></div><div class="rond"></div><div class="petit"></div></div>');
+    let appuis = 0;
+    n.addEventListener('pointerdown', () => { appuis++; n.querySelector('.petit').textContent = appuis > 1 ? 'Patience : il démarre. On attend, mains sur la table.' : 'Il démarre, on attend.'; });
+    setTimeout(() => { n.remove(); eteint = false; signal('rallumer'); }, 3200);
+  }
+  function veille() {
+    eteint = true;
+    const n = noir('<div><div class="texte">En veille.</div><div class="petit">Bougez la souris pour réveiller l’écran.</div></div>');
+    setTimeout(() => {
+      const reveil = () => { n.remove(); eteint = false; n.removeEventListener('pointermove', reveil); };
+      n.addEventListener('pointermove', reveil); n.addEventListener('pointerdown', reveil);
+    }, 900);
+  }
+
+  /* ── Contenu des applications ─────────────────────────────── */
+  const CONTENU = {
+    blocnotes(w, fichier) {
+      w.corps.innerHTML = `<div class="bn-menu"><button class="bn-f">Fichier</button><button disabled>Modifier</button><button disabled>Affichage</button></div>
+        <textarea class="bn-texte" spellcheck="false"></textarea><div class="bn-etat">Ligne 1, colonne 1</div>`;
+      const ta = w.corps.querySelector('.bn-texte'), etat = w.corps.querySelector('.bn-etat');
+      w.fichier = null; w.sale = false;
+      const titre = () => titreFenetre(w, `${w.sale ? '*' : ''}${w.fichier ? w.fichier.nom : 'Sans titre'} – Bloc-notes`);
+      w.charger = f => {
+        if (!f || w.sale) return;
+        w.fichier = f; ta.value = f.item.contenu || ''; w.sale = false; titre();
+      };
+      ta.addEventListener('input', () => {
+        if (!w.sale) { w.sale = true; titre(); }
+        pos();
+        if (ta.value.split('\n').filter(l => l.trim()).length >= 3) signal('trois_lignes');
+      });
+      const pos = () => { const avant = ta.value.slice(0, ta.selectionStart).split('\n'); etat.textContent = `Ligne ${avant.length}, colonne ${avant[avant.length - 1].length + 1}`; };
+      ta.addEventListener('click', pos); ta.addEventListener('keyup', pos);
+      const enregistrer = async () => {
+        if (w.fichier) { w.fichier.item.contenu = ta.value; w.sale = false; titre(); majFenetres(); return true; }
+        const r = await demander({ titre: 'Enregistrer sous', texte: 'Enregistrer dans : Documents', champ: 'Nom du fichier :', valeur: 'Sans titre', boutons: ['Enregistrer', 'Annuler'] });
+        if (r.bouton !== 'Enregistrer') return false;
+        let nom = r.valeur.trim() || 'Sans titre';
+        if (!/\.txt$/i.test(nom)) nom += '.txt';
+        const liste = fs['Documents'];
+        let item = liste.find(x => norm(x.nom) === norm(nom));
+        if (item) {
+          const r2 = await demander({ titre: 'Confirmer l’enregistrement', texte: `${nom} existe déjà. Voulez-vous le remplacer ?`, boutons: ['Oui', 'Non'] });
+          if (r2.bouton !== 'Oui') return false;
+          item.contenu = ta.value;
+        } else { item = { nom, genre: 'txt', contenu: ta.value }; liste.push(item); }
+        w.fichier = { chemin: 'Documents', nom: item.nom, item };
+        w.sale = false; titre(); majFenetres();
+        if (ta.value.trim()) signal('enregistrer');
+        return true;
+      };
+      const btnF = w.corps.querySelector('.bn-f');
+      btnF.onclick = e => {
+        const b = btnF.getBoundingClientRect();
+        menuContexte({ clientX: b.left, clientY: b.bottom + 2 }, [
+          { t: 'Nouveau', f: () => { if (w.sale) return; ta.value = ''; w.fichier = null; titre(); } },
+          { t: 'Enregistrer', f: enregistrer },
+          '-',
+          { t: 'Fermer', f: () => fermer('blocnotes') },
+        ]);
+        e.stopPropagation();
+      };
+      w.avantFermer = async () => {
+        if (!w.sale) return true;
+        const r = await demander({ titre: 'Bloc-notes', texte: `Voulez-vous enregistrer les modifications apportées à ${w.fichier ? w.fichier.nom : 'Sans titre'} ?`, boutons: ['Enregistrer', 'Ne pas enregistrer', 'Annuler'] });
+        if (r.bouton === 'Annuler') return false;
+        if (r.bouton === 'Enregistrer') return await enregistrer();
+        return true;
+      };
+      titre();
+      w.charger(fichier);
+      setTimeout(() => ta.focus(), 80);
+    },
+
+    explorateur(w, chemin) {
+      w.chemin = chemin || 'Documents';
+      w.corps.innerHTML = `<div class="ex-barre"><button class="ex-haut" title="Dossier parent">↑</button><div class="ex-chemin"></div><button class="ex-nouveau">+ Nouveau dossier</button></div>
+        <div class="ex-main"><nav class="ex-cote"><button data-c="Documents">${G.dossier}Documents</button><button data-c="Images">${G.photos}Images</button></nav><div class="ex-liste"></div></div>`;
+      const liste = w.corps.querySelector('.ex-liste');
+      w.corps.querySelectorAll('.ex-cote button').forEach(b => b.onclick = () => { w.chemin = b.dataset.c; w.rafraichir(); });
+      w.corps.querySelector('.ex-haut').onclick = () => { const i = w.chemin.lastIndexOf('/'); if (i > 0 && !/^Bureau\/[^/]+$/.test(w.chemin)) { w.chemin = w.chemin.slice(0, i); w.rafraichir(); } };
+      w.corps.querySelector('.ex-nouveau').onclick = () => {
+        const items = fs[w.chemin] || (fs[w.chemin] = []);
+        const item = { nom: nomUnique('Nouveau dossier', items.map(x => x.nom)), genre: 'dossier' };
+        items.push(item); fs[w.chemin + '/' + item.nom] = [];
+        w.rafraichir(); signal('dossier'); renommerItem(item);
+      };
+      const ouvrirItem = item => {
+        if (item.genre === 'dossier') { w.chemin = w.chemin + '/' + item.nom; w.rafraichir(); }
+        else if (item.genre === 'txt') ouvrir('blocnotes', { chemin: w.chemin, nom: item.nom, item });
+        else if (item.genre === 'img') ouvrir('photos', item.nom);
+      };
+      const renommerItem = item => {
+        const el = [...liste.children].find(e => e._item === item); if (!el) return;
+        const span = el.querySelector('span'); const inp = document.createElement('input'); inp.value = item.nom;
+        span.replaceWith(inp); inp.focus(); inp.select();
+        let fini = false;
+        const valider = garder => {
+          if (fini) return; fini = true;
+          const v = inp.value.trim();
+          if (garder && v && v !== item.nom) {
+            const nom = nomUnique(v, fs[w.chemin].filter(x => x !== item).map(x => x.nom));
+            if (item.genre === 'dossier') deplacerChemin(w.chemin + '/' + item.nom, w.chemin + '/' + nom);
+            item.nom = nom;
+            if (item.genre === 'dossier') signal('renomme');
+            if (item.genre === 'dossier' && norm(nom) === 'recettes') signal('renommer');
+          }
+          majFenetres();
+        };
+        inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') valider(true); if (ev.key === 'Escape') valider(false); });
+        inp.addEventListener('blur', () => valider(true));
+      };
+      w.rafraichir = () => {
+        if (!fs[w.chemin]) w.chemin = 'Documents';
+        const lisible = w.chemin.split('/').join('  ›  ');
+        w.corps.querySelector('.ex-chemin').textContent = lisible;
+        titreFenetre(w, w.chemin.split('/').pop() + ' – Explorateur de fichiers');
+        w.corps.querySelectorAll('.ex-cote button').forEach(b => b.classList.toggle('ici', b.dataset.c === w.chemin));
+        w.corps.querySelector('.ex-haut').disabled = !w.chemin.includes('/') || /^Bureau\/[^/]+$/.test(w.chemin);
+        liste.innerHTML = '';
+        const items = fs[w.chemin];
+        if (!items.length) liste.innerHTML = '<div class="ex-vide">Ce dossier est vide.</div>';
+        items.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'ex-item'; el._item = item;
+          el.innerHTML = G[item.genre === 'dossier' ? 'dossier' : item.genre] + `<span>${esc(item.nom)}</span>`;
+          el.onclick = () => { liste.querySelectorAll('.ex-item').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); };
+          el.ondblclick = () => ouvrirItem(item);
+          el.oncontextmenu = e => {
+            e.preventDefault(); e.stopPropagation(); el.onclick();
+            menuContexte(e, [
+              { t: 'Ouvrir', f: () => ouvrirItem(item) }, '-',
+              { t: 'Renommer', f: () => renommerItem(item) },
+              { t: 'Supprimer', f: () => jeterFichier(w.chemin, item) },
+            ]);
+          };
+          liste.appendChild(el);
+        });
+      };
+      w.charger = c => { if (c) { w.chemin = c; w.rafraichir(); } };
+      w.rafraichir();
+    },
+
+    calculatrice(w) {
+      w.corps.innerHTML = `<div class="calc"><div class="calc-ecran"><div class="op"></div><div class="val">0</div></div><div class="calc-touches"></div></div>`;
+      const opEl = w.corps.querySelector('.op'), valEl = w.corps.querySelector('.val'), t = w.corps.querySelector('.calc-touches');
+      let val = '0', acc = null, op = null, neuf = true;
+      const aff = () => { valEl.textContent = val.replace('.', ','); };
+      const calcule = () => {
+        const a = acc, b = parseFloat(val);
+        const r = op === '+' ? a + b : op === '−' ? a - b : op === '×' ? a * b : op === '÷' ? (b === 0 ? NaN : a / b) : b;
+        return Number.isFinite(r) ? String(+r.toFixed(10)) : 'Impossible';
+      };
+      const appuie = k => {
+        if (/^\d$/.test(k)) { val = neuf || val === '0' || val === 'Impossible' ? k : (val.length < 14 ? val + k : val); neuf = false; }
+        else if (k === ',') { if (neuf) { val = '0.'; neuf = false; } else if (!val.includes('.')) val += '.'; }
+        else if ('+−×÷'.includes(k)) { if (op && !neuf) { val = calcule(); } acc = parseFloat(val); op = k; neuf = true; opEl.textContent = `${val.replace('.', ',')} ${k}`; }
+        else if (k === '=') {
+          if (op === null) return;
+          opEl.textContent = `${String(acc).replace('.', ',')} ${op} ${val.replace('.', ',')} =`;
+          val = calcule(); acc = null; op = null; neuf = true;
+          signal('resultat:' + val);
+          if (val === '42') signal('calcul');
+        }
+        else if (k === 'C') { val = '0'; acc = null; op = null; neuf = true; opEl.textContent = ''; }
+        else if (k === '⌫') { if (!neuf) val = val.length > 1 ? val.slice(0, -1) : '0'; }
+        aff();
+      };
+      ['C', '⌫', '÷', '×', '7', '8', '9', '−', '4', '5', '6', '+', '1', '2', '3', '=', '0', ','].forEach(k => {
+        const b = document.createElement('button'); b.textContent = k;
+        if ('÷×−+C⌫'.includes(k)) b.className = 'op';
+        if (k === '=') { b.className = 'egal'; b.style.gridRow = 'span 2'; }
+        if (k === '0') b.style.gridColumn = 'span 2';
+        b.onclick = () => appuie(k);
+        t.appendChild(b);
+      });
+      w.touche = e => {
+        const map = { '+': '+', '-': '−', '*': '×', '/': '÷', Enter: '=', '=': '=', Backspace: '⌫', Escape: 'C', ',': ',', '.': ',' };
+        const k = /^\d$/.test(e.key) ? e.key : map[e.key];
+        if (k) { e.preventDefault(); appuie(k); }
+      };
+    },
+
+    photos(w, nom) {
+      const grille = () => {
+        titreFenetre(w, 'Photos');
+        w.corps.innerHTML = '<div class="ph-grille"></div>';
+        const g = w.corps.querySelector('.ph-grille');
+        (fs['Images'] || []).forEach(item => {
+          if (!PHOTOS[item.nom]) return;
+          const b = document.createElement('button'); b.className = 'ph-vign';
+          b.innerHTML = `<div style="background:${PHOTOS[item.nom]}"></div><span>${esc(item.nom.replace(/\.jpg$/, ''))}</span>`;
+          b.onclick = () => grand(item.nom);
+          g.appendChild(b);
+        });
+      };
+      const grand = n => {
+        titreFenetre(w, n + ' – Photos');
+        w.corps.innerHTML = `<div class="ph-grand"><div class="img" style="background:${PHOTOS[n]}"></div><div class="bas"><button>← Toutes les photos</button><span>${esc(n)}</span></div></div>`;
+        w.corps.querySelector('button').onclick = grille;
+        signal('photo_grande');
+      };
+      w.charger = n => { if (n && PHOTOS[n]) grand(n); };
+      w.rafraichir = () => { if (!w.corps.querySelector('.ph-grand')) grille(); };
+      if (nom && PHOTOS[nom]) grand(nom); else grille();
+    },
+
+    internet(w) {
+      w.corps.innerHTML = `<div class="nav"><div class="nav-barre"><input value="Page d’accueil" readonly></div><div class="nav-page">
+        <h3>Recherche</h3><form><input placeholder="Tapez votre recherche" spellcheck="false"><button>Chercher</button></form><div class="nav-res"></div></div></div>`;
+      const f = w.corps.querySelector('form'), res = w.corps.querySelector('.nav-res');
+      f.onsubmit = e => {
+        e.preventDefault();
+        const q = f.querySelector('input').value.trim(); if (!q) return;
+        w.corps.querySelector('.nav-barre input').value = 'recherche : ' + q;
+        res.innerHTML = `<p style="color:#666">Résultats pour « ${esc(q)} » (exemple, rien n’est vrai)</p>` +
+          ['Tout savoir sur', 'Les meilleures idées :', 'Guide pratique :'].map(t => `<p><b>${t} ${esc(q)}</b>Une page d’exemple, pour s’entraîner à lire des résultats.</p>`).join('');
+      };
+      setTimeout(() => f.querySelector("input").focus(), 80);
+    },
+
+    parametres(w) {
+      w.corps.innerHTML = `<div class="par"><div class="par-cote"><div>Système</div><div class="ici">Personnalisation</div><div>Comptes</div><div>Heure et langue</div></div>
+        <div class="par-main"><h3>Arrière-plan</h3><p>L’image derrière les icônes du bureau.</p><div class="apercu"></div><div class="fonds"></div></div></div>`;
+      const ap = w.corps.querySelector('.apercu'), box = w.corps.querySelector('.fonds');
+      w.rafraichir = () => {
+        ap.style.background = FONDS[fond].css;
+        box.innerHTML = '';
+        FONDS.forEach((f, k) => {
+          const b = document.createElement('button');
+          b.className = k === fond ? 'ici' : '';
+          b.innerHTML = `<div style="background:${f.css}"></div>${esc(f.nom)}`;
+          b.onclick = () => { if (k !== fond) { fond = k; appliquerFond(); signal('fond'); } w.rafraichir(); };
+          box.appendChild(b);
+        });
+      };
+      w.rafraichir();
+    },
+
+    corbeille(w) {
+      w.corps.innerHTML = `<div class="corb-barre"><button class="btn-w">Vider la Corbeille</button></div><div class="corb"></div>`;
+      const box = w.corps.querySelector('.corb'), vid = w.corps.querySelector('.corb-barre button');
+      vid.onclick = viderCorbeille;
+      w.rafraichir = () => {
+        vid.disabled = !corbeille.length;
+        box.innerHTML = corbeille.length ? '' : '<div class="ex-vide">La Corbeille est vide.</div>';
+        corbeille.forEach(entree => {
+          const l = document.createElement('div'); l.className = 'corb-ligne';
+          const g = entree.genre === 'app' ? G[entree.icone.app] : G[entree.genre === 'dossier' ? 'dossier' : entree.genre];
+          l.innerHTML = `${g}<span>${esc(entree.nom)}<br><small style="color:#777">venait de : ${esc(entree.depuis.split('/').join(' › '))}</small></span><button class="btn-w">Restaurer</button>`;
+          l.querySelector('button').onclick = () => restaurer(entree);
+          box.appendChild(l);
+        });
+      };
+      w.rafraichir();
+    },
+  };
+
+  function appliquerFond() { $('#fond').style.background = FONDS[fond].css; }
+
+  /* Clavier : Échap ferme les menus, la calculatrice écoute, Suppr jette */
+  document.addEventListener('keydown', e => {
+    if (eteint) return;
+    const dansEcran = ecran.contains(document.activeElement) || document.activeElement === document.body;
+    if (!dansEcran) return;
+    if (e.key === 'Escape') { fermerPopups(); return; }
+    // Menu Démarrer ouvert : ce qu'on tape va dans la recherche, comme sous Windows
+    if (!dm.hidden && document.activeElement !== dmCherche && (e.key.length === 1 || e.key === 'Backspace')) {
+      e.preventDefault();
+      dmCherche.value = e.key === 'Backspace' ? dmCherche.value.slice(0, -1) : dmCherche.value + e.key;
+      dmCherche.focus(); remplirDemarrer(); return;
+    }
+    if (!dm.hidden && e.key === 'Enter' && dmCherche.value.trim()) { const b = $('#dm-grille .dm-app'); if (b) b.click(); return; }
+    const t = document.activeElement.tagName;
+    if (t === 'INPUT' || t === 'TEXTAREA') return;
+    if (actif && fen[actif] && !fen[actif].min && fen[actif].touche) { fen[actif].touche(e); return; }
+    if (e.key === 'Delete' && selection.size) { [...selection].forEach(id => jeterIcone(icone(id))); }
+    if (e.key === 'Enter' && selection.size === 1) { const i = icone([...selection][0]); if (i) ouvrirIcone(i, 'clavier'); }
+  });
+
+  function toutRemettre() {
+    couche.innerHTML = '';
+    ecran.querySelectorAll('.noir, .voile, #menu-ctx').forEach(x => x.remove());
+    dm.hidden = true;
+    etatDepart(); appliquerFond(); dessinerIcones(); majBarre(); majHeure();
+    faites = new Set(); courante = 0; clearTimeout(flash); $('#mission').classList.remove('reussi'); majMissions();
+  }
+  $('#raz').onclick = toutRemettre;
+  window.addEventListener('resize', () => dessinerIcones());
+  setInterval(majHeure, 15000);
+  toutRemettre();
+})();
+</script>
+</body>
+</html>

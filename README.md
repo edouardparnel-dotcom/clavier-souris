@@ -32,6 +32,20 @@ numéro de téléphone, une adresse, corriger des fautes, la ponctuation, le pav
 des chiffres, un prix en euros ; chercher sur internet sans cliquer les
 annonces, taper un mot de passe caché, renommer un dossier.
 
+## Le niveau 3
+
+Les démarches de la vraie vie, en sécurité. Tout est faux, rien ne part.
+
+**La page : https://edouardparnel-dotcom.github.io/clavier-souris/niveau3/**
+
+20 stations et 12 questions. Choisir une date dans un calendrier, les curseurs,
+les boutons + et −, les onglets, la flèche Retour, déposer un justificatif, un
+menu dans le menu, mettre en gras ; le code reçu par SMS, lire les messages
+d'erreur, un mot de passe solide, recopier une adresse de site, choisir dans
+une liste qui s'ouvre, écrire un courriel ; reconnaître un faux site et une
+arnaque, prendre un rendez-vous, vérifier un panier, lire une question avant
+de cliquer, trouver le vrai bouton Télécharger.
+
 ## Le bureau Windows d'entraînement
 
 Un faux bureau Windows, dans le navigateur : on peut tout essayer, rien ne casse.

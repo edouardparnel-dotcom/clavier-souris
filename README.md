@@ -60,12 +60,21 @@ Corbeille (jeter, restaurer, vider), et éteindre puis rallumer.
 
 **Seul** : 22 missions guidées, reconnues automatiquement, en trois niveaux.
 
-**À deux, côte à côte** : chacun sur son poste, les deux tapent le même code à
-4 chiffres et disent s'ils sont assis à gauche ou à droite. Le premier chiffre
-choisit le scénario (1 à 4), le dernier qui commence (pair : la gauche).
-Chaque geste se fait deux fois : l'un fait, l'autre lit la consigne et guide
-sans toucher la souris, puis on inverse. Des consignes « mettez-vous
-d'accord » font parler le binôme.
+**À deux, côte à côte** : plus difficile que seul, et complémentaire. Chacun sur
+son poste, les deux tapent le même code à 4 chiffres et disent s'ils sont assis à
+gauche ou à droite. Chaque écran montre ce que l'autre n'a pas : il faut dicter,
+épeler, décrire, vérifier. Le premier chiffre choisit le scénario, les autres
+tirent les données (les deux postes voient donc les mêmes).
+
+1. **La liste dictée** : l'un a la liste dans ses Documents, l'autre l'écrit sous
+   sa dictée (accents exigés) et l'enregistre.
+2. **Les comptes du marché** : chacun a 3 tickets, chacun fait sa somme, puis le
+   total commun, écrit et enregistré.
+3. **Le bureau jumeau** : l'un décrit une image de fond sans la nommer, l'autre la
+   choisit ; puis on épelle un nom de dossier accentué à recréer à l'identique.
+4. **Le rendez-vous à noter** : l'un lit un SMS, l'autre le note ; celui qui a le
+   SMS cherche le jour de la semaine dans le calendrier ; on enregistre, puis on
+   éteint ensemble.
 
 ## Ce qu'on y travaille
 

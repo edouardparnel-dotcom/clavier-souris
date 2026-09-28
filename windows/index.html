@@ -81,6 +81,11 @@
   .b-parle { margin:8px 0 0; font-size:18px; color:var(--bleu); font-weight:600; }
   .b-parle:empty, .b-etat:empty { display:none; }
   .b-etat { margin:6px 0 0; font-size:17px; }
+  .b-secret { margin:10px 0 4px; padding:12px 14px; border:2px dashed var(--ambre); border-radius:6px; background:var(--ambre-pale); font-size:19px; font-weight:600; }
+  .b-secret .cle { display:block; font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.08em; color:var(--ambre); margin-bottom:6px; font-weight:600; }
+  .apercu-fond { width:220px; height:124px; border-radius:6px; border:1px solid var(--tranche); }
+  .b-lui { margin:6px 0 0; font-size:16px; color:var(--encre-doux); }
+  .etape small { color:var(--encre-doux); }
   .niv-moi { background:var(--vert-pale); color:var(--vert); }
   .niv-lui { background:var(--ambre-pale); color:var(--ambre); }
   .barre { display:flex; align-items:center; gap:14px; margin-top:12px; flex-wrap:wrap; }
@@ -324,8 +329,8 @@
 
   <section class="binome" id="binome" hidden aria-live="polite">
     <div id="b-debut">
-      <p class="m-faire">Chacun sur son ordinateur, le même code.</p>
-      <p class="voir">→ Un seul code pour les deux. Tapez le même.</p>
+      <p class="m-faire">Chacun sa part. Il faudra vous parler.</p>
+      <p class="voir">→ Chaque écran montre ce que l'autre n'a pas. Tapez le même code.</p>
       <div class="b-ligne">
         <label class="b-code">Code <input id="b-code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off"></label>
         <button class="rejouer" id="b-creer">Créer un code</button>
@@ -342,10 +347,13 @@
       <div class="m-haut"><span class="num" id="b-num"></span><span class="niv" id="b-qui"></span><span class="num" id="b-titre"></span></div>
       <p class="m-faire" id="b-faire"></p>
       <p class="voir" id="b-voir"></p>
+      <div class="b-secret" id="b-secret" hidden></div>
+      <p class="b-lui" id="b-lui"></p>
       <p class="b-parle" id="b-parle"></p>
       <p class="b-etat" id="b-etat"></p>
       <div class="b-ligne">
-        <button class="rejouer" id="b-prec">← Tour d'avant</button>
+        <button class="rejouer" id="b-prec">← Étape d'avant</button>
+        <button class="b-go fort" id="b-ok" hidden></button>
         <button class="b-go" id="b-suiv"></button>
         <button class="rejouer" id="b-quitter">Changer de code</button>
       </div>
@@ -412,7 +420,7 @@
     <div class="liste-missions" id="liste-3"></div>
   </div>
   <div id="deux-liste" hidden>
-    <h2 class="titre-partie" id="b-liste-titre">Les tours</h2>
+    <h2 class="titre-partie" id="b-liste-titre">Les étapes</h2>
     <div class="liste-missions" id="b-liste"></div>
   </div>
 
@@ -452,8 +460,8 @@
   const NIVEAUX = { 1: ['niv-1', 'Socle'], 2: ['niv-2', 'Si ça va vite'], 3: ['niv-3', 'En réserve'] };
   let faites = new Set(), courante = 0, flash = null;
 
-  function signal(k) {
-    binomeVoit(k);
+  function signal(k, v) {
+    binomeVoit(k, v);
     if (faites.has(k)) return;
     const i = MISSIONS.findIndex(m => m.k === k);
     if (i < 0) return;
@@ -516,118 +524,181 @@
     majMissions();
   };
 
-  /* ── À deux, côte à côte ──────────────────────────────────────
-     Le code choisit le scénario (1er chiffre) et qui commence (dernier chiffre pair : la gauche).
-     Chaque étape se joue deux fois : l'un fait, l'autre guide, puis on inverse. */
-  const SCENARIOS = [
-    { titre: 'La liste de courses', etapes: [
-      { k: 'ouvrir:blocnotes', faire: 'Deux clics sur Bloc-notes.', voir: 'Une fenêtre blanche s’ouvre.' },
-      { k: 'trois_lignes', faire: 'Écrivez 3 choses à acheter, une par ligne.', voir: 'Trois lignes écrites.', parle: 'Décidez ensemble des 3 choses, avant d’écrire.' },
-      { k: 'enregistrer', faire: 'Fichier, Enregistrer. Nom : courses.', voir: 'Le titre devient courses.txt.' },
-      { k: 'fermer', faire: 'Fermez Bloc-notes par la croix.', voir: 'La fenêtre disparaît.' },
-      { k: 'ouvrir_fichier', faire: 'Deux clics sur Documents, puis sur courses.', voir: 'Votre liste réapparaît.', parle: 'Relisez vos deux listes : sont-elles pareilles ?' },
-    ] },
-    { titre: 'Ranger le bureau', etapes: [
-      { k: 'dossier', faire: 'Clic droit dans le vide : Nouveau dossier.', voir: 'Un dossier jaune apparaît.', parle: 'Choisissez ensemble un nom pour ce dossier.' },
-      { k: 'renomme', faire: 'Tapez le nom choisi, puis Entrée.', voir: 'Le dossier porte votre nom.' },
-      { k: 'icone_deplacee', faire: 'Tirez une icône à un autre endroit.', voir: 'L’icône reste là où vous lâchez.', parle: 'Laquelle, et où ? Décidez ensemble.' },
-      { k: 'rectangle', faire: 'Encadrez 3 icônes : tirez dans le vide.', voir: 'Trois icônes deviennent bleues.' },
-      { k: 'corbeille', faire: 'Tirez votre dossier sur la Corbeille.', voir: 'Il disparaît du bureau.' },
-      { k: 'restaurer_corb', faire: 'Ouvrez la Corbeille, puis Restaurer.', voir: 'Le dossier revient.', parle: 'Rien n’est perdu tant que la Corbeille n’est pas vidée.' },
-    ] },
-    { titre: 'Un bureau à votre goût', etapes: [
-      { k: 'ouvrir:parametres', faire: 'Clic droit dans le vide : Personnaliser.', voir: 'Les Paramètres s’ouvrent.' },
-      { k: 'fond', faire: 'Cliquez sur une image de fond.', voir: 'Le fond du bureau change.', parle: 'Chacun choisit le sien. Dites pourquoi à votre voisin.' },
-      { k: 'fermer', faire: 'Fermez les Paramètres par la croix.', voir: 'Le bureau réapparaît, avec le nouveau fond.' },
-      { k: 'heure', faire: 'Cliquez sur l’heure, en bas à droite.', voir: 'Un calendrier s’ouvre.', parle: 'Lisez la date à voix haute.' },
-      { k: 'photo_grande', faire: 'Ouvrez Photos. Un clic sur une photo.', voir: 'La photo s’affiche en grand.', parle: 'Montrez votre photo préférée à votre voisin.' },
-      { k: 'reduire', faire: 'Cliquez sur le petit trait.', voir: 'La fenêtre se cache en bas.' },
-      { k: 'restaurer', faire: 'Faites-la revenir : son icône, en bas.', voir: 'Photos réapparaît.' },
-    ] },
-    { titre: 'Les calculs du marché', etapes: [
-      { k: 'chercher', faire: 'Démarrer, tapez calc, un clic sur Calculatrice.', voir: 'La Calculatrice s’ouvre.' },
-      { k: 'resultat:12', faire: '3 kilos de pommes à 4 € : calculez 3 × 4.', voir: 'Le résultat 12 s’affiche.', parle: 'Dites le résultat de tête, avant de calculer.' },
-      { k: 'resultat:42', faire: 'Ajoutez 30 € de viande : 12 + 30.', voir: 'Le résultat 42 s’affiche.', parle: 'Votre voisin trouve-t-il pareil ?' },
-      { k: 'deplacer', faire: 'Tirez la Calculatrice par sa barre du haut.', voir: 'Elle suit la souris.' },
-      { k: 'fermer', faire: 'Fermez la Calculatrice par la croix.', voir: 'Elle disparaît.' },
-      { k: 'eteindre', faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.' },
-      { k: 'rallumer', faire: 'Un seul appui sur le bouton, puis on attend.', voir: 'Le bureau revient.', parle: 'On n’appuie pas dix fois : on attend ensemble.' },
-    ] },
-  ];
-  const bi = { actif: false, code: '', place: null, scen: null, tour: 0, fait: false, commence: 'gauche' };
-  const autre = p => p === 'gauche' ? 'droite' : 'gauche';
-  function binomeVoit(k) {
-    if (!bi.actif || !bi.scen || bi.fait) return;
-    const t = bi.tour, e = bi.scen.etapes[Math.floor(t / 2)];
-    if (!e || quiFait(t) !== bi.place || e.k !== k) return;
-    bi.fait = true;
-    majBinome();
+  /* ── À deux, côte à côte : deux parts qui s'emboîtent ─────────
+     Chaque écran montre ce que l'autre n'a pas (une liste, des prix, une image, un SMS) :
+     il faut dicter, épeler, décrire, vérifier. Le code (4 chiffres) choisit le scénario
+     (1er chiffre) et tire les données : les deux postes voient donc les mêmes. */
+  const bas = s => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const prix = c => (c / 100).toFixed(2).replace('.', ',') + ' €';
+  const memeNombre = (v, c) => Math.abs(parseFloat(String(v).replace(',', '.')) - c / 100) < 0.001;
+  const sansTxt = n => bas(n).replace(/\.txt$/, '');
+  const JOURS_SEM = ['dimanche', 'lundi', 'mardi', 'mercredi', 'jeudi', 'vendredi', 'samedi'];
+  function hasard(graine) {
+    let a = graine >>> 0;
+    return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ t >>> 15, t | 1); t ^= t + Math.imul(t ^ t >>> 7, t | 61); return ((t ^ t >>> 14) >>> 0) / 4294967296; };
   }
-  function quiFait(t) { return t % 2 === 0 ? bi.commence : autre(bi.commence); }
+  const tirer = (r, liste, n) => { const l = liste.slice(), out = []; while (out.length < n) out.push(l.splice(Math.floor(r() * l.length), 1)[0]); return out; };
+  const fait = (k, t = () => true) => ({ k, t });
+  const manuel = bouton => ({ manuel: bouton });
+
+  const SCENARIOS = [
+    { titre: 'La liste dictée', donnees(r) {
+        return { articles: tirer(r, ['pommes de terre', 'crème fraîche', 'pâtes', 'bœuf haché', 'céleri', 'pêches', 'fenouil', 'riz basmati', 'œufs', 'café moulu', 'thé vert', 'haricots verts', 'bière', 'mâche'], 4) };
+      },
+      fichiers: (d, place) => place === 'gauche' ? [{ nom: 'Liste de Paul.txt', genre: 'txt', contenu: d.articles.join('\n') }] : [],
+      etapes: d => [
+        { g: { faire: 'Deux clics sur Documents, puis sur « Liste de Paul ».', voir: 'La liste s’ouvre dans Bloc-notes.', ...fait('ouvrir_fichier', v => v === 'Liste de Paul.txt') },
+          d: { faire: 'Deux clics sur Bloc-notes. Attendez la dictée.', voir: 'Une page blanche s’ouvre.', ...fait('ouvrir:blocnotes') } },
+        { g: { faire: 'Dictez la liste, lentement. Épelez les accents.', voir: 'Votre voisin écrit sur son poste.', ...manuel('J’ai tout dicté') },
+          d: { faire: 'Écrivez chaque chose sur sa ligne.', voir: 'Accents compris : â, c’est ^ puis a.', ...fait('texte', v => { const l = v.split('\n').map(bas); return d.articles.every(a => l.includes(a)); }) },
+          parle: 'Celui qui écrit relit à voix haute. Celui qui dicte compare.' },
+        { g: { faire: 'Regardez son écran. Comparez mot à mot.', voir: 'Une faute ? Dites-lui laquelle.', ...manuel('Tout est pareil') },
+          d: { faire: 'Fichier, Enregistrer. Nom : courses-paul', voir: 'Le titre devient courses-paul.txt.', ...fait('enregistre', v => ['courses-paul', 'courses paul'].includes(sansTxt(v.nom))) } },
+        { g: { faire: 'Fermez la liste par la croix.', voir: 'La fenêtre disparaît.', ...fait('fermer', v => v === 'blocnotes') },
+          d: { faire: 'Fermez Bloc-notes par la croix.', voir: 'Rien ne vous demande d’enregistrer : c’est déjà fait.', ...fait('fermer', v => v === 'blocnotes') } },
+      ] },
+
+    { titre: 'Les comptes du marché', donnees(r) {
+        const c = () => 150 + 10 * Math.floor(r() * 185);
+        const g = [c(), c(), c()], dd = [c(), c(), c()];
+        return { g, d: dd, sg: g.reduce((a, b) => a + b, 0), sd: dd.reduce((a, b) => a + b, 0) };
+      },
+      secret: (d, place) => 'Vos 3 tickets : ' + (place === 'gauche' ? d.g : d.d).map(prix).join(' · '),
+      etapes: d => {
+        const tout = d.sg + d.sd;
+        const deux = x => ({ g: x, d: x });
+        return [
+          deux({ faire: 'Démarrer, tapez calc, un clic sur Calculatrice.', voir: 'La Calculatrice s’ouvre.', ...fait('ouvrir:calculatrice') }),
+          { g: { faire: 'Additionnez vos 3 tickets, puis =', voir: 'La virgule : la touche , de la calculatrice.', ...fait('resultat', v => memeNombre(v, d.sg)) },
+            d: { faire: 'Additionnez vos 3 tickets, puis =', voir: 'La virgule : la touche , de la calculatrice.', ...fait('resultat', v => memeNombre(v, d.sd)) } },
+          { ...deux({ faire: 'Dites votre total. Ajoutez celui du voisin au vôtre.', voir: 'Vous devez trouver le même résultat tous les deux.', ...fait('resultat', v => memeNombre(v, tout)) }),
+            parle: 'Dites les nombres avec les centimes : « vingt-huit euros quarante ».' },
+          deux({ faire: 'Bloc-notes : écrivez le total. Enregistrez : comptes', voir: 'Le titre devient comptes.txt.', ...fait('enregistre', v => sansTxt(v.nom) === 'comptes' && memeNombre((v.texte.match(/\d+[.,]?\d*/) || [''])[0], tout)) }),
+        ];
+      } },
+
+    { titre: 'Le bureau jumeau', donnees(r) {
+        const f = tirer(r, [1, 2, 3, 4, 5], 2);
+        const mots = tirer(r, ['Été 2027', 'Généalogie', 'Brocante', 'Anniversaire Léa', 'Pâtisserie', 'Noël chez Hélène', 'Forêt de Crécy', 'Château'], 2);
+        return { fg: f[0], fd: f[1], mg: mots[0], md: mots[1] };
+      },
+      secret: (d, place, e) => {
+        if (e < 2) { const f = place === (e === 0 ? 'gauche' : 'droite') ? (e === 0 ? d.fg : d.fd) : null; return f ? { fond: f } : ''; }
+        const moi = place === (e === 2 ? 'gauche' : 'droite');
+        return moi ? 'Le nom du dossier : ' + (e === 2 ? d.mg : d.md) : '';
+      },
+      etapes: d => [
+        { g: { faire: 'Décrivez cette image à votre voisin, sans la nommer.', voir: 'Couleurs, formes, ce qu’on y voit.', ...manuel('Il a trouvé') },
+          d: { faire: 'Clic droit dans le vide : Personnaliser. Choisissez l’image décrite.', voir: 'Le fond de votre bureau change.', ...fait('fond', v => v === d.fg) },
+          parle: 'Posez des questions : « Il y a du vert ? C’est clair ou sombre ? »' },
+        { g: { faire: 'Clic droit dans le vide : Personnaliser. Choisissez l’image décrite.', voir: 'Le fond de votre bureau change.', ...fait('fond', v => v === d.fd) },
+          d: { faire: 'Décrivez cette image à votre voisin, sans la nommer.', voir: 'Couleurs, formes, ce qu’on y voit.', ...manuel('Il a trouvé') } },
+        { g: { faire: 'Épelez ce nom lettre par lettre, accents compris.', voir: 'Votre voisin crée le dossier sur son poste.', ...manuel('Il l’a écrit') },
+          d: { faire: 'Clic droit dans le vide : Nouveau dossier. Tapez le nom épelé.', voir: 'Le nom exact, accents compris.', ...fait('renomme', v => bas(v) === bas(d.mg)) },
+          parle: 'Pour un accent, dites-le : « e accent aigu », « a accent circonflexe ».' },
+        { g: { faire: 'Clic droit dans le vide : Nouveau dossier. Tapez le nom épelé.', voir: 'Le nom exact, accents compris.', ...fait('renomme', v => bas(v) === bas(d.md)) },
+          d: { faire: 'Épelez ce nom lettre par lettre, accents compris.', voir: 'Votre voisin crée le dossier sur son poste.', ...manuel('Il l’a écrit') } },
+      ] },
+
+    { titre: 'Le rendez-vous à noter', donnees(r) {
+        const auj = new Date(), nb = new Date(auj.getFullYear(), auj.getMonth() + 1, 0).getDate();
+        const n = 1 + Math.floor(r() * nb), h = [9, 10, 11, 14, 15, 16][Math.floor(r() * 6)], mm = ['00', '15', '30', '45'][Math.floor(r() * 4)];
+        const doc = ['Lefèvre', 'Garnier', 'Moreau', 'Bénard', 'Faure'][Math.floor(r() * 5)];
+        return { n, h, mm, doc, jour: JOURS_SEM[new Date(auj.getFullYear(), auj.getMonth(), n).getDay()], mois: auj.toLocaleDateString('fr-FR', { month: 'long' }) };
+      },
+      secret: (d, place) => place === 'droite' ? `SMS du cabinet : « Dr ${d.doc} : rendez-vous le ${d.n} ${d.mois} à ${d.h} h ${d.mm}. Apportez votre carte Vitale. »` : '',
+      etapes: d => {
+        const heure = new RegExp(`\\b${d.h}\\s*(h|:)\\s*${d.mm === '00' ? '(00)?' : d.mm}`, 'i');
+        return [
+          { g: { faire: 'Deux clics sur Bloc-notes.', voir: 'Une page blanche s’ouvre.', ...fait('ouvrir:blocnotes') },
+            d: { faire: 'Lisez le SMS à votre voisin, deux fois.', voir: 'Lentement : le nom, la date, l’heure.', ...manuel('J’ai lu') } },
+          { g: { faire: 'Écrivez : le docteur, la date, l’heure.', voir: 'Le nom avec son accent, s’il en a un.', ...fait('texte', v => bas(v).includes(bas(d.doc)) && heure.test(v) && new RegExp(`\\b${d.n}\\b`).test(v)) },
+            d: { faire: 'Vérifiez sur son écran. Corrigez ensemble.', voir: 'Le nom, le jour, l’heure : tout y est ?', ...manuel('C’est juste') } },
+          { g: { faire: 'Ajoutez le jour de la semaine que dira votre voisin.', voir: 'Lundi, mardi… dans la même note.', ...fait('texte', v => bas(v).includes(d.jour)) },
+            d: { faire: `Cliquez l’heure en bas à droite. Quel jour est le ${d.n} ?`, voir: 'Le calendrier s’ouvre. Dites le jour à votre voisin.', ...fait('heure') },
+            parle: 'Lisez la colonne : L, M, M, J, V, S, D.' },
+          { g: { faire: 'Fichier, Enregistrer. Nom : rendez-vous', voir: 'Le titre devient rendez-vous.txt.', ...fait('enregistre', v => ['rendez-vous', 'rendez vous'].includes(sansTxt(v.nom))) },
+            d: { faire: 'Regardez le titre de sa fenêtre.', voir: 'Il doit dire rendez-vous.txt, sans étoile *.', ...manuel('C’est enregistré') } },
+          { g: { faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.', ...fait('eteindre') },
+            d: { faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.', ...fait('eteindre') },
+            parle: 'Éteignez en même temps : « un, deux, trois, Arrêter ».' },
+        ];
+      } },
+  ];
+
+  const bi = { actif: false, code: '', place: null, scen: null, d: null, etapes: [], e: 0, fait: false };
+  const autre = p => p === 'gauche' ? 'droite' : 'gauche';
+  const monCote = e => bi.place === 'gauche' ? e.g : e.d;
+  const sonCote = e => bi.place === 'gauche' ? e.d : e.g;
+  function binomeVoit(k, v) {
+    if (!bi.actif || !bi.scen || bi.fait) return;
+    const e = bi.etapes[bi.e]; if (!e) return;
+    const p = monCote(e);
+    if (p.manuel || p.k !== k) return;
+    try { if (!p.t(v)) return; } catch (err) { return; }
+    bi.fait = true; majBinome();
+  }
+  function binomePreparer() {
+    if (!bi.scen || !bi.scen.fichiers) return;
+    bi.scen.fichiers(bi.d, bi.place).forEach(f => {
+      if (!fs.Documents.some(x => x.nom === f.nom)) fs.Documents.push({ ...f });
+    });
+    majFenetres();
+  }
   function majBinome() {
     const box = $('#binome');
     $('#b-debut').hidden = !!bi.scen; $('#b-jeu').hidden = !bi.scen;
     box.classList.remove('moi', 'lui', 'reussi');
     if (!bi.scen) return;
-    const total = bi.scen.etapes.length * 2;
-    if (bi.tour >= total) {
+    const total = bi.etapes.length;
+    const sec = $('#b-secret');
+    if (bi.e >= total) {
       box.classList.add('reussi');
-      $('#b-num').textContent = `${bi.scen.titre}`;
+      $('#b-num').textContent = bi.scen.titre;
       $('#b-qui').className = 'niv niv-moi'; $('#b-qui').textContent = 'Terminé';
-      $('#b-titre').textContent = '';
       $('#b-faire').textContent = '✓ Bravo à vous deux !';
       $('#b-voir').textContent = '→ Changez de code pour un autre scénario.';
-      $('#b-parle').textContent = 'Qu’est-ce qui a été le plus difficile ? Dites-le à votre voisin.';
-      $('#b-etat').textContent = '';
-      $('#b-suiv').hidden = true;
+      $('#b-lui').textContent = ''; sec.hidden = true;
+      $('#b-parle').textContent = '💬 Qu’est-ce qui a été le plus difficile ? Dites-le à votre voisin.';
+      $('#b-etat').textContent = ''; $('#b-ok').hidden = true; $('#b-suiv').hidden = true;
       majListeBinome(); return;
     }
-    $('#b-suiv').hidden = false;
-    const e = bi.scen.etapes[Math.floor(bi.tour / 2)];
-    const moi = quiFait(bi.tour) === bi.place;
-    box.classList.add(moi ? 'moi' : 'lui');
-    $('#b-num').textContent = `Tour ${bi.tour + 1} sur ${total}`;
+    const e = bi.etapes[bi.e], moi = monCote(e), lui = sonCote(e);
+    box.classList.add(bi.fait ? 'reussi' : 'moi');
+    $('#b-num').textContent = `Étape ${bi.e + 1} sur ${total}`;
     $('#b-titre').textContent = '· ' + bi.scen.titre;
-    $('#b-qui').className = 'niv ' + (moi ? 'niv-moi' : 'niv-lui');
-    $('#b-qui').textContent = moi ? 'À vous de faire' : 'À votre voisin';
+    $('#b-qui').className = 'niv niv-moi'; $('#b-qui').textContent = 'Votre part';
+    $('#b-faire').textContent = bi.fait ? '✓ Votre part est faite.' : moi.faire;
+    $('#b-voir').textContent = bi.fait ? '' : '→ ' + moi.voir;
+    $('#b-lui').textContent = 'Votre voisin, lui : ' + lui.faire;
+    const s = bi.scen.secret ? bi.scen.secret(bi.d, bi.place, bi.e) : '';
+    sec.hidden = !s;
+    if (s && s.fond) sec.innerHTML = '<span class="cle">🔒 Vous seul voyez :</span><div class="apercu-fond" style="background:' + FONDS[s.fond].css + '"></div>';
+    else if (s) sec.innerHTML = '<span class="cle">🔒 Vous seul voyez :</span>' + esc(s);
     $('#b-parle').textContent = e.parle ? '💬 ' + e.parle : '';
-    if (moi && bi.fait) {
-      box.classList.add('reussi');
-      $('#b-faire').textContent = '✓ Réussi !';
-      $('#b-voir').textContent = '';
-      $('#b-etat').textContent = 'Tournez-vous : c’est à votre voisin. Vous le guidez.';
-      $('#b-suiv').textContent = 'À mon voisin →'; $('#b-suiv').classList.add('fort');
-    } else if (moi) {
-      $('#b-faire').textContent = e.faire;
-      $('#b-voir').textContent = '→ ' + e.voir;
-      $('#b-etat').textContent = 'Votre voisin lit et vous guide. Il ne touche pas votre souris.';
-      $('#b-suiv').textContent = 'C’est fait →'; $('#b-suiv').classList.remove('fort');
-    } else {
-      $('#b-faire').textContent = 'Guidez-le : « ' + e.faire + ' »';
-      $('#b-voir').textContent = '→ Sur son écran : ' + e.voir;
-      $('#b-etat').textContent = 'Lisez-lui la consigne. Montrez du doigt, sans toucher sa souris.';
-      $('#b-suiv').textContent = 'Il a réussi →'; $('#b-suiv').classList.add('fort');
-    }
+    $('#b-ok').hidden = !moi.manuel || bi.fait; $('#b-ok').textContent = moi.manuel || '';
+    $('#b-etat').textContent = bi.fait ? 'Aidez votre voisin s’il n’a pas fini, puis passez ensemble.' : '';
+    $('#b-suiv').hidden = false;
+    $('#b-suiv').textContent = 'Étape suivante, tous les deux →';
+    $('#b-suiv').classList.toggle('fort', bi.fait);
     majListeBinome();
   }
   function majListeBinome() {
     const box = $('#b-liste'); box.innerHTML = '';
-    $('#b-liste-titre').textContent = bi.scen ? bi.scen.titre : 'Les tours';
+    $('#b-liste-titre').textContent = bi.scen ? bi.scen.titre : 'Les étapes';
     if (!bi.scen) return;
-    bi.scen.etapes.forEach((e, n) => [0, 1].forEach(d => {
-      const t = n * 2 + d;
+    bi.etapes.forEach((e, t) => {
       const b = document.createElement('button');
-      const moi = quiFait(t) === bi.place;
-      b.className = 'etape' + (t < bi.tour ? ' ok' : '') + (t === bi.tour ? ' courante' : '');
-      b.innerHTML = `<span class="coche">✓</span><span class="n">${t + 1}</span><span><b>${moi ? 'Moi' : 'Mon voisin'}</b> · ${esc(e.faire)}</span>`;
-      b.onclick = () => { bi.tour = t; bi.fait = false; majBinome(); $('#binome').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+      b.className = 'etape' + (t < bi.e ? ' ok' : '') + (t === bi.e ? ' courante' : '');
+      b.innerHTML = `<span class="coche">✓</span><span class="n">${t + 1}</span><span><b>Moi</b> · ${esc(monCote(e).faire)}<br><small>Mon voisin · ${esc(sonCote(e).faire)}</small></span>`;
+      b.onclick = () => { bi.e = t; bi.fait = false; majBinome(); $('#binome').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
       box.appendChild(b);
-    }));
+    });
   }
   function lireCode(c) {
     if (!/^\d{4}$/.test(c)) return null;
     const s = SCENARIOS[+c[0] - 1];
-    return s ? { scen: s, commence: (+c[3]) % 2 === 0 ? 'gauche' : 'droite' } : null;
+    return s || null;
   }
   $('#b-creer').onclick = () => {
     const c = String(1 + Math.floor(Math.random() * SCENARIOS.length)) + String(Math.floor(Math.random() * 1000)).padStart(3, '0');
@@ -638,16 +709,19 @@
     document.querySelectorAll('.b-place').forEach(x => x.classList.toggle('ici', x === b));
   });
   $('#b-go').onclick = () => {
-    const c = $('#b-code').value.trim(), l = lireCode(c);
-    if (!l) { $('#b-err').textContent = '⚠ Code inconnu. 4 chiffres, le premier de 1 à ' + SCENARIOS.length + '.'; return; }
+    const c = $('#b-code').value.trim(), s = lireCode(c);
+    if (!s) { $('#b-err').textContent = '⚠ Code inconnu. 4 chiffres, le premier de 1 à ' + SCENARIOS.length + '.'; return; }
     if (!bi.place) { $('#b-err').textContent = '⚠ Choisissez : à gauche ou à droite.'; return; }
-    Object.assign(bi, { code: c, scen: l.scen, commence: l.commence, tour: 0, fait: false });
+    const d = s.donnees(hasard(+c * 7919 + 13));
+    Object.assign(bi, { code: c, scen: s, d, etapes: s.etapes(d), e: 0, fait: false });
     $('#b-err').textContent = '';
+    binomePreparer();
     majBinome();
   };
   $('#b-code').addEventListener('keydown', e => { if (e.key === 'Enter') $('#b-go').click(); });
-  $('#b-suiv').onclick = () => { bi.tour++; bi.fait = false; majBinome(); };
-  $('#b-prec').onclick = () => { if (bi.tour > 0) { bi.tour--; bi.fait = false; majBinome(); } };
+  $('#b-ok').onclick = () => { bi.fait = true; majBinome(); };
+  $('#b-suiv').onclick = () => { bi.e++; bi.fait = false; majBinome(); };
+  $('#b-prec').onclick = () => { if (bi.e > 0) { bi.e--; bi.fait = false; majBinome(); } };
   $('#b-quitter').onclick = () => { bi.scen = null; $('#b-code').value = ''; majBinome(); majListeBinome(); };
   function choisirMode(deux) {
     bi.actif = deux;
@@ -970,7 +1044,7 @@
           const nouveau = 'Bureau/' + nom; deplacerChemin(i.chemin, nouveau); i.chemin = nouveau;
         }
         i.nom = nom;
-        if (i.genre === 'dossier') signal('renomme');
+        if (i.genre === 'dossier') signal('renomme', nom);
         if (i.genre === 'dossier' && norm(nom) === 'recettes') signal('renommer');
       }
       dessinerIcones(); majFenetres();
@@ -1064,7 +1138,7 @@
   function ouvrir(app, arg, origine) {
     fermerPopups(true);
     signal('ouvrir:' + app);
-    if (app === 'blocnotes' && arg) signal('ouvrir_fichier');
+    if (app === 'blocnotes' && arg) signal('ouvrir_fichier', arg.nom);
     if (fen[app]) {
       const w = fen[app];
       if (w.min) { w.min = false; w.el.hidden = false; }
@@ -1145,7 +1219,7 @@
     if (!force && w.avantFermer && !(await w.avantFermer())) return;
     w.el.remove(); delete fen[app];
     if (w.fin) w.fin();
-    signal('fermer');
+    signal('fermer', app);
     const p = premierVisible(); actif = null;
     if (p) activer(p.app); else majBarre();
   }
@@ -1295,12 +1369,12 @@
       ta.addEventListener('input', () => {
         if (!w.sale) { w.sale = true; titre(); }
         pos();
-        if (ta.value.split('\n').filter(l => l.trim()).length >= 3) signal('trois_lignes');
+        signal('texte', ta.value);
       });
       const pos = () => { const avant = ta.value.slice(0, ta.selectionStart).split('\n'); etat.textContent = `Ligne ${avant.length}, colonne ${avant[avant.length - 1].length + 1}`; };
       ta.addEventListener('click', pos); ta.addEventListener('keyup', pos);
       const enregistrer = async () => {
-        if (w.fichier) { w.fichier.item.contenu = ta.value; w.sale = false; titre(); majFenetres(); return true; }
+        if (w.fichier) { w.fichier.item.contenu = ta.value; w.sale = false; titre(); majFenetres(); signal('enregistre', { nom: w.fichier.nom, texte: ta.value }); return true; }
         const r = await demander({ titre: 'Enregistrer sous', texte: 'Enregistrer dans : Documents', champ: 'Nom du fichier :', valeur: 'Sans titre', boutons: ['Enregistrer', 'Annuler'] });
         if (r.bouton !== 'Enregistrer') return false;
         let nom = r.valeur.trim() || 'Sans titre';
@@ -1315,6 +1389,7 @@
         w.fichier = { chemin: 'Documents', nom: item.nom, item };
         w.sale = false; titre(); majFenetres();
         if (ta.value.trim()) signal('enregistrer');
+        signal('enregistre', { nom: item.nom, texte: ta.value });
         return true;
       };
       const btnF = w.corps.querySelector('.bn-f');
@@ -1370,7 +1445,7 @@
             const nom = nomUnique(v, fs[w.chemin].filter(x => x !== item).map(x => x.nom));
             if (item.genre === 'dossier') deplacerChemin(w.chemin + '/' + item.nom, w.chemin + '/' + nom);
             item.nom = nom;
-            if (item.genre === 'dossier') signal('renomme');
+            if (item.genre === 'dossier') signal('renomme', nom);
             if (item.genre === 'dossier' && norm(nom) === 'recettes') signal('renommer');
           }
           majFenetres();
@@ -1427,7 +1502,7 @@
           if (op === null) return;
           opEl.textContent = `${String(acc).replace('.', ',')} ${op} ${val.replace('.', ',')} =`;
           val = calcule(); acc = null; op = null; neuf = true;
-          signal('resultat:' + val);
+          signal('resultat:' + val); signal('resultat', val);
           if (val === '42') signal('calcul');
         }
         else if (k === 'C') { val = '0'; acc = null; op = null; neuf = true; opEl.textContent = ''; }
@@ -1498,7 +1573,7 @@
           const b = document.createElement('button');
           b.className = k === fond ? 'ici' : '';
           b.innerHTML = `<div style="background:${f.css}"></div>${esc(f.nom)}`;
-          b.onclick = () => { if (k !== fond) { fond = k; appliquerFond(); signal('fond'); } w.rafraichir(); };
+          b.onclick = () => { if (k !== fond) { fond = k; appliquerFond(); signal('fond', k); } w.rafraichir(); };
           box.appendChild(b);
         });
       };
@@ -1550,7 +1625,7 @@
     couche.innerHTML = '';
     ecran.querySelectorAll('.noir, .voile, #menu-ctx').forEach(x => x.remove());
     dm.hidden = true;
-    etatDepart(); appliquerFond(); dessinerIcones(); majBarre(); majHeure();
+    etatDepart(); binomePreparer(); appliquerFond(); dessinerIcones(); majBarre(); majHeure();
     faites = new Set(); courante = 0; clearTimeout(flash); $('#mission').classList.remove('reussi'); majMissions();
   }
   $('#raz').onclick = toutRemettre;

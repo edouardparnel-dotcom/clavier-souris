@@ -29,7 +29,7 @@
   * { box-sizing: border-box; }
   body { background:var(--fond); color:var(--encre); font-family:var(--corps); font-size:19px; line-height:1.5;
          margin:0; padding:0 20px 70px; -webkit-font-smoothing:antialiased; }
-  .page { max-width:1180px; margin:0 auto; }
+  .page { max-width:1560px; margin:0 auto; }
   header { padding:34px 0 20px; border-bottom:3px solid var(--encre); margin-bottom:20px; }
   h1 { font-family:var(--display); font-weight:700; font-size:clamp(30px,5vw,46px); line-height:1.05; margin:0 0 8px; letter-spacing:-.02em; }
   .chapo { font-size:20px; color:var(--encre-doux); margin:0; }
@@ -386,6 +386,57 @@
   .etiquette { border:2px dashed var(--tranche); }
   .etiquette b { font-family:var(--mono); font-size:18px; letter-spacing:.04em; }
 
+  /* L'écran à gauche, les consignes à droite : tout se voit d'un coup d'œil */
+  .poste { display:grid; grid-template-columns:minmax(0,1fr) 370px; gap:16px; align-items:start; }
+  .poste .ecran { height:clamp(470px, 74vh, 720px); }
+  .consignes { height:calc(clamp(470px, 74vh, 720px) + 22px); overflow-y:auto; background:var(--carte); border:1px solid var(--trait);
+    border-radius:10px; padding:0 10px 10px; overscroll-behavior:contain; }
+  .consignes .titre-partie { padding:14px 4px 4px; font-size:12.5px; margin-bottom:8px; position:sticky; top:0; background:var(--carte); z-index:1; }
+  .consignes .liste-missions { gap:6px; }
+  .consignes .etape { font-size:15px; line-height:1.3; padding:7px 10px; gap:9px; }
+  .consignes .etape .coche { flex-basis:20px; height:20px; font-size:12px; }
+  .consignes .etape .n { flex-basis:20px; font-size:13px; }
+  @media (max-width: 1100px) {
+    .poste { grid-template-columns:1fr; }
+    .consignes .titre-partie { position:static; background:transparent; }
+  }
+
+  /* À deux : la carte de l'étape est en tête de la colonne, à côté de l'écran */
+  .consignes .binome { margin:10px 0 4px; padding:12px 13px; }
+  .consignes .binome .m-faire { font-size:20px; }
+  .consignes .binome .voir, .consignes .binome .b-parle { font-size:16px; }
+  .consignes .binome .b-lui, .consignes .binome .b-etat { font-size:15px; }
+  .consignes .b-secret { font-size:16px; padding:10px 11px; }
+  .consignes .apercu-fond { width:100%; height:96px; }
+  .consignes .b-ligne { gap:8px; margin-top:10px; }
+  .consignes .b-go, .consignes .b-place { font-size:16px; padding:8px 14px; }
+  .consignes .b-ligne .b-go, .consignes #b-go { width:100%; }
+  .consignes .rejouer { font-size:14px; padding:5px 10px; }
+  .consignes .b-code input { width:110px; font-size:24px; }
+  @media (max-width: 1100px) {
+    .consignes { display:contents; }
+    .poste .moniteur { order:2; }
+    .consignes .binome { order:1; margin:0; }
+    .consignes #solo-listes, .consignes #deux-liste { order:3; }
+  }
+  /* À deux : la carte de l'étape est en tête de la colonne, à côté de l'écran */
+  .consignes .binome { margin:10px 0 4px; padding:12px 13px; }
+  .consignes .binome .m-faire { font-size:20px; }
+  .consignes .binome .voir, .consignes .binome .b-parle { font-size:16px; }
+  .consignes .binome .b-lui, .consignes .binome .b-etat { font-size:15px; }
+  .consignes .b-secret { font-size:16px; padding:10px 11px; }
+  .consignes .apercu-fond { width:100%; height:96px; }
+  .consignes .b-ligne { gap:8px; margin-top:10px; }
+  .consignes .b-go, .consignes .b-place { font-size:16px; padding:8px 14px; }
+  .consignes .b-ligne .b-go, .consignes #b-go { width:100%; }
+  .consignes .rejouer { font-size:14px; padding:5px 10px; }
+  .consignes .b-code input { width:110px; font-size:24px; }
+  @media (max-width: 1100px) {
+    .consignes { display:contents; }
+    .poste .moniteur { order:2; }
+    .consignes .binome { order:1; margin:0; }
+    .consignes #solo-listes, .consignes #deux-liste { order:3; }
+  }
   @media (max-width: 700px) {
     body { font-size:18px; padding:0 12px 60px; }
     .mission { grid-template-columns:1fr; }
@@ -414,38 +465,6 @@
     <button class="mode" id="mode-deux">À deux, côte à côte</button>
   </div>
 
-  <section class="binome" id="binome" hidden aria-live="polite">
-    <div id="b-debut">
-      <p class="m-faire">Chacun sa part. Il faudra vous parler.</p>
-      <p class="voir">→ Chaque écran montre ce que l'autre n'a pas. Tapez le même code.</p>
-      <div class="b-ligne">
-        <label class="b-code">Code <input id="b-code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off"></label>
-        <button class="rejouer" id="b-creer">Créer un code</button>
-      </div>
-      <div class="b-ligne">
-        <span>Vous êtes assis :</span>
-        <button class="b-place" data-place="gauche">À gauche</button>
-        <button class="b-place" data-place="droite">À droite</button>
-      </div>
-      <button class="b-go" id="b-go">Commencer à deux</button>
-      <p class="depanne" id="b-err"></p>
-    </div>
-    <div id="b-jeu" hidden>
-      <div class="m-haut"><span class="num" id="b-num"></span><span class="niv" id="b-qui"></span><span class="num" id="b-titre"></span></div>
-      <p class="m-faire" id="b-faire"></p>
-      <p class="voir" id="b-voir"></p>
-      <div class="b-secret" id="b-secret" hidden></div>
-      <p class="b-lui" id="b-lui"></p>
-      <p class="b-parle" id="b-parle"></p>
-      <p class="b-etat" id="b-etat"></p>
-      <div class="b-ligne">
-        <button class="rejouer" id="b-prec">← Étape d'avant</button>
-        <button class="b-go fort" id="b-ok" hidden></button>
-        <button class="b-go" id="b-suiv"></button>
-        <button class="rejouer" id="b-quitter">Changer de code</button>
-      </div>
-    </div>
-  </section>
 
   <section class="mission" id="mission" aria-live="polite">
     <div class="m-haut"><span class="num" id="m-num"></span><span class="niv" id="m-niv"></span></div>
@@ -455,51 +474,99 @@
     <div class="m-boutons"><button class="rejouer" id="m-passer">Passer →</button></div>
   </section>
 
-  <div class="moniteur">
-    <div class="ecran" id="ecran">
-      <div id="fond"></div>
-      <div id="zone"><div id="rect"></div></div>
-      <div id="fenetres"></div>
-      <div id="ancrage"></div>
-      <div id="toasts"></div>
+  <div class="poste">
+    <div class="moniteur">
+      <div class="ecran" id="ecran">
+        <div id="fond"></div>
+        <div id="zone"><div id="rect"></div></div>
+        <div id="fenetres"></div>
+        <div id="ancrage"></div>
+        <div id="toasts"></div>
 
-      <div id="demarrer" hidden>
-        <div class="dm-recherche"><input id="dm-cherche" type="text" placeholder="Rechercher une application" autocomplete="off" spellcheck="false"></div>
-        <div class="dm-titre" id="dm-titre">Épinglé</div>
-        <div class="dm-grille" id="dm-grille"></div>
-        <div class="dm-bas">
-          <button class="dm-user dm-alim" id="dm-user" style="width:auto;padding:0 10px;gap:10px;display:flex" title="Adhérent"><span class="av">A</span>Adhérent</button>
-          <button class="dm-alim" id="dm-alim" title="Marche/Arrêt"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
+        <div id="demarrer" hidden>
+          <div class="dm-recherche"><input id="dm-cherche" type="text" placeholder="Rechercher une application" autocomplete="off" spellcheck="false"></div>
+          <div class="dm-titre" id="dm-titre">Épinglé</div>
+          <div class="dm-grille" id="dm-grille"></div>
+          <div class="dm-bas">
+            <button class="dm-user dm-alim" id="dm-user" style="width:auto;padding:0 10px;gap:10px;display:flex" title="Adhérent"><span class="av">A</span>Adhérent</button>
+            <button class="dm-alim" id="dm-alim" title="Marche/Arrêt"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
+          </div>
         </div>
-      </div>
-      <div class="pop" id="alim-menu" hidden>
-        <button data-alim="veille">Mettre en veille</button>
-        <button data-alim="arreter">Arrêter</button>
-        <button data-alim="redemarrer">Redémarrer</button>
-      </div>
-      <div class="pop usermenu" id="user-menu" hidden>
-        <button disabled>Modifier les paramètres du compte</button>
-        <button id="u-verrou">Verrouiller</button>
-        <button disabled>Se déconnecter</button>
-      </div>
-      <div class="pop cal" id="calendrier" hidden></div>
-      <div class="pop wifi" id="wifi" hidden></div>
-      <div class="pop son" id="volume" hidden>
-        <div style="margin-bottom:8px;display:flex;justify-content:space-between">Volume <b id="vol-n">60</b></div>
-        <input type="range" min="0" max="100" value="60" id="vol">
-      </div>
+        <div class="pop" id="alim-menu" hidden>
+          <button data-alim="veille">Mettre en veille</button>
+          <button data-alim="arreter">Arrêter</button>
+          <button data-alim="redemarrer">Redémarrer</button>
+        </div>
+        <div class="pop usermenu" id="user-menu" hidden>
+          <button disabled>Modifier les paramètres du compte</button>
+          <button id="u-verrou">Verrouiller</button>
+          <button disabled>Se déconnecter</button>
+        </div>
+        <div class="pop cal" id="calendrier" hidden></div>
+        <div class="pop wifi" id="wifi" hidden></div>
+        <div class="pop son" id="volume" hidden>
+          <div style="margin-bottom:8px;display:flex;justify-content:space-between">Volume <b id="vol-n">60</b></div>
+          <input type="range" min="0" max="100" value="60" id="vol">
+        </div>
 
-      <div id="taches">
-        <button class="tb" id="tb-demarrer" title="Démarrer"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="3" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/></svg></button>
-        <button class="tb" id="tb-cherche" title="Rechercher"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg></button>
-        <div id="tb-apps" style="display:flex;gap:4px"></div>
-        <div class="tb-droite">
-          <button class="tb" id="tb-wifi" title="Réseau : pas de connexion"></button>
-          <button class="tb" id="tb-son" title="Son"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#333"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
-          <button class="tb-heure" id="tb-heure" title="Date et heure"><div id="h-heure"></div><div id="h-date"></div></button>
+        <div id="taches">
+          <button class="tb" id="tb-demarrer" title="Démarrer"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="3" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="3" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/><rect x="12.6" y="12.6" width="8.4" height="8.4" fill="#0A7BE0"/></svg></button>
+          <button class="tb" id="tb-cherche" title="Rechercher"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg></button>
+          <div id="tb-apps" style="display:flex;gap:4px"></div>
+          <div class="tb-droite">
+            <button class="tb" id="tb-wifi" title="Réseau : pas de connexion"></button>
+            <button class="tb" id="tb-son" title="Son"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#333"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
+            <button class="tb-heure" id="tb-heure" title="Date et heure"><div id="h-heure"></div><div id="h-date"></div></button>
+          </div>
         </div>
       </div>
     </div>
+    <aside class="consignes" id="consignes" aria-label="Les missions">
+    <section class="binome" id="binome" hidden aria-live="polite">
+      <div id="b-debut">
+        <p class="m-faire">Chacun sa part. Il faudra vous parler.</p>
+        <p class="voir">→ Chaque écran montre ce que l'autre n'a pas. Tapez le même code.</p>
+        <div class="b-ligne">
+          <label class="b-code">Code <input id="b-code" inputmode="numeric" maxlength="4" placeholder="0000" autocomplete="off"></label>
+          <button class="rejouer" id="b-creer">Créer un code</button>
+        </div>
+        <div class="b-ligne">
+          <span>Vous êtes assis :</span>
+          <button class="b-place" data-place="gauche">À gauche</button>
+          <button class="b-place" data-place="droite">À droite</button>
+        </div>
+        <button class="b-go" id="b-go">Commencer à deux</button>
+        <p class="depanne" id="b-err"></p>
+      </div>
+      <div id="b-jeu" hidden>
+        <div class="m-haut"><span class="num" id="b-num"></span><span class="niv" id="b-qui"></span><span class="num" id="b-titre"></span></div>
+        <p class="m-faire" id="b-faire"></p>
+        <p class="voir" id="b-voir"></p>
+        <div class="b-secret" id="b-secret" hidden></div>
+        <p class="b-lui" id="b-lui"></p>
+        <p class="b-parle" id="b-parle"></p>
+        <p class="b-etat" id="b-etat"></p>
+        <div class="b-ligne">
+          <button class="rejouer" id="b-prec">← Étape d'avant</button>
+          <button class="b-go fort" id="b-ok" hidden></button>
+          <button class="b-go" id="b-suiv"></button>
+          <button class="rejouer" id="b-quitter">Changer de code</button>
+        </div>
+      </div>
+    </section>
+    <div id="solo-listes">
+      <h2 class="titre-partie">Socle</h2>
+      <div class="liste-missions" id="liste-1"></div>
+      <h2 class="titre-partie">Si ça va vite</h2>
+      <div class="liste-missions" id="liste-2"></div>
+      <h2 class="titre-partie">En réserve</h2>
+      <div class="liste-missions" id="liste-3"></div>
+    </div>
+    <div id="deux-liste" hidden>
+      <h2 class="titre-partie" id="b-liste-titre">Les étapes</h2>
+      <div class="liste-missions" id="b-liste"></div>
+    </div>
+    </aside>
   </div>
 
   <div class="table-reelle" aria-label="Sur la table, à côté de l’ordinateur">
@@ -511,19 +578,6 @@
   <div class="barre">
     <span class="score" id="m-score"></span>
     <button class="rejouer" id="raz">Remettre le bureau à zéro</button>
-  </div>
-
-  <div id="solo-listes">
-    <h2 class="titre-partie">Socle</h2>
-    <div class="liste-missions" id="liste-1"></div>
-    <h2 class="titre-partie">Si ça va vite</h2>
-    <div class="liste-missions" id="liste-2"></div>
-    <h2 class="titre-partie">En réserve</h2>
-    <div class="liste-missions" id="liste-3"></div>
-  </div>
-  <div id="deux-liste" hidden>
-    <h2 class="titre-partie" id="b-liste-titre">Les étapes</h2>
-    <div class="liste-missions" id="b-liste"></div>
   </div>
 
 </div>
@@ -620,6 +674,11 @@
         box.appendChild(b);
       });
     });
+    const cour = $('#consignes .etape.courante'), col = $('#consignes');
+    if (cour && col.scrollHeight > col.clientHeight) {
+      const rc = cour.getBoundingClientRect(), rl = col.getBoundingClientRect();
+      if (rc.top < rl.top + 40 || rc.bottom > rl.bottom) col.scrollTop += rc.top - rl.top - rl.height / 3;
+    }
     const s = $('#m-score');
     s.textContent = `${faites.size} sur ${MISSIONS.length} missions`;
     s.classList.toggle('fini', faites.size === MISSIONS.length);
@@ -759,6 +818,7 @@
   }
   function majBinome() {
     const box = $('#binome');
+    if (bi.actif) $('#consignes').scrollTop = 0;
     $('#b-debut').hidden = !!bi.scen; $('#b-jeu').hidden = !bi.scen;
     box.classList.remove('moi', 'lui', 'reussi');
     if (!bi.scen) return;
@@ -803,7 +863,7 @@
       const b = document.createElement('button');
       b.className = 'etape' + (t < bi.e ? ' ok' : '') + (t === bi.e ? ' courante' : '');
       b.innerHTML = `<span class="coche">✓</span><span class="n">${t + 1}</span><span><b>Moi</b> · ${esc(monCote(e).faire)}<br><small>Mon voisin · ${esc(sonCote(e).faire)}</small></span>`;
-      b.onclick = () => { bi.e = t; bi.fait = false; majBinome(); $('#binome').scrollIntoView({ block: 'nearest', behavior: 'smooth' }); };
+      b.onclick = () => { bi.e = t; bi.fait = false; majBinome(); $('#consignes').scrollTop = 0; };
       box.appendChild(b);
     });
   }

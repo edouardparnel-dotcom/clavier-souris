@@ -76,6 +76,35 @@ tirent les données (les deux postes voient donc les mêmes).
    SMS cherche le jour de la semaine dans le calendrier ; on enregistre, puis on
    éteint ensemble.
 
+## Le bureau Windows, niveau 2
+
+La suite du bureau d'entraînement : les gestes du quotidien sur un vrai poste.
+
+**La page : https://edouardparnel-dotcom.github.io/clavier-souris/windows/niveau2/**
+
+**Seul** : 25 missions, reconnues automatiquement, en trois niveaux. Deux fenêtres
+ouvertes et passer de l'une à l'autre, changer la taille d'une fenêtre, en mettre
+deux côte à côte ; copier une adresse (Ctrl + C) et la coller dans Internet
+(Ctrl + V), annuler (Ctrl + Z), enregistrer avec Ctrl + S, baisser le son ; le
+dossier Téléchargements, ouvrir un PDF, le ranger en le glissant, chercher un
+fichier ; brancher une clé USB, y copier une photo, l'éjecter puis la retirer ;
+épingler une application, imprimer en 2 copies, ranger une facture dans un
+dossier, se connecter au Wi-Fi avec la clé de la box, repousser une mise à jour,
+verrouiller puis déverrouiller avec le code PIN.
+
+Sous l'écran, comme sur la table : la clé USB à brancher, l'étiquette de la box
+(réseau et clé Wi-Fi) et le code PIN.
+
+**À deux, côte à côte** : même principe que le niveau 1 (même code, gauche ou droite).
+
+1. **Le Wi-Fi à deux** : chacun dicte à l'autre une clé Wi-Fi, majuscules
+   comprises, puis tous deux cherchent sur Internet.
+2. **La facture à retrouver** : l'un connaît le numéro, l'autre la cherche dans
+   ses Téléchargements, lit le montant et la date ; le premier les note et
+   enregistre, le second range la facture.
+3. **Le grand rangement** : chacun dicte un nom de dossier accentué et les deux
+   fichiers à y ranger ; l'autre crée le dossier, coupe et colle.
+
 ## Ce qu'on y travaille
 
 **La souris** — clic gauche, double-clic, clic droit, glisser-déposer,

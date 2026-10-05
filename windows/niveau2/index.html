@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Un faux bureau Windows pour s'entraîner sans risque : icônes, menu Démarrer, fenêtres, corbeille, éteindre.">
+<meta name="description" content="Bureau Windows d'entraînement, niveau 2 : plusieurs fenêtres, copier-coller, Téléchargements, clé USB, Wi-Fi, imprimer, verrouiller.">
 <style>:root{color-scheme:light dark}[hidden]{display:none!important}</style>
-<title>Bureau Windows d'entraînement</title>
+<title>Bureau Windows, niveau 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500;600&family=Public+Sans:wght@400;600&display=swap">
@@ -300,6 +300,92 @@
   .corb-ligne svg { width:26px; height:26px; }
   .corb-ligne span { flex:1; }
 
+
+  /* ── Niveau 2 ── */
+  .poignee { position:absolute; right:0; bottom:0; width:16px; height:16px; cursor:nwse-resize; z-index:5; touch-action:none;
+    background:linear-gradient(135deg, transparent 0 55%, #A8A8A8 55% 62%, transparent 62% 72%, #A8A8A8 72% 79%, transparent 79%); }
+  .bord-d { position:absolute; top:34px; right:0; bottom:16px; width:6px; cursor:ew-resize; z-index:4; touch-action:none; }
+  .bord-b { position:absolute; left:0; right:16px; bottom:0; height:6px; cursor:ns-resize; z-index:4; touch-action:none; }
+  .fen.max .poignee, .fen.max .bord-d, .fen.max .bord-b { display:none; }
+  #ancrage { position:absolute; top:6px; bottom:54px; width:calc(50% - 9px); z-index:950; border-radius:8px;
+    background:rgba(120,170,230,.32); border:2px solid rgba(255,255,255,.7); pointer-events:none; display:none; }
+
+  #toasts { position:absolute; right:10px; bottom:58px; z-index:1400; display:flex; flex-direction:column; gap:8px; width:min(330px, calc(100% - 20px)); }
+  .toast { background:rgba(248,249,251,.98); border:1px solid rgba(0,0,0,.14); border-radius:8px; box-shadow:0 10px 28px rgba(0,0,0,.28);
+    padding:12px 14px; font-size:13.5px; cursor:default; }
+  .toast.cliquable { cursor:pointer; }
+  .toast.cliquable:hover { background:#fff; }
+  .toast b { display:block; font-size:14px; margin-bottom:3px; }
+  .toast .t-qui { font-size:12px; color:#666; margin-bottom:6px; display:flex; align-items:center; gap:6px; }
+  .toast .t-qui svg { width:16px; height:16px; }
+  .toast .t-btns { display:flex; gap:8px; margin-top:10px; }
+  .toast .t-btns .btn-w { min-width:0; flex:1; }
+  .toast.alerte { border-left:4px solid #C9821A; }
+
+  .wifi { right:150px; bottom:56px; width:310px; padding:10px; font-size:14px; }
+  .wifi .w-titre { font-weight:600; padding:4px 6px 8px; }
+  .reseau { border-radius:6px; padding:8px 10px; cursor:default; }
+  .reseau:hover { background:#E9EEF5; }
+  .reseau.ouvert { background:#E1ECF9; }
+  .reseau .r-nom { display:flex; align-items:center; gap:10px; }
+  .reseau .r-nom svg { width:20px; height:20px; flex:0 0 20px; }
+  .reseau .r-etat { font-size:12px; color:#555; margin-left:30px; }
+  .reseau .r-plus { margin:8px 0 2px 30px; display:grid; gap:8px; }
+  .reseau .r-plus label { font-size:13px; color:#333; }
+  .reseau .r-plus .cle-l { display:flex; gap:4px; }
+  .reseau .r-plus input[type=password], .reseau .r-plus input[type=text] { flex:1; min-width:0; padding:6px 8px; font-size:14px; border:1px solid #9A9A9A; border-bottom:2px solid #0A64C8; border-radius:4px; outline:none; color:#1B1B1B; background:#fff; }
+  .reseau .r-oeil { width:34px; border:1px solid #C4C4C4; border-radius:4px; background:#fff; cursor:default; font-size:15px; }
+  .reseau .r-err { color:#C42B1C; font-size:12.5px; }
+  .reseau .r-plus .btn-w { justify-self:end; }
+
+  .usermenu { left:22px; bottom:118px; }
+  .verrou { position:absolute; inset:0; z-index:2100; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; text-shadow:0 2px 8px rgba(0,0,0,.5); }
+  .verrou::before { content:""; position:absolute; inset:0; background:rgba(0,0,0,.25); }
+  .verrou > * { position:relative; }
+  .verrou .grande-heure { font-size:76px; font-weight:600; line-height:1; }
+  .verrou .grande-date { font-size:20px; margin-top:6px; }
+  .verrou .grande-date::first-letter { text-transform:uppercase; }
+  .verrou .v-indice { position:absolute; bottom:22px; font-size:14px; opacity:.85; }
+  .verrou .av { width:96px; height:96px; border-radius:50%; background:#5B7DB1; display:grid; place-items:center; font-size:40px; font-weight:600; margin:0 auto 10px; }
+  .verrou .v-nom { font-size:22px; margin-bottom:16px; }
+  .verrou input { width:220px; padding:8px 12px; font-size:16px; border:1px solid rgba(255,255,255,.6); border-bottom:2px solid #fff; border-radius:4px;
+    background:rgba(0,0,0,.35); color:#fff; outline:none; text-align:center; letter-spacing:.3em; }
+  .verrou input::placeholder { letter-spacing:0; color:rgba(255,255,255,.75); }
+  .verrou .v-err { min-height:22px; margin-top:10px; font-size:14px; }
+
+  .impr { width:min(400px, 94%); }
+  .impr .ligne { display:flex; align-items:center; justify-content:space-between; gap:10px; margin:10px 18px; font-size:14px; }
+  .impr select { padding:5px 8px; font-size:14px; border:1px solid #9A9A9A; border-radius:4px; background:#fff; color:#1B1B1B; max-width:220px; }
+  .impr .copies { display:flex; align-items:center; gap:4px; }
+  .impr .copies input { width:52px; text-align:center; margin:0; padding:5px; }
+  .impr .copies button { width:30px; height:30px; border:1px solid #C4C4C4; border-radius:4px; background:#fff; font-size:16px; cursor:default; color:#1B1B1B; }
+  .impr .feuille { margin:6px 18px 0; height:90px; border:1px solid #DDD; background:#FAFAFA; border-radius:3px; padding:8px 10px;
+    font-family:Consolas, monospace; font-size:10px; color:#555; overflow:hidden; white-space:pre-wrap; }
+
+  .ex-recherche { flex:0 0 170px; padding:5px 10px; border:1px solid #D5D5D5; border-radius:4px; background:#fff; font-size:13px; color:#1B1B1B; outline:none; }
+  .ex-cote hr { border:none; border-top:1px solid #E5E5E5; margin:4px 2px; width:100%; }
+  .ex-cote button.cible, .ex-item.cible { background:#CCE4FF; outline:2px dashed #3A8DDE; }
+  .ex-item small { color:#777; font-size:11px; }
+  .ex-item.coupe { opacity:.5; }
+
+  .pdf { flex:1; overflow:auto; background:#5A5A5A; padding:16px; }
+  .pdf .page-pdf { background:#fff; max-width:440px; margin:0 auto; padding:26px 30px; box-shadow:0 2px 10px rgba(0,0,0,.4); font-size:13px; color:#1B1B1B; }
+  .pdf .page-pdf h3 { margin:0 0 4px; font-size:17px; }
+  .pdf .page-pdf .entete { color:#777; font-size:12px; margin-bottom:16px; }
+  .pdf .page-pdf p { margin:0 0 8px; }
+  .pdf .page-pdf .gros { font-size:16px; font-weight:600; }
+
+  .nav-carte { max-width:520px; margin:6px auto 16px; height:120px; border-radius:6px; border:1px solid #CCC; position:relative;
+    background:linear-gradient(90deg, transparent 47%, #fff 47% 53%, transparent 53%), linear-gradient(transparent 40%, #fff 40% 46%, transparent 46%), linear-gradient(20deg, #E8F0E0, #DCE8F4); }
+  .nav-carte::after { content:"📍"; position:absolute; left:50%; top:30%; font-size:26px; transform:translate(-50%,-50%); }
+
+  .table-reelle { display:flex; flex-wrap:wrap; gap:12px 18px; align-items:stretch; margin-top:14px; }
+  .objet { background:var(--carte); border:1px solid var(--tranche); border-radius:8px; padding:10px 14px; font-size:16px; display:flex; align-items:center; gap:12px; }
+  .objet .quoi { font-family:var(--mono); font-size:12px; text-transform:uppercase; letter-spacing:.07em; color:var(--encre-doux); display:block; }
+  .etiquette { border:2px dashed var(--tranche); }
+  .etiquette b { font-family:var(--mono); font-size:18px; letter-spacing:.04em; }
+
   @media (max-width: 700px) {
     body { font-size:18px; padding:0 12px 60px; }
     .mission { grid-template-columns:1fr; }
@@ -313,13 +399,13 @@
 <div class="page">
 
   <header>
-    <h1>Un bureau Windows pour s'entraîner</h1>
-    <p class="chapo">Tout est faux ici. Rien ne peut casser.</p>
+    <h1>Le bureau Windows, niveau 2</h1>
+    <p class="chapo">Plusieurs fenêtres, copier-coller, la clé USB, le Wi-Fi. Tout est faux ici : rien ne peut casser.</p>
     <nav class="liens-niveaux">
-      <a href="../">← Niveau 1</a>
-      <a href="../niveau2/">← Niveau 2</a>
-      <a href="../niveau3/">← Niveau 3</a>
-      <a href="niveau2/">Bureau Windows, niveau 2 →</a>
+      <a href="../">← Bureau Windows, niveau 1</a>
+      <a href="../../">← Niveau 1</a>
+      <a href="../../niveau2/">← Niveau 2</a>
+      <a href="../../niveau3/">← Niveau 3</a>
     </nav>
   </header>
 
@@ -374,13 +460,15 @@
       <div id="fond"></div>
       <div id="zone"><div id="rect"></div></div>
       <div id="fenetres"></div>
+      <div id="ancrage"></div>
+      <div id="toasts"></div>
 
       <div id="demarrer" hidden>
         <div class="dm-recherche"><input id="dm-cherche" type="text" placeholder="Rechercher une application" autocomplete="off" spellcheck="false"></div>
         <div class="dm-titre" id="dm-titre">Épinglé</div>
         <div class="dm-grille" id="dm-grille"></div>
         <div class="dm-bas">
-          <div class="dm-user"><span class="av">A</span>Adhérent</div>
+          <button class="dm-user dm-alim" id="dm-user" style="width:auto;padding:0 10px;gap:10px;display:flex" title="Adhérent"><span class="av">A</span>Adhérent</button>
           <button class="dm-alim" id="dm-alim" title="Marche/Arrêt"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button>
         </div>
       </div>
@@ -389,9 +477,15 @@
         <button data-alim="arreter">Arrêter</button>
         <button data-alim="redemarrer">Redémarrer</button>
       </div>
+      <div class="pop usermenu" id="user-menu" hidden>
+        <button disabled>Modifier les paramètres du compte</button>
+        <button id="u-verrou">Verrouiller</button>
+        <button disabled>Se déconnecter</button>
+      </div>
       <div class="pop cal" id="calendrier" hidden></div>
+      <div class="pop wifi" id="wifi" hidden></div>
       <div class="pop son" id="volume" hidden>
-        <div style="margin-bottom:8px">Volume</div>
+        <div style="margin-bottom:8px;display:flex;justify-content:space-between">Volume <b id="vol-n">60</b></div>
         <input type="range" min="0" max="100" value="60" id="vol">
       </div>
 
@@ -400,11 +494,18 @@
         <button class="tb" id="tb-cherche" title="Rechercher"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2"><circle cx="10" cy="10" r="6"/><path d="M15 15l5 5"/></svg></button>
         <div id="tb-apps" style="display:flex;gap:4px"></div>
         <div class="tb-droite">
+          <button class="tb" id="tb-wifi" title="Réseau : pas de connexion"></button>
           <button class="tb" id="tb-son" title="Son"><svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"><path d="M4 9h4l5-4v14l-5-4H4z" fill="#333"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg></button>
           <button class="tb-heure" id="tb-heure" title="Date et heure"><div id="h-heure"></div><div id="h-date"></div></button>
         </div>
       </div>
     </div>
+  </div>
+
+  <div class="table-reelle" aria-label="Sur la table, à côté de l’ordinateur">
+    <div class="objet"><span><span class="quoi">Sur la table</span>Une clé USB</span><button class="b-go" id="usb-bouton" style="margin:0">Brancher la clé USB</button></div>
+    <div class="objet etiquette"><span><span class="quoi">Étiquette collée sous la box internet</span>Réseau : <b>Maison</b> · Clé : <b>Tilleul-2048</b></span></div>
+    <div class="objet"><span><span class="quoi">Votre code PIN</span><b style="font-family:var(--mono);font-size:18px">2580</b></span></div>
   </div>
 
   <div class="barre">
@@ -435,28 +536,31 @@
 
   /* ── Les missions ─────────────────────────────────────────── */
   const MISSIONS = [
-    { k: 'selection',   n: 1, faire: 'Cliquez une fois sur la Corbeille.', voir: '→ Elle se colore en bleu.', dep: '⚠ Une fenêtre s’ouvre ? C’était deux clics. Fermez-la par la croix.' },
-    { k: 'deselection', n: 1, faire: 'Cliquez dans le vide du bureau.', voir: '→ Le bleu disparaît.' },
-    { k: 'demarrer',    n: 1, faire: 'Cliquez sur Démarrer, en bas à gauche.', voir: '→ Un grand menu s’ouvre.', dep: '⚠ Démarrer : le logo à quatre carreaux bleus.' },
-    { k: 'demarrer_ferme', n: 1, faire: 'Refermez-le : un clic dans le vide.', voir: '→ Le menu disparaît.' },
-    { k: 'ouvrir_bn',   n: 1, faire: 'Deux clics sur Bloc-notes, sur le bureau.', voir: '→ Une fenêtre s’ouvre.', dep: '⚠ Rien ? Deux clics plus rapides, sans bouger la main.' },
-    { k: 'fermer',      n: 1, faire: 'Fermez-la par la croix, en haut à droite.', voir: '→ La fenêtre disparaît.', dep: '⚠ La croix devient rouge sous la flèche.' },
-    { k: 'heure',       n: 1, faire: 'Cliquez sur l’heure, en bas à droite.', voir: '→ Un calendrier s’ouvre.' },
-    { k: 'reduire',     n: 2, faire: 'Ouvrez Photos. Cliquez sur le petit trait.', voir: '→ La fenêtre se cache en bas.', dep: '⚠ Le trait est à gauche du carré et de la croix.' },
-    { k: 'restaurer',   n: 2, faire: 'Faites-la revenir : son icône, en bas.', voir: '→ La fenêtre réapparaît.', dep: '⚠ Son icône est soulignée dans la barre du bas.' },
-    { k: 'agrandir',    n: 2, faire: 'Cliquez sur le carré, en haut à droite.', voir: '→ La fenêtre prend tout l’écran.' },
-    { k: 'deplacer',    n: 2, faire: 'Tirez une fenêtre par sa barre du haut.', voir: '→ La fenêtre suit la souris.', dep: '⚠ Elle ne bouge pas ? Recliquez d’abord sur le carré.' },
-    { k: 'chercher',    n: 2, faire: 'Démarrer, puis tapez : calc', voir: '→ Calculatrice apparaît. Un clic dessus.', dep: '⚠ Tapez sans cliquer ailleurs : le menu écoute déjà.' },
-    { k: 'calcul',      n: 2, faire: 'Calculez 12 + 30, puis =', voir: '→ Le résultat 42 s’affiche.', dep: '⚠ Une erreur ? La touche C efface tout.' },
-    { k: 'dossier',     n: 3, faire: 'Clic droit dans le vide : Nouveau dossier.', voir: '→ Un dossier jaune apparaît.' },
-    { k: 'renommer',    n: 3, faire: 'Tapez Recettes, puis Entrée.', voir: '→ Le dossier s’appelle Recettes.', dep: '⚠ Plus de cadre bleu ? Clic droit sur le dossier : Renommer.' },
-    { k: 'fond',        n: 3, faire: 'Clic droit dans le vide : Personnaliser.', voir: '→ Cliquez une image : le fond change.' },
-    { k: 'enregistrer', n: 3, faire: 'Bloc-notes : écrivez, puis Fichier, Enregistrer.', voir: '→ Nommez-le : courses. Il va dans Documents.' },
-    { k: 'corbeille',   n: 3, faire: 'Tirez le dossier Recettes sur la Corbeille.', voir: '→ Il disparaît du bureau.', dep: '⚠ Gardez le bouton appuyé jusqu’à la Corbeille.' },
-    { k: 'restaurer_corb', n: 3, faire: 'Ouvrez la Corbeille, puis Restaurer.', voir: '→ Le dossier revient sur le bureau.' },
-    { k: 'rectangle',   n: 3, faire: 'Encadrez 3 icônes : tirez dans le vide.', voir: '→ Un cadre bleu, puis 3 icônes bleues.', dep: '⚠ Partez du vide, pas d’une icône.' },
-    { k: 'eteindre',    n: 3, faire: 'Démarrer, le bouton rond, puis Arrêter.', voir: '→ L’écran devient noir.' },
-    { k: 'rallumer',    n: 3, faire: 'Rallumez : un seul appui sur le bouton.', voir: '→ Attendez. Le bureau revient.', dep: '⚠ On n’appuie pas dix fois. On attend.' },
+    { k: 'deux_fenetres', n: 1, faire: 'Ouvrez Bloc-notes, puis la Calculatrice.', voir: '→ Deux fenêtres ouvertes, l’une devant l’autre.', dep: '⚠ La Calculatrice : Démarrer, puis tapez calc.' },
+    { k: 'basculer',    n: 1, faire: 'Passez de l’une à l’autre : leurs icônes, en bas.', voir: '→ Celle que vous cliquez passe devant.', dep: '⚠ Un clic sur une icône déjà devant la cache : recliquez.' },
+    { k: 'taille',      n: 1, faire: 'Tirez le coin en bas à droite d’une fenêtre.', voir: '→ La fenêtre grandit ou rétrécit.', dep: '⚠ Visez les petits traits du coin : la flèche devient double.' },
+    { k: 'ancrer',      n: 1, faire: 'Tirez une fenêtre par sa barre, tout contre le bord gauche.', voir: '→ Une ombre bleue, puis elle prend la moitié de l’écran.', dep: '⚠ Allez jusqu’au bord, avec la flèche de la souris.' },
+    { k: 'copier',      n: 1, faire: 'Documents : ouvrez « Mairie ». Sélectionnez l’adresse, puis Ctrl + C.', voir: '→ Rien ne bouge : c’est gardé en mémoire.', dep: '⚠ Sélectionner : appuyez avant le 12, tirez jusqu’à Orléans.' },
+    { k: 'coller',      n: 1, faire: 'Ouvrez Internet. Cliquez dans la recherche, puis Ctrl + V.', voir: '→ L’adresse apparaît. Entrée pour chercher.', dep: '⚠ Ctrl reste appuyé pendant qu’on tape V.' },
+    { k: 'annuler',     n: 1, faire: 'Bloc-notes : effacez un mot, puis Ctrl + Z.', voir: '→ Le mot revient : on a annulé.' },
+    { k: 'son',         n: 1, faire: 'Cliquez le haut-parleur, en bas à droite. Baissez le son.', voir: '→ Tirez le petit rond vers la gauche, sous 30.' },
+    { k: 'cote_a_cote', n: 2, faire: 'Mettez deux fenêtres côte à côte : une à gauche, une à droite.', voir: '→ Chacune prend sa moitié d’écran.', dep: '⚠ La deuxième : tirez-la contre le bord droit.' },
+    { k: 'ctrl_s',      n: 2, faire: 'Bloc-notes : enregistrez avec Ctrl + S.', voir: '→ La fenêtre « Enregistrer sous » s’ouvre.' },
+    { k: 'telechargements', n: 2, faire: 'Explorateur, en bas : ouvrez Téléchargements.', voir: '→ Ce qui vient d’internet arrive là.', dep: '⚠ L’Explorateur : le dossier jaune, dans la barre du bas.' },
+    { k: 'ouvrir_pdf',  n: 2, faire: 'Deux clics sur « Attestation CAF ».', voir: '→ Le document s’ouvre pour être lu.' },
+    { k: 'deplacer_fichier', n: 2, faire: 'Tirez « Attestation CAF » sur Documents, à gauche.', voir: '→ Elle quitte Téléchargements, rangée dans Documents.', dep: '⚠ Gardez le bouton appuyé jusqu’au mot Documents.' },
+    { k: 'chercher_fichier', n: 2, faire: 'Explorateur : tapez facture dans Rechercher, en haut à droite.', voir: '→ Le fichier est trouvé, où qu’il soit rangé.' },
+    { k: 'usb_brancher', n: 2, faire: 'Sous l’écran : Brancher la clé USB. Puis cliquez le message.', voir: '→ La clé s’ouvre dans l’Explorateur.', dep: '⚠ Le message est parti ? Explorateur, à gauche : Clé USB.' },
+    { k: 'usb_copier',  n: 2, faire: 'Images : clic droit sur une photo, Copier. Clé USB : clic droit, Coller.', voir: '→ La photo est sur la clé, et toujours dans Images.', dep: '⚠ Coller : clic droit dans le blanc, pas sur un fichier.' },
+    { k: 'usb_ejecter', n: 2, faire: 'Clic droit sur Clé USB, à gauche : Éjecter.', voir: '→ « Vous pouvez retirer la clé ».' },
+    { k: 'usb_retirer', n: 2, faire: 'Retirez la clé : le bouton sous l’écran.', voir: '→ La clé est revenue sur la table.', dep: '⚠ Toujours Éjecter avant de retirer.' },
+    { k: 'epingler',    n: 3, faire: 'Démarrer : clic droit sur Calculatrice, Épingler à la barre des tâches.', voir: '→ Son icône reste en bas, même fermée.' },
+    { k: 'imprimer',    n: 3, faire: 'Bloc-notes : Fichier, Imprimer. 2 copies, puis Imprimer.', voir: '→ « Envoyé à l’imprimante ».', dep: '⚠ Choisissez l’Imprimante du bureau, pas « en PDF ».' },
+    { k: 'ranger',      n: 3, faire: 'Documents : nouveau dossier Papiers. Tirez-y la facture.', voir: '→ La facture est dans Papiers.', dep: '⚠ La facture est dans Téléchargements : tirez-la sur Documents d’abord.' },
+    { k: 'wifi',        n: 3, faire: 'Le globe en bas à droite : connectez-vous à Maison.', voir: '→ La clé est sur l’étiquette, sous l’écran.', dep: '⚠ Majuscule au T. L’œil 👁 montre ce qu’on a tapé.' },
+    { k: 'maj_plus_tard', n: 3, faire: 'Une mise à jour s’annonce, en bas à droite : Plus tard.', voir: '→ Elle attendra que vous ayez fini.', dep: '⚠ Redémarrer maintenant ferme tout, même ce qui n’est pas enregistré.' },
+    { k: 'verrouiller', n: 3, faire: 'Démarrer, puis votre nom en bas : Verrouiller.', voir: '→ L’écran de verrouillage s’affiche.' },
+    { k: 'deverrouiller', n: 3, faire: 'Cliquez, tapez le code PIN 2580, puis Entrée.', voir: '→ Le bureau revient, fenêtres comprises.' },
   ];
   const NIVEAUX = { 1: ['niv-1', 'Socle'], 2: ['niv-2', 'Si ça va vite'], 3: ['niv-3', 'En réserve'] };
   let faites = new Set(), courante = 0, flash = null;
@@ -490,7 +594,7 @@
       $('#m-num').textContent = 'Toutes les missions sont faites';
       $('#m-niv').className = 'niv niv-1'; $('#m-niv').textContent = 'Bravo';
       $('#m-faire').textContent = 'Le bureau est à vous : explorez librement.';
-      $('#m-voir').textContent = '→ Rien ne peut casser.'; $('#m-dep').innerHTML = '<a href="niveau2/">Passer au bureau Windows, niveau 2 →</a>';
+      $('#m-voir').textContent = '→ Essayez maintenant à deux, côte à côte.'; $('#m-dep').textContent = '';
       $('#m-passer').hidden = true;
     } else {
       el.classList.remove('tout-fini');
@@ -499,6 +603,7 @@
       $('#m-niv').className = 'niv ' + NIVEAUX[m.n][0]; $('#m-niv').textContent = NIVEAUX[m.n][1];
       $('#m-faire').textContent = m.faire; $('#m-voir').textContent = m.voir; $('#m-dep').textContent = m.dep || '';
       $('#m-passer').hidden = false;
+      if (m.k === 'maj_plus_tard') proposerMaj();
     }
     majListe();
   }
@@ -542,87 +647,91 @@
   const fait = (k, t = () => true) => ({ k, t });
   const manuel = bouton => ({ manuel: bouton });
 
+  const THEMES = [
+    { dossier: 'Santé', fichiers: ['Ordonnance mars.pdf', 'Mutuelle remboursement.pdf'] },
+    { dossier: 'Énergie', fichiers: ['Facture EDF janvier.pdf', 'Relevé compteur gaz.pdf'] },
+    { dossier: 'Impôts', fichiers: ['Avis d’imposition.pdf', 'Taxe foncière.pdf'] },
+    { dossier: 'École', fichiers: ['Bulletin Léa.pdf', 'Cantine septembre.pdf'] },
+    { dossier: 'Voiture', fichiers: ['Assurance auto.pdf', 'Contrôle technique.pdf'] },
+  ];
+  const pdfSimple = nom => ({ nom, genre: 'pdf', doc: { titre: nom.replace(/\.pdf$/, ''), lignes: ['Document d’exemple, pour s’entraîner à ranger.'] } });
+
   const SCENARIOS = [
-    { titre: 'La liste dictée', donnees(r) {
-        return { articles: tirer(r, ['pommes de terre', 'crème fraîche', 'pâtes', 'bœuf haché', 'céleri', 'pêches', 'fenouil', 'riz basmati', 'œufs', 'café moulu', 'thé vert', 'haricots verts', 'bière', 'mâche'], 4) };
+    { titre: 'Le Wi-Fi à deux', donnees(r) {
+        const mot = () => tirer(r, ['Tilleul', 'Mesange', 'Cerisier', 'Hirondelle', 'Bruyere', 'Noisette', 'Coquelicot', 'Lavande'], 1)[0];
+        const chiffres = () => String(1000 + Math.floor(r() * 9000));
+        return { kg: mot() + '-' + chiffres(), kd: mot() + '-' + chiffres() };
       },
-      fichiers: (d, place) => place === 'gauche' ? [{ nom: 'Liste de Paul.txt', genre: 'txt', contenu: d.articles.join('\n') }] : [],
+      reseaux: d => ({ 'Atelier': d.kg, 'Médiathèque': d.kd }),
+      secret: (d, place, e) => {
+        if (e === 0 && place === 'gauche') return 'Réseau : Atelier · Clé : ' + d.kg;
+        if (e === 1 && place === 'droite') return 'Réseau : Médiathèque · Clé : ' + d.kd;
+        return '';
+      },
       etapes: d => [
-        { g: { faire: 'Deux clics sur Documents, puis sur « Liste de Paul ».', voir: 'La liste s’ouvre dans Bloc-notes.', ...fait('ouvrir_fichier', v => v === 'Liste de Paul.txt') },
-          d: { faire: 'Deux clics sur Bloc-notes. Attendez la dictée.', voir: 'Une page blanche s’ouvre.', ...fait('ouvrir:blocnotes') } },
-        { g: { faire: 'Dictez la liste, lentement. Épelez les accents.', voir: 'Votre voisin écrit sur son poste.', ...manuel('J’ai tout dicté') },
-          d: { faire: 'Écrivez chaque chose sur sa ligne.', voir: 'Accents compris : â, c’est ^ puis a.', ...fait('texte', v => { const l = v.split('\n').map(bas); return d.articles.every(a => l.includes(a)); }) },
-          parle: 'Celui qui écrit relit à voix haute. Celui qui dicte compare.' },
-        { g: { faire: 'Regardez son écran. Comparez mot à mot.', voir: 'Une faute ? Dites-lui laquelle.', ...manuel('Tout est pareil') },
-          d: { faire: 'Fichier, Enregistrer. Nom : courses-paul', voir: 'Le titre devient courses-paul.txt.', ...fait('enregistre', v => ['courses-paul', 'courses paul'].includes(sansTxt(v.nom))) } },
-        { g: { faire: 'Fermez la liste par la croix.', voir: 'La fenêtre disparaît.', ...fait('fermer', v => v === 'blocnotes') },
-          d: { faire: 'Fermez Bloc-notes par la croix.', voir: 'Rien ne vous demande d’enregistrer : c’est déjà fait.', ...fait('fermer', v => v === 'blocnotes') } },
+        { g: { faire: 'Dictez cette clé à votre voisin, lettre par lettre.', voir: 'Dites quand c’est une majuscule.', ...manuel('Il est connecté') },
+          d: { faire: 'Le globe en bas à droite : Atelier. Tapez la clé dictée.', voir: 'Connecté, sécurisé.', ...fait('wifi_reseau', v => v === 'Atelier') },
+          parle: 'Épelez : « T majuscule, i, l… », puis « tiret », puis les chiffres un par un.' },
+        { g: { faire: 'Le globe en bas à droite : Médiathèque. Tapez la clé dictée.', voir: 'Connecté, sécurisé.', ...fait('wifi_reseau', v => v === 'Médiathèque') },
+          d: { faire: 'Dictez cette clé à votre voisin, lettre par lettre.', voir: 'Dites quand c’est une majuscule.', ...manuel('Il est connecté') },
+          parle: 'Ça ne marche pas ? L’œil 👁 montre ce qui a été tapé : relisez ensemble.' },
+        { g: { faire: 'Ouvrez Internet. Cherchez : horaires médiathèque', voir: 'Des résultats s’affichent.', ...fait('cherche', v => norm(v).includes('mediatheque')) },
+          d: { faire: 'Ouvrez Internet. Cherchez : horaires médiathèque', voir: 'Des résultats s’affichent.', ...fait('cherche', v => norm(v).includes('mediatheque')) },
+          parle: 'Celui qui finit le premier aide l’autre, sans toucher sa souris.' },
       ] },
 
-    { titre: 'Les comptes du marché', donnees(r) {
-        const c = () => 150 + 10 * Math.floor(r() * 185);
-        const g = [c(), c(), c()], dd = [c(), c(), c()];
-        return { g, d: dd, sg: g.reduce((a, b) => a + b, 0), sd: dd.reduce((a, b) => a + b, 0) };
+    { titre: 'La facture à retrouver', donnees(r) {
+        const nums = tirer(r, Array.from({ length: 80 }, (_, k) => 41000 + k * 97), 4);
+        const mois = tirer(r, ['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'septembre', 'octobre', 'novembre'], 4);
+        const f = nums.map((n, k) => ({ num: String(n), montant: 2000 + 10 * Math.floor(r() * 1500), jour: 2 + Math.floor(r() * 26), mois: mois[k] }));
+        return { f, cible: f[Math.floor(r() * 4)] };
       },
-      secret: (d, place) => 'Vos 3 tickets : ' + (place === 'gauche' ? d.g : d.d).map(prix).join(' · '),
+      fichiers: (d, place) => place === 'gauche' ? d.f.map(x => ({ dossier: 'Téléchargements', nom: `Facture ${x.num}.pdf`, genre: 'pdf',
+        doc: { titre: 'Facture d’eau', lignes: [`Facture n° ${x.num}`, 'Abonné : M. ou Mme Adhérent', `Montant à payer : ${prix(x.montant)}`, `À payer avant le : ${x.jour} ${x.mois}`] } })) : [],
+      secret: (d, place, e) => place === 'droite' && e <= 2 ? `Il vous faut la facture n° ${d.cible.num} : son montant et sa date limite.` : '',
       etapes: d => {
-        const tout = d.sg + d.sd;
-        const deux = x => ({ g: x, d: x });
+        const c = d.cible, euros = String(Math.floor(c.montant / 100)), cts = String(c.montant % 100).padStart(2, '0');
         return [
-          deux({ faire: 'Démarrer, tapez calc, un clic sur Calculatrice.', voir: 'La Calculatrice s’ouvre.', ...fait('ouvrir:calculatrice') }),
-          { g: { faire: 'Additionnez vos 3 tickets, puis =', voir: 'La virgule : la touche , de la calculatrice.', ...fait('resultat', v => memeNombre(v, d.sg)) },
-            d: { faire: 'Additionnez vos 3 tickets, puis =', voir: 'La virgule : la touche , de la calculatrice.', ...fait('resultat', v => memeNombre(v, d.sd)) } },
-          { ...deux({ faire: 'Dites votre total. Ajoutez celui du voisin au vôtre.', voir: 'Vous devez trouver le même résultat tous les deux.', ...fait('resultat', v => memeNombre(v, tout)) }),
-            parle: 'Dites les nombres avec les centimes : « vingt-huit euros quarante ».' },
-          deux({ faire: 'Bloc-notes : écrivez le total. Enregistrez : comptes', voir: 'Le titre devient comptes.txt.', ...fait('enregistre', v => sansTxt(v.nom) === 'comptes' && memeNombre((v.texte.match(/\d+[.,]?\d*/) || [''])[0], tout)) }),
+          { g: { faire: 'Explorateur, en bas : ouvrez Téléchargements.', voir: 'Plusieurs factures s’y trouvent.', ...fait('dossier_ouvert', v => v === 'Téléchargements') },
+            d: { faire: 'Dites le numéro de facture, chiffre par chiffre.', voir: 'Votre voisin le répète pour vérifier.', ...manuel('J’ai dit le numéro') },
+            parle: 'Chiffre par chiffre : « quatre, un, deux… ». L’autre répète.' },
+          { g: { faire: 'Tapez ce numéro dans Rechercher, en haut à droite. Ouvrez la facture.', voir: 'Deux clics sur le fichier trouvé.', ...fait('ouvrir_pdf', v => v.includes(c.num)) },
+            d: { faire: 'Deux clics sur Bloc-notes.', voir: 'Une page blanche s’ouvre.', ...fait('ouvrir:blocnotes') } },
+          { g: { faire: 'Lisez le montant à payer, puis la date limite.', voir: 'Lentement, avec les centimes.', ...manuel('J’ai tout lu') },
+            d: { faire: 'Écrivez le montant et la date limite.', voir: 'Par exemple : 84,30 € avant le 12 mars.', ...fait('texte', v => new RegExp(`\\b${euros}\\s*[,.]\\s*${cts}\\b`).test(v) && new RegExp(`\\b${c.jour}\\b`).test(v) && norm(v).includes(norm(c.mois))) },
+            parle: 'Celui qui écrit relit à voix haute. L’autre vérifie sur la facture.' },
+          { g: { faire: 'Rangez la facture : tirez-la sur Documents, à gauche.', voir: 'Elle quitte Téléchargements.', ...fait('deplace', v => v.nom.includes(c.num) && v.vers === 'Documents') },
+            d: { faire: 'Ctrl + S. Nom : facture', voir: 'Le titre devient facture.txt.', ...fait('enregistre', v => sansTxt(v.nom) === 'facture') } },
         ];
       } },
 
-    { titre: 'Le bureau jumeau', donnees(r) {
-        const f = tirer(r, [1, 2, 3, 4, 5], 2);
-        const mots = tirer(r, ['Été 2027', 'Généalogie', 'Brocante', 'Anniversaire Léa', 'Pâtisserie', 'Noël chez Hélène', 'Forêt de Crécy', 'Château'], 2);
-        return { fg: f[0], fd: f[1], mg: mots[0], md: mots[1] };
+    { titre: 'Le grand rangement', donnees(r) {
+        const t = tirer(r, THEMES, 4);
+        return { tg: t[0], td: t[1], leurre_g: t[2], leurre_d: t[3] };
       },
+      // À droite on range le thème que la gauche connaît, et inversement
+      fichiers: (d, place) => (place === 'droite' ? [...d.tg.fichiers, d.leurre_d.fichiers[0]] : [...d.td.fichiers, d.leurre_g.fichiers[0]])
+        .map(nom => ({ dossier: 'Téléchargements', ...pdfSimple(nom) })),
       secret: (d, place, e) => {
-        if (e < 2) { const f = place === (e === 0 ? 'gauche' : 'droite') ? (e === 0 ? d.fg : d.fd) : null; return f ? { fond: f } : ''; }
-        const moi = place === (e === 2 ? 'gauche' : 'droite');
-        return moi ? 'Le nom du dossier : ' + (e === 2 ? d.mg : d.md) : '';
+        const t = e < 2 ? (place === 'gauche' ? d.tg : null) : (place === 'droite' ? d.td : null);
+        return t ? `Le dossier à créer dans Documents : ${t.dossier}. Y ranger : ${t.fichiers.map(f => f.replace(/\.pdf$/, '')).join(' et ')}.` : '';
       },
-      etapes: d => [
-        { g: { faire: 'Décrivez cette image à votre voisin, sans la nommer.', voir: 'Couleurs, formes, ce qu’on y voit.', ...manuel('Il a trouvé') },
-          d: { faire: 'Clic droit dans le vide : Personnaliser. Choisissez l’image décrite.', voir: 'Le fond de votre bureau change.', ...fait('fond', v => v === d.fg) },
-          parle: 'Posez des questions : « Il y a du vert ? C’est clair ou sombre ? »' },
-        { g: { faire: 'Clic droit dans le vide : Personnaliser. Choisissez l’image décrite.', voir: 'Le fond de votre bureau change.', ...fait('fond', v => v === d.fd) },
-          d: { faire: 'Décrivez cette image à votre voisin, sans la nommer.', voir: 'Couleurs, formes, ce qu’on y voit.', ...manuel('Il a trouvé') } },
-        { g: { faire: 'Épelez ce nom lettre par lettre, accents compris.', voir: 'Votre voisin crée le dossier sur son poste.', ...manuel('Il l’a écrit') },
-          d: { faire: 'Clic droit dans le vide : Nouveau dossier. Tapez le nom épelé.', voir: 'Le nom exact, accents compris.', ...fait('renomme', v => bas(v) === bas(d.mg)) },
-          parle: 'Pour un accent, dites-le : « e accent aigu », « a accent circonflexe ».' },
-        { g: { faire: 'Clic droit dans le vide : Nouveau dossier. Tapez le nom épelé.', voir: 'Le nom exact, accents compris.', ...fait('renomme', v => bas(v) === bas(d.md)) },
-          d: { faire: 'Épelez ce nom lettre par lettre, accents compris.', voir: 'Votre voisin crée le dossier sur son poste.', ...manuel('Il l’a écrit') } },
-      ] },
-
-    { titre: 'Le rendez-vous à noter', donnees(r) {
-        const auj = new Date(), nb = new Date(auj.getFullYear(), auj.getMonth() + 1, 0).getDate();
-        const n = 1 + Math.floor(r() * nb), h = [9, 10, 11, 14, 15, 16][Math.floor(r() * 6)], mm = ['00', '15', '30', '45'][Math.floor(r() * 4)];
-        const doc = ['Lefèvre', 'Garnier', 'Moreau', 'Bénard', 'Faure'][Math.floor(r() * 5)];
-        return { n, h, mm, doc, jour: JOURS_SEM[new Date(auj.getFullYear(), auj.getMonth(), n).getDay()], mois: auj.toLocaleDateString('fr-FR', { month: 'long' }) };
-      },
-      secret: (d, place) => place === 'droite' ? `SMS du cabinet : « Dr ${d.doc} : rendez-vous le ${d.n} ${d.mois} à ${d.h} h ${d.mm}. Apportez votre carte Vitale. »` : '',
       etapes: d => {
-        const heure = new RegExp(`\\b${d.h}\\s*(h|:)\\s*${d.mm === '00' ? '(00)?' : d.mm}`, 'i');
+        const range = t => v => {
+          const k = Object.keys(v).find(k => { const p = k.split('/'); return p.length === 2 && p[0] === 'Documents' && bas(p[1]) === bas(t.dossier); });
+          return !!k && t.fichiers.every(f => v[k].some(i => i.nom === f));
+        };
         return [
-          { g: { faire: 'Deux clics sur Bloc-notes.', voir: 'Une page blanche s’ouvre.', ...fait('ouvrir:blocnotes') },
-            d: { faire: 'Lisez le SMS à votre voisin, deux fois.', voir: 'Lentement : le nom, la date, l’heure.', ...manuel('J’ai lu') } },
-          { g: { faire: 'Écrivez : le docteur, la date, l’heure.', voir: 'Le nom avec son accent, s’il en a un.', ...fait('texte', v => bas(v).includes(bas(d.doc)) && heure.test(v) && new RegExp(`\\b${d.n}\\b`).test(v)) },
-            d: { faire: 'Vérifiez sur son écran. Corrigez ensemble.', voir: 'Le nom, le jour, l’heure : tout y est ?', ...manuel('C’est juste') } },
-          { g: { faire: 'Ajoutez le jour de la semaine que dira votre voisin.', voir: 'Lundi, mardi… dans la même note.', ...fait('texte', v => bas(v).includes(d.jour)) },
-            d: { faire: `Cliquez l’heure en bas à droite. Quel jour est le ${d.n} ?`, voir: 'Le calendrier s’ouvre. Dites le jour à votre voisin.', ...fait('heure') },
-            parle: 'Lisez la colonne : L, M, M, J, V, S, D.' },
-          { g: { faire: 'Fichier, Enregistrer. Nom : rendez-vous', voir: 'Le titre devient rendez-vous.txt.', ...fait('enregistre', v => ['rendez-vous', 'rendez vous'].includes(sansTxt(v.nom))) },
-            d: { faire: 'Regardez le titre de sa fenêtre.', voir: 'Il doit dire rendez-vous.txt, sans étoile *.', ...manuel('C’est enregistré') } },
-          { g: { faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.', ...fait('eteindre') },
-            d: { faire: 'Démarrer, le bouton rond, Arrêter.', voir: 'L’écran devient noir.', ...fait('eteindre') },
-            parle: 'Éteignez en même temps : « un, deux, trois, Arrêter ».' },
+          { g: { faire: 'Dites le nom du dossier. Épelez-le, accent compris.', voir: 'Votre voisin le crée dans Documents.', ...manuel('Il l’a créé') },
+            d: { faire: 'Explorateur, Documents : + Nouveau dossier. Tapez le nom dicté.', voir: 'Le nom exact, accent compris.', ...fait('renomme', v => bas(v) === bas(d.tg.dossier)) },
+            parle: 'Pour l’accent : « É majuscule, accent aigu ».' },
+          { g: { faire: 'Dites les 2 fichiers à ranger. Vérifiez sur son écran.', voir: 'Ils sont dans ses Téléchargements.', ...manuel('C’est rangé') },
+            d: { faire: 'Téléchargements : clic droit, Couper. Ouvrez le dossier : clic droit, Coller.', voir: 'Les 2 fichiers, et pas le troisième.', ...fait('fichiers', range(d.tg)) } },
+          { g: { faire: 'Explorateur, Documents : + Nouveau dossier. Tapez le nom dicté.', voir: 'Le nom exact, accent compris.', ...fait('renomme', v => bas(v) === bas(d.td.dossier)) },
+            d: { faire: 'Dites le nom du dossier. Épelez-le, accent compris.', voir: 'Votre voisin le crée dans Documents.', ...manuel('Il l’a créé') } },
+          { g: { faire: 'Téléchargements : clic droit, Couper. Ouvrez le dossier : clic droit, Coller.', voir: 'Les 2 fichiers, et pas le troisième.', ...fait('fichiers', range(d.td)) },
+            d: { faire: 'Dites les 2 fichiers à ranger. Vérifiez sur son écran.', voir: 'Ils sont dans ses Téléchargements.', ...manuel('C’est rangé') },
+            parle: 'Couper, c’est déménager. Copier, c’est faire un double.' },
         ];
       } },
   ];
@@ -640,9 +749,11 @@
     bi.fait = true; majBinome();
   }
   function binomePreparer() {
+    reseauxEnPlus = bi.scen && bi.scen.reseaux ? bi.scen.reseaux(bi.d) : {};
     if (!bi.scen || !bi.scen.fichiers) return;
-    bi.scen.fichiers(bi.d, bi.place).forEach(f => {
-      if (!fs.Documents.some(x => x.nom === f.nom)) fs.Documents.push({ ...f });
+    bi.scen.fichiers(bi.d, bi.place).forEach(({ dossier = 'Documents', ...f }) => {
+      const l = fs[dossier] || (fs[dossier] = []);
+      if (!l.some(x => x.nom === f.nom)) l.push({ ...f });
     });
     majFenetres();
   }
@@ -746,6 +857,9 @@
     calculatrice: `<svg viewBox="0 0 48 48"><rect x="10" y="5" width="28" height="38" rx="4" fill="#4E5862"/><rect x="14" y="9" width="20" height="8" rx="1" fill="#D9F0E3"/><g fill="#fff"><rect x="14" y="21" width="5" height="5" rx="1"/><rect x="21.5" y="21" width="5" height="5" rx="1"/><rect x="29" y="21" width="5" height="5" rx="1"/><rect x="14" y="28" width="5" height="5" rx="1"/><rect x="21.5" y="28" width="5" height="5" rx="1"/><rect x="29" y="28" width="5" height="12" rx="1" fill="#FF9F2E"/><rect x="14" y="35" width="12.5" height="5" rx="1"/></g></svg>`,
     parametres: `<svg viewBox="0 0 48 48"><g transform="translate(24 24)" fill="#6B7785"><circle r="12"/><g id="dent"><rect x="-3.5" y="-18" width="7" height="8" rx="1.5"/></g><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(45)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(90)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(135)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(180)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(225)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(270)"/><rect x="-3.5" y="-18" width="7" height="8" rx="1.5" transform="rotate(315)"/><circle r="5" fill="#fff"/></g></svg>`,
     txt: `<svg viewBox="0 0 48 48"><path d="M11 5h19l9 9v29H11z" fill="#fff" stroke="#8A96A3" stroke-width="2"/><path d="M30 5v9h9" fill="#E3E8EE" stroke="#8A96A3" stroke-width="2"/><path d="M16 22h17M16 28h17M16 34h11" stroke="#9FB3C8" stroke-width="2"/></svg>`,
+    pdf: `<svg viewBox="0 0 48 48"><path d="M11 5h19l9 9v29H11z" fill="#fff" stroke="#8A96A3" stroke-width="2"/><path d="M30 5v9h9" fill="#E3E8EE" stroke="#8A96A3" stroke-width="2"/><rect x="8" y="24" width="24" height="11" rx="2" fill="#D1352B"/><text x="20" y="32.5" font-size="8" font-family="Segoe UI,Arial" font-weight="700" fill="#fff" text-anchor="middle">PDF</text></svg>`,
+    telechargements: `<svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="17" fill="#2D8CFF"/><path d="M24 13v17M16 23l8 8 8-8M15 35h18" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    usb: `<svg viewBox="0 0 48 48"><rect x="15" y="4" width="18" height="12" rx="1" fill="#C9D0D8" stroke="#7D8793" stroke-width="2"/><rect x="19" y="8" width="3" height="3" fill="#7D8793"/><rect x="26" y="8" width="3" height="3" fill="#7D8793"/><rect x="11" y="16" width="26" height="28" rx="4" fill="#3D4A5A"/><circle cx="24" cy="34" r="3" fill="#4FC3F7"/></svg>`,
     img: `<svg viewBox="0 0 48 48"><path d="M11 5h19l9 9v29H11z" fill="#fff" stroke="#8A96A3" stroke-width="2"/><rect x="15" y="20" width="20" height="16" fill="#8EC3EE"/><path d="M15 34l6-6 4 4 3-3 7 7v0H15z" fill="#3F8F55"/></svg>`,
   };
   const APPS = {
@@ -756,9 +870,10 @@
     internet:    { titre: 'Internet', l: 620, h: 400, g: 'internet' },
     parametres:  { titre: 'Paramètres', l: 600, h: 390, g: 'parametres' },
     corbeille:   { titre: 'Corbeille', l: 480, h: 320, g: 'corbeille' },
+    pdf:         { titre: 'Lecteur PDF', l: 520, h: 420, g: 'pdf' },
   };
   const EPINGLES_DM = ['blocnotes', 'calculatrice', 'photos', 'internet', 'parametres', 'explorateur'];
-  const EPINGLES_TB = ['explorateur', 'internet'];
+  let EPINGLES_TB = ['explorateur', 'internet'];
   const FONDS = [
     { nom: 'Bleu Windows', css: 'radial-gradient(ellipse at 68% 58%, #7FD4FF 0%, #1E7BE6 22%, #0A3FA8 48%, #081B4D 80%)' },
     { nom: 'Coucher de soleil', css: 'linear-gradient(#FFB36B 0%, #F47C5B 38%, #6FA8CC 39%, #2A6B92 68%, #E6D2A2 69%, #D9BF86 100%)' },
@@ -778,6 +893,8 @@
 
   /* ── L'état du bureau ─────────────────────────────────────── */
   let icones, fs, corbeille, fond, selection, fen, zTop, cascade, compteId, eteint;
+  let pressePapiers, wifiConnecte, majFaite, usb, reseauxEnPlus = {};
+  const USB = 'Clé USB (E:)';
   function etatDepart() {
     icones = [
       { id: 'corbeille', nom: 'Corbeille', genre: 'app', app: 'corbeille', col: 0, row: 0 },
@@ -792,8 +909,18 @@
         { nom: 'Recette crêpes.txt', genre: 'txt', contenu: '250 g de farine\n4 œufs\n1/2 litre de lait\n1 pincée de sel' },
       ],
       'Images': Object.keys(PHOTOS).map(nom => ({ nom, genre: 'img' })),
+      'Téléchargements': [
+        { nom: 'Attestation CAF.pdf', genre: 'pdf', doc: { titre: 'Attestation de paiement', lignes: ['Caisse d’allocations familiales', 'Nous attestons que M. ou Mme Adhérent perçoit des prestations.', 'Document à garder : on vous le demandera.'] } },
+        { nom: 'Billet de train.pdf', genre: 'pdf', doc: { titre: 'Billet de train', lignes: ['Orléans → Tours', 'Départ 9 h 12 · Voiture 5 · Place 48', 'Présentez ce billet au contrôleur.'] } },
+        { nom: 'Menu de la cantine.pdf', genre: 'pdf', doc: { titre: 'Menu de la cantine', lignes: ['Lundi : carottes râpées, poisson, riz', 'Mardi : soupe, poulet, haricots verts', 'Jeudi : crêpes'] } },
+      ],
     };
+    fs['Documents'].push({ nom: 'Mairie.txt', genre: 'txt', contenu: 'Mairie de Saint-Martin\n12 place de la République, 45100 Orléans\nOuvert du lundi au vendredi, de 9 h à 17 h.' });
+    fs['Téléchargements'].push({ nom: 'Facture électricité.pdf', genre: 'pdf', doc: { titre: 'Facture d’électricité', lignes: ['Facture n° 30218', 'Montant à payer : 84,30 €', 'À payer avant le 12 du mois prochain.'] } });
     corbeille = []; fond = 0; selection = new Set(); fen = {}; zTop = 10; cascade = 0; compteId = 0; eteint = false;
+    EPINGLES_TB = ['explorateur', 'internet'];
+    pressePapiers = null; wifiConnecte = null; majFaite = false;
+    usb = { etat: 'table', contenu: [{ nom: 'Lisez-moi.txt', genre: 'txt', contenu: 'Cette clé appartient à l’atelier informatique.\nMerci de la rendre après usage.' }] };
   }
 
   const ecran = $('#ecran'), zone = $('#zone'), couche = $('#fenetres'), rect = $('#rect');
@@ -948,6 +1075,7 @@
 
   /* Clic droit */
   ecran.addEventListener('contextmenu', e => {
+    if (e.target.matches('textarea, input[type=text]:not([readonly]), input:not([type])')) { fermerPopups(); return; }
     e.preventDefault();
     if (eteint) return;
     const el = e.target.closest('.ico');
@@ -1159,7 +1287,7 @@
     Object.assign(el.style, { left: x + 'px', top: y + 'px', width: l + 'px', height: h + 'px' });
     el.innerHTML = `<div class="fen-titre"><span class="fen-ic">${G[a.g]}</span><span class="fen-nom">${esc(a.titre)}</span>
       <button class="fb reduire" title="Réduire">${SVG_MIN}</button><button class="fb agrandir" title="Agrandir">${SVG_MAX}</button><button class="fb fermer" title="Fermer">${SVG_X}</button></div>
-      <div class="fen-corps"></div>`;
+      <div class="fen-corps"></div><div class="bord-d"></div><div class="bord-b"></div><div class="poignee" title="Tirer pour changer la taille"></div>`;
     couche.appendChild(el);
     const w = { app, el, min: false, max: false, corps: el.querySelector('.fen-corps') };
     fen[app] = w;
@@ -1170,23 +1298,57 @@
     el.querySelector('.fermer').onclick = () => fermer(app);
     const titre = el.querySelector('.fen-titre');
     titre.addEventListener('dblclick', e => { if (!e.target.closest('.fb')) agrandir(app); });
+    // Déplacer par la barre de titre ; tout contre un bord, la fenêtre prend la moitié de l'écran
+    const ombre = $('#ancrage');
     titre.addEventListener('pointerdown', e => {
       if (e.button !== 0 || e.target.closest('.fb') || w.max) return;
-      const r = el.getBoundingClientRect(), bz = ecran.getBoundingClientRect();
+      const bz = ecran.getBoundingClientRect();
+      let r = el.getBoundingClientRect();
       const d = { dx: e.clientX - r.left, dy: e.clientY - r.top, x0: e.clientX, y0: e.clientY };
+      let bord = null;
       titre.setPointerCapture(e.pointerId);
       const bouge = ev => {
+        if (w.ancre && Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) > 10) {
+          // On décolle une fenêtre ancrée : elle reprend sa taille d'avant, sous la souris
+          const av = w.avant; w.ancre = null;
+          el.style.width = av.l + 'px'; el.style.height = av.h + 'px';
+          d.dx = Math.min(d.dx, av.l - 60); r = el.getBoundingClientRect();
+        }
         let nx = ev.clientX - bz.left - d.dx, ny = ev.clientY - bz.top - d.dy;
         nx = Math.max(-r.width + 80, Math.min(nx, bz.width - 80));
         ny = Math.max(0, Math.min(ny, bz.height - 48 - 34));
-        el.style.left = nx + 'px'; el.style.top = ny + 'px';
+        if (!w.ancre) { el.style.left = nx + 'px'; el.style.top = ny + 'px'; }
         if (Math.hypot(ev.clientX - d.x0, ev.clientY - d.y0) > 80) signal('deplacer');
+        bord = ev.clientX - bz.left < 12 ? 'gauche' : bz.right - ev.clientX < 12 ? 'droite' : null;
+        ombre.style.display = bord ? 'block' : 'none';
+        if (bord) { ombre.style.left = bord === 'gauche' ? '6px' : 'auto'; ombre.style.right = bord === 'droite' ? '6px' : 'auto'; }
       };
-      const fin = () => { titre.removeEventListener('pointermove', bouge); titre.removeEventListener('pointerup', fin); };
+      const fin = () => {
+        titre.removeEventListener('pointermove', bouge); titre.removeEventListener('pointerup', fin);
+        ombre.style.display = 'none';
+        if (bord) ancrer(app, bord);
+      };
       titre.addEventListener('pointermove', bouge);
       titre.addEventListener('pointerup', fin);
     });
+    // Changer la taille : le coin, le bord droit, le bord du bas
+    el.querySelectorAll('.poignee, .bord-d, .bord-b').forEach(p => p.addEventListener('pointerdown', e => {
+      if (e.button !== 0 || w.max) return;
+      e.stopPropagation();
+      p.setPointerCapture(e.pointerId);
+      const r = el.getBoundingClientRect(), bz = ecran.getBoundingClientRect();
+      const larg = !p.classList.contains('bord-b'), haut = !p.classList.contains('bord-d');
+      const bouge = ev => {
+        if (larg) el.style.width = Math.max(260, Math.min(r.width + ev.clientX - e.clientX, bz.right - r.left)) + 'px';
+        if (haut) el.style.height = Math.max(180, Math.min(r.height + ev.clientY - e.clientY, bz.bottom - 48 - r.top)) + 'px';
+        if (Math.abs(ev.clientX - e.clientX) + Math.abs(ev.clientY - e.clientY) > 40) signal('taille');
+      };
+      const fin = () => { p.removeEventListener('pointermove', bouge); p.removeEventListener('pointerup', fin); w.ancre = null; };
+      p.addEventListener('pointermove', bouge);
+      p.addEventListener('pointerup', fin);
+    }));
     activer(app);
+    if (fen.blocnotes && fen.calculatrice) signal('deux_fenetres');
     if (app === 'blocnotes' && origine === 'icone') signal('ouvrir_bn');
     if (app === 'calculatrice' && origine === 'recherche') signal('chercher');
   }
@@ -1215,6 +1377,17 @@
     b.innerHTML = w.max ? SVG_RES : SVG_MAX; b.title = w.max ? 'Niveau inférieur' : 'Agrandir';
     if (w.max) signal('agrandir');
   }
+  function ancrer(app, cote) {
+    const w = fen[app]; if (!w) return;
+    const r = w.el.getBoundingClientRect();
+    if (!w.ancre) w.avant = { l: r.width, h: r.height };
+    w.ancre = cote;
+    const be = ecran.getBoundingClientRect(), demi = Math.floor(be.width / 2);
+    Object.assign(w.el.style, { left: (cote === 'gauche' ? 0 : be.width - demi) + 'px', top: '0px', width: demi + 'px', height: (be.height - 48) + 'px' });
+    signal('ancrer');
+    const cotes = new Set(Object.values(fen).filter(x => !x.min && x.ancre).map(x => x.ancre));
+    if (cotes.has('gauche') && cotes.has('droite')) signal('cote_a_cote');
+  }
   async function fermer(app, force) {
     const w = fen[app]; if (!w) return;
     if (!force && w.avantFermer && !(await w.avantFermer())) return;
@@ -1225,7 +1398,84 @@
     if (p) activer(p.app); else majBarre();
   }
   function titreFenetre(w, t) { w.el.querySelector('.fen-nom').textContent = t; }
-  function majFenetres() { Object.values(fen).forEach(w => w.rafraichir && w.rafraichir()); }
+  function majFenetres() {
+    Object.values(fen).forEach(w => w.rafraichir && w.rafraichir());
+    signal('fichiers', fs);
+    if (Object.keys(fs).some(k => /^Documents\/.+/.test(k) && norm(k.split('/').pop()) === 'papiers' && fs[k].some(i => norm(i.nom).includes('facture')))) signal('ranger');
+  }
+  const fsChange = majFenetres;
+
+  /* ── Fichiers : chercher, déplacer, copier, coller ────────── */
+  let glisse = null;
+  function trouver(q) {
+    const n = norm(q); if (!n) return [];
+    const out = [];
+    Object.keys(fs).forEach(ou => (fs[ou] || []).forEach(item => { if (norm(item.nom).includes(n)) out.push({ item, ou }); }));
+    return out;
+  }
+  function copieProfonde(x) { return JSON.parse(JSON.stringify(x)); }
+  function deplacerItem(de, item, dest) {
+    if (!fs[de] || !fs[dest] || de === dest) return;
+    if (item.genre === 'dossier' && (dest === de + '/' + item.nom || dest.startsWith(de + '/' + item.nom + '/'))) return;
+    fs[de] = fs[de].filter(x => x !== item);
+    const ancien = item.nom;
+    item.nom = nomUnique(item.nom, fs[dest].map(x => x.nom));
+    fs[dest].push(item);
+    if (item.genre === 'dossier') deplacerChemin(de + '/' + ancien, dest + '/' + item.nom);
+    if (pressePapiers && pressePapiers.item === item) pressePapiers = null;
+    signal('deplace', { nom: item.nom, de, vers: dest });
+    if (dest === 'Documents') signal('deplacer_fichier');
+    fsChange();
+  }
+  function coller(dest) {
+    const pp = pressePapiers;
+    if (!pp || !fs[dest]) return;
+    if (pp.couper) { deplacerItem(pp.de, pp.item, dest); pressePapiers = null; fsChange(); return; }
+    const src = pp.de + '/' + pp.item.nom;
+    if (pp.item.genre === 'dossier' && (dest === src || dest.startsWith(src + '/'))) return;
+    const double = copieProfonde(pp.item);
+    double.nom = nomUnique(double.nom, fs[dest].map(x => x.nom));
+    fs[dest].push(double);
+    if (double.genre === 'dossier') Object.keys(fs).filter(k => k === src || k.startsWith(src + '/')).forEach(k => { fs[dest + '/' + double.nom + k.slice(src.length)] = copieProfonde(fs[k]); });
+    if (dest === USB && double.genre === 'img') signal('usb_copier');
+    fsChange();
+  }
+
+  /* ── Imprimer ─────────────────────────────────────────────── */
+  function imprimer(texte, nom) {
+    const v = document.createElement('div');
+    v.className = 'voile';
+    v.innerHTML = `<div class="dlg impr" role="dialog"><h4>Imprimer</h4>
+      <div class="ligne"><span>Imprimante</span><select><option>Imprimante du bureau</option><option>Microsoft Print to PDF</option></select></div>
+      <div class="ligne"><span>Copies</span><span class="copies"><button class="moins" title="Une de moins">−</button><input type="text" inputmode="numeric" value="1"><button class="plus" title="Une de plus">+</button></span></div>
+      <div class="feuille"></div>
+      <div class="boutons"><button class="btn-w plein">Imprimer</button><button class="btn-w">Annuler</button></div></div>`;
+    v.querySelector('.feuille').textContent = texte || '(page blanche)';
+    const inp = v.querySelector('.copies input'), sel = v.querySelector('select');
+    const nb = () => Math.max(1, Math.min(99, parseInt(inp.value, 10) || 1));
+    v.querySelector('.moins').onclick = () => { inp.value = Math.max(1, nb() - 1); };
+    v.querySelector('.plus').onclick = () => { inp.value = Math.min(99, nb() + 1); };
+    const fin = ok => {
+      v.remove();
+      if (!ok) return;
+      const copies = nb(), imprimante = sel.value;
+      if (imprimante === 'Microsoft Print to PDF') {
+        const l = fs['Documents'], nomPdf = nomUnique(nom.replace(/\.txt$/i, '') + '.pdf', l.map(x => x.nom));
+        l.push({ nom: nomPdf, genre: 'pdf', doc: { titre: nomPdf.replace(/\.pdf$/, ''), lignes: (texte || '').split('\n') } });
+        fsChange();
+        notifier({ titre: 'Rien n’est sorti sur papier', texte: `« ${nomPdf} » est enregistré dans Documents. Pour le papier : l’Imprimante du bureau.`, alerte: true });
+      } else {
+        notifier({ qui: 'Imprimante du bureau', titre: 'Envoyé à l’imprimante', texte: `${nom} · ${copies} copie${copies > 1 ? 's' : ''}` });
+        if (copies === 2) signal('imprimer');
+      }
+      signal('imprime', { copies, imprimante });
+    };
+    v.querySelector('.plein').onclick = () => fin(true);
+    v.querySelector('.boutons .btn-w:not(.plein)').onclick = () => fin(false);
+    v.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') fin(true); if (e.key === 'Escape') fin(false); });
+    ecran.appendChild(v);
+    v.querySelector('.plein').focus();
+  }
 
   /* ── La barre des tâches ──────────────────────────────────── */
   function majBarre() {
@@ -1240,12 +1490,26 @@
       b.onclick = () => {
         fermerPopups(true);
         if (!w) return ouvrir(app, app === 'explorateur' ? 'Documents' : null);
-        if (w.min) { w.min = false; w.el.hidden = false; activer(app); signal('restaurer'); }
+        if (w.min) { w.min = false; w.el.hidden = false; activer(app); signal('restaurer'); signal('basculer'); }
         else if (actif === app) reduire(app);
-        else activer(app);
+        else { activer(app); signal('basculer'); }
+      };
+      b.oncontextmenu = e => {
+        e.preventDefault(); e.stopPropagation();
+        const epingle = EPINGLES_TB.includes(app);
+        menuContexte(e, [
+          { t: epingle ? 'Détacher de la barre des tâches' : 'Épingler à la barre des tâches', f: () => epingler(app, !epingle) },
+          ...(w ? ['-', { t: 'Fermer la fenêtre', f: () => fermer(app) }] : []),
+        ]);
       };
       box.appendChild(b);
     });
+  }
+
+  function epingler(app, oui) {
+    EPINGLES_TB = oui ? [...new Set([...EPINGLES_TB, app])] : EPINGLES_TB.filter(k => k !== app);
+    majBarre();
+    if (oui && app === 'calculatrice') signal('epingler');
   }
 
   /* ── Menu Démarrer ────────────────────────────────────────── */
@@ -1264,7 +1528,7 @@
   function remplirDemarrer() {
     const q = norm(dmCherche.value);
     const g = $('#dm-grille'); g.innerHTML = '';
-    const apps = q ? Object.keys(APPS).filter(k => k !== 'corbeille' && norm(APPS[k].titre).split(/[\s-]+/).some(m => m.startsWith(q)) || (k !== 'corbeille' && norm(APPS[k].titre).startsWith(q))) : EPINGLES_DM;
+    const apps = q ? Object.keys(APPS).filter(k => k !== 'corbeille' && k !== 'pdf' && (norm(APPS[k].titre).split(/[\s-]+/).some(m => m.startsWith(q)) || norm(APPS[k].titre).startsWith(q))) : EPINGLES_DM;
     const uniques = [...new Set(apps)];
     $('#dm-titre').textContent = q ? 'Meilleur résultat' : 'Épinglé';
     if (!uniques.length) { g.innerHTML = `<div class="dm-vide">Aucun résultat pour « ${esc(dmCherche.value)} »</div>`; return; }
@@ -1273,6 +1537,14 @@
       b.className = 'dm-app' + (q && n === 0 ? ' premier' : '');
       b.innerHTML = G[APPS[k].g] + `<span>${esc(APPS[k].titre)}</span>`;
       b.onclick = () => { dm.hidden = true; ouvrir(k, k === 'explorateur' ? 'Documents' : null, q ? 'recherche' : 'demarrer'); };
+      b.oncontextmenu = e => {
+        e.preventDefault(); e.stopPropagation();
+        const epingle = EPINGLES_TB.includes(k);
+        menuContexte(e, [
+          { t: 'Ouvrir', f: () => ouvrir(k, k === 'explorateur' ? 'Documents' : null, q ? 'recherche' : 'demarrer') },
+          { t: epingle ? 'Détacher de la barre des tâches' : 'Épingler à la barre des tâches', f: () => epingler(k, !epingle) },
+        ]);
+      };
       g.appendChild(b);
     });
   }
@@ -1283,7 +1555,9 @@
   });
   $('#tb-demarrer').onclick = () => dm.hidden ? ouvrirDemarrer() : fermerDemarrer();
   $('#tb-cherche').onclick = () => dm.hidden ? ouvrirDemarrer() : dmCherche.focus();
-  $('#dm-alim').onclick = e => { e.stopPropagation(); const a = $('#alim-menu'); a.hidden = !a.hidden; };
+  $('#dm-alim').onclick = e => { e.stopPropagation(); $('#user-menu').hidden = true; const a = $('#alim-menu'); a.hidden = !a.hidden; };
+  $('#dm-user').onclick = e => { e.stopPropagation(); $('#alim-menu').hidden = true; const a = $('#user-menu'); a.hidden = !a.hidden; };
+  $('#u-verrou').onclick = () => { $('#user-menu').hidden = true; dm.hidden = true; verrouiller(); };
   document.querySelectorAll('[data-alim]').forEach(b => b.onclick = () => {
     $('#alim-menu').hidden = true; dm.hidden = true;
     ({ veille, arreter: () => arreter(false), redemarrer: () => arreter(true) })[b.dataset.alim]();
@@ -1292,11 +1566,12 @@
   function fermerPopups(sansSignal) {
     const m = $('#menu-ctx'); if (m) m.remove();
     $('#calendrier').hidden = true; $('#volume').hidden = true; $('#alim-menu').hidden = true;
+    $('#user-menu').hidden = true; $('#wifi').hidden = true;
     if (!dm.hidden) { if (sansSignal) dm.hidden = true; else fermerDemarrer(); }
   }
   // Un clic n'importe où hors d'un menu le referme
   ecran.addEventListener('pointerdown', e => {
-    if (e.target.closest('#demarrer, #alim-menu, #tb-demarrer, #tb-cherche, #calendrier, #volume, #tb-heure, #tb-son, #menu-ctx, .voile')) return;
+    if (e.target.closest('#demarrer, #alim-menu, #user-menu, #tb-demarrer, #tb-cherche, #calendrier, #volume, #wifi, #tb-wifi, #tb-heure, #tb-son, #menu-ctx, .voile, #toasts, .verrou')) return;
     if (e.target.closest('#zone')) return; // géré par la zone
     fermerPopups();
   });
@@ -1322,29 +1597,190 @@
     signal('heure');
   };
   $('#tb-son').onclick = () => { const v = $('#volume'); const etait = v.hidden; fermerPopups(); v.hidden = !etait; };
+  $('#vol').addEventListener('input', e => {
+    const v = +e.target.value; $('#vol-n').textContent = v;
+    $('#tb-son').title = v ? 'Son : ' + v : 'Son coupé';
+    $('#tb-son').style.opacity = v ? 1 : .45;
+    if (v <= 30) signal('son');
+  });
+
+  /* ── Les notifications, en bas à droite ───────────────────── */
+  function notifier({ qui = 'Windows', titre, texte, boutons, clic, alerte, duree = 7000 }) {
+    const t = document.createElement('div');
+    t.className = 'toast' + (clic ? ' cliquable' : '') + (alerte ? ' alerte' : '');
+    t.innerHTML = `<div class="t-qui">${G.parametres}${esc(qui)}</div><b>${esc(titre)}</b>${texte ? esc(texte) : ''}`;
+    const fin = () => t.remove();
+    if (boutons) {
+      const z = document.createElement('div'); z.className = 't-btns';
+      boutons.forEach(([nom, f], k) => {
+        const b = document.createElement('button'); b.className = 'btn-w' + (k === 0 ? ' plein' : ''); b.textContent = nom;
+        b.onclick = ev => { ev.stopPropagation(); fin(); f && f(); };
+        z.appendChild(b);
+      });
+      t.appendChild(z);
+    } else setTimeout(fin, duree);
+    if (clic) t.onclick = () => { fin(); clic(); };
+    $('#toasts').appendChild(t);
+    return t;
+  }
+
+  /* ── Le Wi-Fi ─────────────────────────────────────────────── */
+  const SVG_WIFI = n => `<svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2" stroke-linecap="round"><path d="M2.5 9a14 14 0 0 1 19 0" opacity="${n > 2 ? 1 : .25}"/><path d="M5.5 12.5a9.5 9.5 0 0 1 13 0" opacity="${n > 1 ? 1 : .25}"/><path d="M8.7 16a5 5 0 0 1 6.6 0"/><circle cx="12" cy="19.3" r="1.2" fill="#333"/></svg>`;
+  const SVG_GLOBE = `<svg viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.6"><circle cx="11" cy="11" r="8"/><path d="M3 11h16M11 3c-3 3-3 13 0 16M11 3c3 3 3 13 0 16"/><path d="M16 16l6 6M22 16l-6 6" stroke="#C42B1C" stroke-width="2"/></svg>`;
+  function reseaux() {
+    return [
+      { nom: 'Maison', cle: 'Tilleul-2048', force: 3 },
+      ...Object.entries(reseauxEnPlus).map(([nom, cle]) => ({ nom, cle, force: 3 })),
+      { nom: 'Voisin-5G', cle: 'jamais-vous-ne-la-trouverez', force: 1 },
+      { nom: 'Café des Arts', cle: null, force: 2 },
+    ];
+  }
+  function majIconeWifi() {
+    const b = $('#tb-wifi');
+    b.innerHTML = wifiConnecte ? SVG_WIFI(3) : SVG_GLOBE;
+    b.title = wifiConnecte ? 'Réseau : ' + wifiConnecte + ', connecté' : 'Réseau : pas de connexion';
+  }
+  let reseauOuvert = null;
+  function dessinerWifi() {
+    const box = $('#wifi');
+    box.innerHTML = '<div class="w-titre">Wi-Fi</div>';
+    reseaux().forEach(n => {
+      const d = document.createElement('div');
+      d.className = 'reseau' + (reseauOuvert === n.nom ? ' ouvert' : '');
+      const etat = wifiConnecte === n.nom ? 'Connecté' + (n.cle ? ', sécurisé' : '') : n.cle ? 'Sécurisé' : 'Ouvert : tout le monde peut voir';
+      d.innerHTML = `<div class="r-nom">${SVG_WIFI(n.force)}<span>${esc(n.nom)}</span>${n.cle ? '<span title="Protégé par une clé">🔒</span>' : ''}</div><div class="r-etat">${etat}</div>`;
+      if (reseauOuvert === n.nom) {
+        const plus = document.createElement('div'); plus.className = 'r-plus';
+        if (wifiConnecte === n.nom) {
+          plus.innerHTML = '<button class="btn-w">Se déconnecter</button>';
+          plus.querySelector('button').onclick = ev => { ev.stopPropagation(); wifiConnecte = null; majIconeWifi(); dessinerWifi(); };
+        } else if (n.cle) {
+          plus.innerHTML = `<label>Entrez la clé de sécurité du réseau</label><div class="cle-l"><input type="password" spellcheck="false" autocomplete="off"><button class="r-oeil" title="Afficher la clé">👁</button></div><div class="r-err"></div><button class="btn-w plein">Suivant</button>`;
+          const inp = plus.querySelector('input'), err = plus.querySelector('.r-err');
+          plus.querySelector('.r-oeil').onclick = ev => { ev.stopPropagation(); inp.type = inp.type === 'password' ? 'text' : 'password'; inp.focus(); };
+          const valider = () => {
+            if (inp.value === n.cle) connecter(n);
+            else if (inp.value.toLowerCase() === n.cle.toLowerCase()) err.textContent = 'La clé n’est pas correcte. Attention aux majuscules.';
+            else err.textContent = 'La clé de sécurité n’est pas correcte.';
+          };
+          plus.querySelector('.plein').onclick = ev => { ev.stopPropagation(); valider(); };
+          inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') valider(); });
+          inp.addEventListener('click', ev => ev.stopPropagation());
+          setTimeout(() => inp.focus(), 30);
+        } else {
+          plus.innerHTML = '<button class="btn-w plein">Se connecter</button>';
+          plus.querySelector('button').onclick = ev => { ev.stopPropagation(); connecter(n); };
+        }
+        d.appendChild(plus);
+      }
+      d.onclick = () => { reseauOuvert = reseauOuvert === n.nom ? null : n.nom; dessinerWifi(); };
+      box.appendChild(d);
+    });
+  }
+  function connecter(n) {
+    wifiConnecte = n.nom; reseauOuvert = null;
+    majIconeWifi(); dessinerWifi();
+    signal('wifi_reseau', n.nom);
+    if (n.nom === 'Maison') signal('wifi');
+    if (!n.cle) notifier({ titre: 'Réseau ouvert', texte: 'Ici, ne tapez ni mot de passe de banque ni numéro de carte.', alerte: true });
+  }
+  $('#tb-wifi').onclick = () => {
+    const w = $('#wifi'); const etait = w.hidden; fermerPopups();
+    if (etait) { reseauOuvert = null; dessinerWifi(); w.hidden = false; }
+  };
+
+  /* ── La clé USB ───────────────────────────────────────────── */
+  function majUsb() {
+    const b = $('#usb-bouton');
+    b.textContent = usb.etat === 'table' ? 'Brancher la clé USB' : 'Retirer la clé USB';
+    b.classList.toggle('fort', usb.etat === 'ejectee');
+    if (usb.etat === 'branchee') fs[USB] = usb.contenu; else delete fs[USB];
+    majFenetres();
+  }
+  $('#usb-bouton').onclick = () => {
+    if (eteint) return;
+    if (usb.etat === 'table') {
+      usb.etat = 'branchee'; majUsb();
+      notifier({ qui: 'Explorateur de fichiers', titre: USB, texte: 'Cliquez ici pour ouvrir la clé.', clic: () => ouvrir('explorateur', USB), duree: 9000 });
+    } else {
+      const propre = usb.etat === 'ejectee';
+      usb.etat = 'table'; majUsb();
+      if (propre) signal('usb_retirer');
+      else notifier({ titre: 'Clé retirée sans l’éjecter', texte: 'Un fichier en cours de copie peut être abîmé. La prochaine fois : clic droit, Éjecter.', alerte: true });
+    }
+  };
+  function ejecter() {
+    if (usb.etat !== 'branchee') return;
+    usb.etat = 'ejectee'; majUsb();
+    signal('usb_ejecter');
+    notifier({ titre: 'Vous pouvez retirer la clé', texte: 'La clé USB peut être retirée de l’ordinateur sans risque.' });
+  }
+
+  /* ── La mise à jour qui s'annonce ─────────────────────────── */
+  let majVisible = null;
+  function proposerMaj() {
+    if (majFaite || majVisible || eteint) return;
+    setTimeout(() => {
+      if (majFaite || majVisible || eteint || faites.has('maj_plus_tard')) return;
+      majVisible = notifier({ qui: 'Windows Update', titre: 'Redémarrage nécessaire', texte: 'Des mises à jour sont prêtes. L’ordinateur doit redémarrer.',
+        boutons: [['Plus tard', () => { majVisible = null; majFaite = true; signal('maj_plus_tard'); }],
+                  ['Redémarrer maintenant', () => { majVisible = null; const perdu = fen.blocnotes && fen.blocnotes.sale; arreter(true, perdu); }]] });
+    }, 1500);
+  }
+
+  /* ── Verrouiller ──────────────────────────────────────────── */
+  function verrouiller() {
+    fermerPopups(true);
+    eteint = true;
+    const v = document.createElement('div');
+    v.className = 'verrou'; v.style.background = FONDS[fond].css;
+    const d = new Date();
+    v.innerHTML = `<div class="grande-heure">${d.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</div><div class="grande-date">${d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}</div><div class="v-indice">Cliquez ou appuyez sur une touche pour déverrouiller</div>`;
+    ecran.appendChild(v);
+    signal('verrouiller');
+    const connexion = () => {
+      if (v.dataset.pin) return; v.dataset.pin = 1;
+      v.innerHTML = `<div class="av">A</div><div class="v-nom">Adhérent</div><input type="password" inputmode="numeric" maxlength="8" placeholder="Code PIN" autocomplete="off"><div class="v-err"></div>`;
+      const inp = v.querySelector('input'), err = v.querySelector('.v-err');
+      inp.addEventListener('keydown', ev => {
+        ev.stopPropagation();
+        if (ev.key !== 'Enter') return;
+        if (inp.value === '2580') { v.remove(); eteint = false; signal('deverrouiller'); }
+        else { err.textContent = 'Le code PIN est incorrect. Réessayez.'; inp.value = ''; }
+      });
+      setTimeout(() => inp.focus(), 30);
+    };
+    v.addEventListener('pointerdown', connexion);
+    v.tabIndex = -1; v.addEventListener('keydown', connexion);
+    setTimeout(() => v.focus(), 30);
+  }
 
   /* ── Arrêt, démarrage, veille ─────────────────────────────── */
   function noir(html) {
     const n = document.createElement('div'); n.className = 'noir'; n.innerHTML = html; ecran.appendChild(n); return n;
   }
-  function arreter(relancer) {
+  function arreter(relancer, perdu) {
     fermerPopups(true);
     eteint = true;
     const n = noir('<div><div class="rond"></div><div class="texte">Arrêt en cours…</div></div>');
     setTimeout(() => {
       Object.keys(fen).forEach(k => fermer(k, true));
       n.remove();
-      if (relancer) return demarrer();
+      if (relancer) return demarrer(perdu);
       signal('eteindre');
       const e = noir(`<div><button class="bouton-alim" title="Bouton d'allumage"><svg viewBox="0 0 24 24"><path d="M12 3v9"/><path d="M6.3 6.8a8 8 0 1 0 11.4 0"/></svg></button><div class="texte">L’ordinateur est éteint.</div><div class="petit">Pour rallumer : un seul appui sur le bouton.</div></div>`);
       e.querySelector('.bouton-alim').onclick = () => { e.remove(); demarrer(); };
     }, 2200);
   }
-  function demarrer() {
+  function demarrer(perdu) {
     const n = noir('<div><div class="logo-dem"><i></i><i></i><i></i><i></i></div><div class="rond"></div><div class="petit"></div></div>');
     let appuis = 0;
     n.addEventListener('pointerdown', () => { appuis++; n.querySelector('.petit').textContent = appuis > 1 ? 'Patience : il démarre. On attend, mains sur la table.' : 'Il démarre, on attend.'; });
-    setTimeout(() => { n.remove(); eteint = false; signal('rallumer'); }, 3200);
+    setTimeout(() => {
+      n.remove(); eteint = false; signal('rallumer');
+      if (perdu) notifier({ titre: 'Le texte non enregistré est perdu', texte: 'Avant de redémarrer : on enregistre. Sinon, on choisit Plus tard.', alerte: true, duree: 10000 });
+      if (!faites.has('maj_plus_tard') && MISSIONS[courante] && MISSIONS[courante].k === 'maj_plus_tard') proposerMaj();
+    }, 3200);
   }
   function veille() {
     eteint = true;
@@ -1367,13 +1803,20 @@
         if (!f || w.sale) return;
         w.fichier = f; ta.value = f.item.contenu || ''; w.sale = false; titre();
       };
-      ta.addEventListener('input', () => {
+      ta.addEventListener('input', e => {
+        if (e.inputType === 'historyUndo') signal('annuler');
         if (!w.sale) { w.sale = true; titre(); }
         pos();
         signal('texte', ta.value);
       });
       const pos = () => { const avant = ta.value.slice(0, ta.selectionStart).split('\n'); etat.textContent = `Ligne ${avant.length}, colonne ${avant[avant.length - 1].length + 1}`; };
       ta.addEventListener('click', pos); ta.addEventListener('keyup', pos);
+      ta.addEventListener('keydown', e => {
+        if (!(e.ctrlKey || e.metaKey)) return;
+        const k = e.key.toLowerCase();
+        if (k === 's') { e.preventDefault(); signal('ctrl_s'); enregistrer(); }
+        if (k === 'p') { e.preventDefault(); imprimer(ta.value, w.fichier ? w.fichier.nom : 'Sans titre'); }
+      });
       const enregistrer = async () => {
         if (w.fichier) { w.fichier.item.contenu = ta.value; w.sale = false; titre(); majFenetres(); signal('enregistre', { nom: w.fichier.nom, texte: ta.value }); return true; }
         const r = await demander({ titre: 'Enregistrer sous', texte: 'Enregistrer dans : Documents', champ: 'Nom du fichier :', valeur: 'Sans titre', boutons: ['Enregistrer', 'Annuler'] });
@@ -1398,7 +1841,8 @@
         const b = btnF.getBoundingClientRect();
         menuContexte({ clientX: b.left, clientY: b.bottom + 2 }, [
           { t: 'Nouveau', f: () => { if (w.sale) return; ta.value = ''; w.fichier = null; titre(); } },
-          { t: 'Enregistrer', f: enregistrer },
+          { t: 'Enregistrer          Ctrl+S', f: enregistrer },
+          { t: 'Imprimer              Ctrl+P', f: () => imprimer(ta.value, w.fichier ? w.fichier.nom : 'Sans titre') },
           '-',
           { t: 'Fermer', f: () => fermer('blocnotes') },
         ]);
@@ -1417,22 +1861,30 @@
     },
 
     explorateur(w, chemin) {
-      w.chemin = chemin || 'Documents';
-      w.corps.innerHTML = `<div class="ex-barre"><button class="ex-haut" title="Dossier parent">↑</button><div class="ex-chemin"></div><button class="ex-nouveau">+ Nouveau dossier</button></div>
-        <div class="ex-main"><nav class="ex-cote"><button data-c="Documents">${G.dossier}Documents</button><button data-c="Images">${G.photos}Images</button></nav><div class="ex-liste"></div></div>`;
-      const liste = w.corps.querySelector('.ex-liste');
-      w.corps.querySelectorAll('.ex-cote button').forEach(b => b.onclick = () => { w.chemin = b.dataset.c; w.rafraichir(); });
-      w.corps.querySelector('.ex-haut').onclick = () => { const i = w.chemin.lastIndexOf('/'); if (i > 0 && !/^Bureau\/[^/]+$/.test(w.chemin)) { w.chemin = w.chemin.slice(0, i); w.rafraichir(); } };
+      w.chemin = chemin || 'Documents'; w.q = '';
+      w.corps.innerHTML = `<div class="ex-barre"><button class="ex-haut" title="Dossier parent">↑</button><div class="ex-chemin"></div><button class="ex-nouveau">+ Nouveau dossier</button><input class="ex-recherche" placeholder="Rechercher" spellcheck="false" autocomplete="off"></div>
+        <div class="ex-main"><nav class="ex-cote"></nav><div class="ex-liste"></div></div>`;
+      const liste = w.corps.querySelector('.ex-liste'), cote = w.corps.querySelector('.ex-cote'), rech = w.corps.querySelector('.ex-recherche');
+      const aller = c => { w.chemin = c; w.q = ''; rech.value = ''; w.rafraichir(); };
+      w.corps.querySelector('.ex-haut').onclick = () => { const i = w.chemin.lastIndexOf('/'); if (i > 0 && !/^Bureau\/[^/]+$/.test(w.chemin)) aller(w.chemin.slice(0, i)); };
       w.corps.querySelector('.ex-nouveau').onclick = () => {
+        if (w.q) aller(w.chemin);
         const items = fs[w.chemin] || (fs[w.chemin] = []);
         const item = { nom: nomUnique('Nouveau dossier', items.map(x => x.nom)), genre: 'dossier' };
         items.push(item); fs[w.chemin + '/' + item.nom] = [];
         w.rafraichir(); signal('dossier'); renommerItem(item);
       };
-      const ouvrirItem = item => {
-        if (item.genre === 'dossier') { w.chemin = w.chemin + '/' + item.nom; w.rafraichir(); }
-        else if (item.genre === 'txt') ouvrir('blocnotes', { chemin: w.chemin, nom: item.nom, item });
+      rech.addEventListener('input', () => {
+        w.q = rech.value.trim(); w.rafraichir();
+        if (norm(w.q).startsWith('factur') && trouver(w.q).length) signal('chercher_fichier');
+      });
+      rech.addEventListener('keydown', e => { e.stopPropagation(); if (e.key === 'Escape') aller(w.chemin); });
+      const ouvrirItem = (item, ou) => {
+        ou = ou || w.chemin;
+        if (item.genre === 'dossier') aller(ou + '/' + item.nom);
+        else if (item.genre === 'txt') ouvrir('blocnotes', { chemin: ou, nom: item.nom, item });
         else if (item.genre === 'img') ouvrir('photos', item.nom);
+        else if (item.genre === 'pdf') ouvrir('pdf', item);
       };
       const renommerItem = item => {
         const el = [...liste.children].find(e => e._item === item); if (!el) return;
@@ -1447,42 +1899,93 @@
             if (item.genre === 'dossier') deplacerChemin(w.chemin + '/' + item.nom, w.chemin + '/' + nom);
             item.nom = nom;
             if (item.genre === 'dossier') signal('renomme', nom);
-            if (item.genre === 'dossier' && norm(nom) === 'recettes') signal('renommer');
           }
-          majFenetres();
+          fsChange();
         };
         inp.addEventListener('keydown', ev => { ev.stopPropagation(); if (ev.key === 'Enter') valider(true); if (ev.key === 'Escape') valider(false); });
         inp.addEventListener('blur', () => valider(true));
       };
+      // Glisser un fichier sur un dossier (à gauche, ou dans la liste)
+      const cible = (el, dest) => {
+        el.addEventListener('dragover', e => { if (glisse && glisse.de !== dest && !dest.startsWith(glisse.de + '/' + glisse.item.nom)) { e.preventDefault(); el.classList.add('cible'); } });
+        el.addEventListener('dragleave', () => el.classList.remove('cible'));
+        el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('cible'); if (glisse) deplacerItem(glisse.de, glisse.item, dest); glisse = null; });
+      };
+      const menuVide = e => {
+        if (e.target.closest('.ex-item') || w.q) return;
+        e.preventDefault(); e.stopPropagation();
+        menuContexte(e, [
+          { t: 'Coller', f: () => coller(w.chemin), off: !pressePapiers || !fs[pressePapiers.de] },
+          '-',
+          { t: 'Nouveau dossier', f: () => w.corps.querySelector('.ex-nouveau').click() },
+        ]);
+      };
+      liste.addEventListener('contextmenu', menuVide);
       w.rafraichir = () => {
         if (!fs[w.chemin]) w.chemin = 'Documents';
-        const lisible = w.chemin.split('/').join('  ›  ');
+        // Le volet de gauche
+        cote.innerHTML = '';
+        const places = [['Documents', G.dossier], ['Images', G.photos], ['Téléchargements', G.telechargements]];
+        if (fs[USB]) places.push(['-'], [USB, G.usb]);
+        places.forEach(([c, g]) => {
+          if (c === '-') { cote.appendChild(document.createElement('hr')); return; }
+          const b = document.createElement('button');
+          b.innerHTML = g + esc(c.replace(' (E:)', ''));
+          b.title = c;
+          b.classList.toggle('ici', c === w.chemin && !w.q);
+          b.onclick = () => aller(c);
+          if (c === USB) b.oncontextmenu = e => { e.preventDefault(); e.stopPropagation(); menuContexte(e, [{ t: 'Ouvrir', f: () => aller(USB) }, '-', { t: 'Éjecter', f: ejecter }]); };
+          cible(b, c);
+          cote.appendChild(b);
+        });
+        const lisible = w.q ? `Résultats de la recherche : « ${w.q} »` : w.chemin.split('/').join('  ›  ');
         w.corps.querySelector('.ex-chemin').textContent = lisible;
-        titreFenetre(w, w.chemin.split('/').pop() + ' – Explorateur de fichiers');
-        w.corps.querySelectorAll('.ex-cote button').forEach(b => b.classList.toggle('ici', b.dataset.c === w.chemin));
-        w.corps.querySelector('.ex-haut').disabled = !w.chemin.includes('/') || /^Bureau\/[^/]+$/.test(w.chemin);
+        titreFenetre(w, (w.q ? 'Recherche' : w.chemin.split('/').pop()) + ' – Explorateur de fichiers');
+        w.corps.querySelector('.ex-haut').disabled = !!w.q || !w.chemin.includes('/') || /^Bureau\/[^/]+$/.test(w.chemin);
+        signal('dossier_ouvert', w.q ? null : w.chemin);
+        if (!w.q && w.chemin === 'Téléchargements') signal('telechargements');
+        if (!w.q && w.chemin === USB) signal('usb_brancher');
         liste.innerHTML = '';
-        const items = fs[w.chemin];
-        if (!items.length) liste.innerHTML = '<div class="ex-vide">Ce dossier est vide.</div>';
-        items.forEach(item => {
+        const items = w.q ? trouver(w.q) : fs[w.chemin].map(item => ({ item, ou: w.chemin }));
+        if (!items.length) liste.innerHTML = `<div class="ex-vide">${w.q ? 'Aucun élément ne correspond à la recherche.' : 'Ce dossier est vide.'}</div>`;
+        items.forEach(({ item, ou }) => {
           const el = document.createElement('div');
-          el.className = 'ex-item'; el._item = item;
-          el.innerHTML = G[item.genre === 'dossier' ? 'dossier' : item.genre] + `<span>${esc(item.nom)}</span>`;
+          el.className = 'ex-item' + (pressePapiers && pressePapiers.couper && pressePapiers.item === item ? ' coupe' : ''); el._item = item;
+          el.innerHTML = G[item.genre === 'dossier' ? 'dossier' : item.genre] + `<span>${esc(item.nom)}${w.q ? `<br><small>${esc(ou.split('/').join(' › '))}</small>` : ''}</span>`;
           el.onclick = () => { liste.querySelectorAll('.ex-item').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); };
-          el.ondblclick = () => ouvrirItem(item);
+          el.ondblclick = () => ouvrirItem(item, ou);
+          el.draggable = true;
+          el.addEventListener('dragstart', e => { glisse = { de: ou, item }; e.dataTransfer.effectAllowed = 'move'; try { e.dataTransfer.setData('text/plain', item.nom); } catch (x) {} });
+          el.addEventListener('dragend', () => { glisse = null; });
+          if (item.genre === 'dossier') cible(el, ou + '/' + item.nom);
           el.oncontextmenu = e => {
             e.preventDefault(); e.stopPropagation(); el.onclick();
             menuContexte(e, [
-              { t: 'Ouvrir', f: () => ouvrirItem(item) }, '-',
-              { t: 'Renommer', f: () => renommerItem(item) },
-              { t: 'Supprimer', f: () => jeterFichier(w.chemin, item) },
+              { t: 'Ouvrir', f: () => ouvrirItem(item, ou) }, '-',
+              { t: 'Couper', f: () => { pressePapiers = { de: ou, item, couper: true }; majFenetres(); } },
+              { t: 'Copier', f: () => { pressePapiers = { de: ou, item, couper: false }; majFenetres(); } },
+              ...(item.genre === 'dossier' ? [{ t: 'Coller dedans', f: () => coller(ou + '/' + item.nom), off: !pressePapiers }] : []),
+              '-',
+              { t: 'Renommer', f: () => renommerItem(item), off: !!w.q },
+              { t: 'Supprimer', f: () => jeterFichier(ou, item) },
             ]);
           };
           liste.appendChild(el);
         });
       };
-      w.charger = c => { if (c) { w.chemin = c; w.rafraichir(); } };
+      w.charger = c => { if (c) aller(c); };
       w.rafraichir();
+    },
+
+    pdf(w, item) {
+      w.charger = it => {
+        if (!it) return;
+        const d = it.doc || { titre: it.nom, lignes: [] };
+        titreFenetre(w, it.nom + ' – Lecteur PDF');
+        w.corps.innerHTML = `<div class="pdf"><div class="page-pdf"><h3>${esc(d.titre)}</h3><div class="entete">${esc(it.nom)}</div>${d.lignes.map(l => `<p class="${/montant|payer avant/i.test(l) ? 'gros' : ''}">${esc(l)}</p>`).join('')}</div></div>`;
+        signal('ouvrir_pdf', it.nom);
+      };
+      w.charger(item);
     },
 
     calculatrice(w) {
@@ -1557,7 +2060,9 @@
         e.preventDefault();
         const q = f.querySelector('input').value.trim(); if (!q) return;
         w.corps.querySelector('.nav-barre input').value = 'recherche : ' + q;
-        res.innerHTML = `<p style="color:#666">Résultats pour « ${esc(q)} » (exemple, rien n’est vrai)</p>` +
+        signal('cherche', q);
+        const plan = /\d+.*(place|rue|avenue|boulevard|chemin|allée)/i.test(q) ? `<p><b>Plan : ${esc(q)}</b>Itinéraire, horaires, comment s’y rendre.</p><div class="nav-carte"></div>` : '';
+        res.innerHTML = `<p style="color:#666">Résultats pour « ${esc(q)} » (exemple, rien n’est vrai)</p>` + plan +
           ['Tout savoir sur', 'Les meilleures idées :', 'Guide pratique :'].map(t => `<p><b>${t} ${esc(q)}</b>Une page d’exemple, pour s’entraîner à lire des résultats.</p>`).join('');
       };
       setTimeout(() => f.querySelector("input").focus(), 80);
@@ -1600,6 +2105,18 @@
     },
   };
 
+  // Ctrl + C, Ctrl + V : on regarde ce qui part et ce qui arrive
+  const ADRESSE = 'republique';
+  ecran.addEventListener('copy', e => {
+    const t = e.target;
+    const sel = t && 'selectionStart' in t && t.value != null ? t.value.slice(t.selectionStart, t.selectionEnd) : String(window.getSelection());
+    if (norm(sel).includes(ADRESSE)) signal('copier');
+  });
+  ecran.addEventListener('paste', e => {
+    const txt = (e.clipboardData || window.clipboardData).getData('text');
+    if (norm(txt).includes(ADRESSE) && e.target.tagName === 'INPUT') signal('coller');
+  });
+
   function appliquerFond() { $('#fond').style.background = FONDS[fond].css; }
 
   /* Clavier : Échap ferme les menus, la calculatrice écoute, Suppr jette */
@@ -1626,7 +2143,10 @@
     couche.innerHTML = '';
     ecran.querySelectorAll('.noir, .voile, #menu-ctx').forEach(x => x.remove());
     dm.hidden = true;
-    etatDepart(); binomePreparer(); appliquerFond(); dessinerIcones(); majBarre(); majHeure();
+    $('#toasts').innerHTML = ''; majVisible = null;
+    ecran.querySelectorAll('.verrou').forEach(x => x.remove());
+    $('#vol').value = 60; $('#vol-n').textContent = 60; $('#tb-son').style.opacity = 1;
+    etatDepart(); binomePreparer(); appliquerFond(); dessinerIcones(); majBarre(); majHeure(); majIconeWifi(); majUsb();
     faites = new Set(); courante = 0; clearTimeout(flash); $('#mission').classList.remove('reussi'); majMissions();
   }
   $('#raz').onclick = toutRemettre;

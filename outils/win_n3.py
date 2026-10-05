@@ -34,8 +34,7 @@ rep("""    <h1>Le bureau Windows, niveau 2</h1>
       <a href="../niveau2/">← Bureau Windows, niveau 2</a>""")
 
 # Le lien du niveau 2 vers le niveau 3 ne sert à rien sur le niveau 3 lui-même.
-rep('      <a href="../niveau3/">Bureau Windows, niveau 3 →</a>
-', '')
+rep('      <a href="../niveau3/">Bureau Windows, niveau 3 →</a>\n', '')
 
 # ── Styles ───────────────────────────────────────────────────────────
 rep("  .b-secret {", r"""  .b-choix { display:flex; gap:10px; flex-wrap:wrap; margin:6px 0; }
